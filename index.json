@@ -1,0 +1,41 @@
+{
+  "generated" : "2026-10-06T16:06:14Z",
+  "name" : "GateLab cores",
+  "packages" : [
+    {
+      "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing. CC0 1.0: no conditions, no attribution needed.",
+      "documentation" : "https://github.com/richardklingler/fpgacores",
+      "id" : "gatelab.essentials",
+      "maintainer" : "GateLab",
+      "name" : "GateLab Essentials",
+      "type" : "library",
+      "versions" : [
+        {
+          "cores" : [
+            "async_fifo",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "i2c_master",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_slave",
+            "sync_fifo",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "22f865b784f58a0ce631781f71964f63d71b2bafd92f91b829b19f5a71ab0b09",
+            "size" : 132529,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.0.0.fpgapack"
+          },
+          "version" : "1.0.0"
+        }
+      ]
+    }
+  ],
+  "schema" : 1
+}
