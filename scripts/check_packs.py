@@ -22,7 +22,9 @@ DIRECTIONS = {"in", "out", "inout"}
 # SPDX ids that need no licence text in the pack.
 PUBLIC_DOMAIN = {"cc0-1.0", "unlicense", "0bsd"}
 # What a pack may contain: data only (GateLab refuses anything else).
-ALLOWED = {".json", ".v", ".sv", ".vh", ".svh", ".hex", ".mem", ".md", ".txt"}
+ALLOWED = {".json", ".v", ".sv", ".vh", ".svh", ".hex", ".mem", ".md", ".txt",
+           # firmware sources a template ships next to its image (text, never compiled by GateLab)
+           ".c", ".h", ".s", ".ld"}
 CORE_FILES = {".v", ".sv", ".vh", ".svh", ".hex", ".mem"}
 MAX_FILE = 10 * 1024 * 1024
 

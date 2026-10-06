@@ -16,6 +16,8 @@ File ▸ Add Core… copies a core into a project (`src/lib/<core>/`, its testbe
 | Pack | What | Licence |
 |---|---|---|
 | `gatelab.essentials` | GateLab's own basic cores (also built into GateLab) | CC0 1.0 |
+| `forencich.verilog` | Alex Forencich's UART and I²C master (AXI-Stream), GateLab testbenches | MIT |
+| `yosyshq.picorv32` | PicoRV32 RISC-V CPU and the template *PicoRV32 Hello* (C firmware, UART, LEDs) | ISC |
 
 Third-party packs keep their upstream licence; it is named per core and its text is in the pack.
 
@@ -30,6 +32,9 @@ packs/<pack id>/
         rtl/*.v                     the synthesisable sources
         tb/<core id>_tb.v           self-checking testbench: prints PASS or FAIL lines
         README.md                   usage and an example instantiation
+    templates/<id>/                 optional project templates (as in board packs), which may
+                                    name the cores they start with ("cores") and the smallest
+                                    part they fit ("minimumLUT4")
 scripts/check_packs.py              the format check (Python 3, nothing to install)
 ```
 

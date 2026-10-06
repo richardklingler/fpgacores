@@ -3,9 +3,9 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 191.5,
+      "fmaxMHz" : 204,
       "resources" : {
-        "TRELLIS_COMB" : 71,
+        "TRELLIS_COMB" : 52,
         "TRELLIS_FF" : 18,
         "TRELLIS_RAMW" : 2
       },
@@ -13,38 +13,34 @@
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 59.2,
+      "fmaxMHz" : 76.7,
       "resources" : {
         "CPE_ADDF" : 3,
         "CPE_ADDF2" : 6,
-        "CPE_BRIDGE" : 48,
-        "CPE_CPLINES" : 61,
-        "CPE_FF" : 146,
-        "CPE_LT" : 198,
-        "CPE_MX4" : 40
+        "CPE_BRIDGE" : 15,
+        "CPE_CPLINES" : 51,
+        "CPE_FF" : 10,
+        "CPE_LT" : 67
       },
       "tested" : true
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 249.7,
+      "fmaxMHz" : 154.2,
       "resources" : {
         "ALU" : 18,
         "DFF" : 18,
-        "LUT4" : 43,
-        "MUX2_LUT5" : 7,
-        "MUX2_LUT6" : 4,
-        "MUX2_LUT7" : 2,
-        "MUX2_LUT8" : 1,
+        "LUT4" : 32,
+        "MUX2_LUT5" : 2,
         "RAM16SDP4" : 2
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 59.1,
+      "fmaxMHz" : 65.1,
       "resources" : {
-        "ICESTORM_LC" : 37,
+        "ICESTORM_LC" : 41,
         "ICESTORM_RAM" : 1
       },
       "tested" : true
