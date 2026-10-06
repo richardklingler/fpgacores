@@ -1,7 +1,29 @@
 {
-  "generated" : "2026-10-06T16:06:14Z",
+  "generated" : "2026-10-06T17:09:13Z",
   "name" : "GateLab cores",
   "packages" : [
+    {
+      "description" : "Alex Forencich's MIT-licensed interface cores (verilog-uart, verilog-i2c), packaged for GateLab with self-checking iverilog testbenches. Unchanged upstream sources at pinned commits.",
+      "documentation" : "https://github.com/alexforencich",
+      "id" : "forencich.verilog",
+      "maintainer" : "GateLab (packaging); Alex Forencich (cores)",
+      "name" : "Forencich Verilog cores",
+      "type" : "library",
+      "versions" : [
+        {
+          "cores" : [
+            "forencich_i2c_master",
+            "forencich_uart"
+          ],
+          "download" : {
+            "sha256" : "dc82e33306e76f453c458ecac1cdb99267ea77c7621b3021ad4a79af87d3c5e0",
+            "size" : 69543,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/forencich.verilog-1.0.0.fpgapack"
+          },
+          "version" : "1.0.0"
+        }
+      ]
+    },
     {
       "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing. CC0 1.0: no conditions, no attribution needed.",
       "documentation" : "https://github.com/richardklingler/fpgacores",
@@ -28,9 +50,54 @@
             "ws2812"
           ],
           "download" : {
+            "sha256" : "fe30c7742e3280184c54fcc701a8503ed21b5586b0339457d38ad7d7c6f721d5",
+            "size" : 132242,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.0.1.fpgapack"
+          },
+          "version" : "1.0.1"
+        },
+        {
+          "cores" : [
+            "async_fifo",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "i2c_master",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_slave",
+            "sync_fifo",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
             "sha256" : "22f865b784f58a0ce631781f71964f63d71b2bafd92f91b829b19f5a71ab0b09",
             "size" : 132529,
             "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.0.0.fpgapack"
+          },
+          "version" : "1.0.0"
+        }
+      ]
+    },
+    {
+      "description" : "PicoRV32, a small RISC-V CPU (RV32I/E/M/C) by Claire Xenia Wolf / YosysHQ, packaged for GateLab with a self-checking testbench, and a project template that prints Hello over the UART.",
+      "documentation" : "https://github.com/YosysHQ/picorv32",
+      "id" : "yosyshq.picorv32",
+      "maintainer" : "GateLab (packaging); YosysHQ (core)",
+      "name" : "PicoRV32 RISC-V CPU",
+      "type" : "library",
+      "versions" : [
+        {
+          "cores" : [
+            "picorv32"
+          ],
+          "download" : {
+            "sha256" : "67825fb1bfd81f95166e2818a476abd0ccb212a4719d985e3adb69276534d70d",
+            "size" : 140340,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/yosyshq.picorv32-1.0.0.fpgapack"
           },
           "version" : "1.0.0"
         }
