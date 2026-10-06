@@ -1,0 +1,136 @@
+{
+  "description" : "First-in first-out buffer between two unrelated clocks: Gray-code pointers through two-flop synchronisers, the safe way to cross clock domains with data.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 171.8,
+      "resources" : {
+        "TRELLIS_COMB" : 66,
+        "TRELLIS_FF" : 48,
+        "TRELLIS_RAMW" : 2
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 93.1,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 4,
+        "CPE_BRIDGE" : 39,
+        "CPE_CPLINES" : 104,
+        "CPE_FF" : 176,
+        "CPE_LT" : 205,
+        "CPE_MX4" : 40
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 344.4,
+      "resources" : {
+        "ALU" : 12,
+        "DFF" : 48,
+        "LUT4" : 58,
+        "MUX2_LUT5" : 3,
+        "RAM16SDP4" : 2
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 60.6,
+      "resources" : {
+        "ICESTORM_LC" : 101,
+        "ICESTORM_RAM" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "async_fifo",
+  "keywords" : [
+    "fifo",
+    "cdc",
+    "clock domain crossing",
+    "async",
+    "dual clock",
+    "buffer"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "First-in-first-out-Puffer zwischen zwei unabhängigen Takten: Gray-Code-Zeiger über Zwei-Flipflop-Synchronisierer, der sichere Weg, Daten über Taktdomänen zu bringen.",
+      "name" : "FIFO (zwei Takte)"
+    }
+  },
+  "name" : "FIFO (two clocks)",
+  "parameters" : [
+    {
+      "default" : 8,
+      "description" : "Bits per word",
+      "name" : "WIDTH"
+    },
+    {
+      "default" : 4,
+      "description" : "2^DEPTH_LOG2 words (at least 2)",
+      "name" : "DEPTH_LOG2"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Write clock",
+      "dir" : "in",
+      "name" : "wr_clk"
+    },
+    {
+      "description" : "Reset, synchronous to wr_clk, active high",
+      "dir" : "in",
+      "name" : "wr_rst"
+    },
+    {
+      "description" : "Word to write",
+      "dir" : "in",
+      "name" : "wr_data",
+      "width" : 8
+    },
+    {
+      "description" : "Write wr_data (ignored when full)",
+      "dir" : "in",
+      "name" : "wr_en"
+    },
+    {
+      "description" : "No room (wr_clk domain)",
+      "dir" : "out",
+      "name" : "full"
+    },
+    {
+      "description" : "Read clock",
+      "dir" : "in",
+      "name" : "rd_clk"
+    },
+    {
+      "description" : "Reset, synchronous to rd_clk, active high",
+      "dir" : "in",
+      "name" : "rd_rst"
+    },
+    {
+      "description" : "Read a word (ignored when empty)",
+      "dir" : "in",
+      "name" : "rd_en"
+    },
+    {
+      "description" : "The word read, one rd_clk cycle after rd_en",
+      "dir" : "out",
+      "name" : "rd_data",
+      "width" : 8
+    },
+    {
+      "description" : "No word to read (rd_clk domain)",
+      "dir" : "out",
+      "name" : "empty"
+    }
+  ],
+  "schema" : 1,
+  "top" : "async_fifo",
+  "version" : "1.0.0"
+}

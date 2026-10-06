@@ -1,0 +1,142 @@
+{
+  "description" : "SPI controller for flash, sensors, displays and ADCs: one byte per transfer in any of the four SPI modes, chip select under your control.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 213.9,
+      "resources" : {
+        "TRELLIS_COMB" : 49,
+        "TRELLIS_FF" : 35
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 111.9,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 3,
+        "CPE_BRIDGE" : 11,
+        "CPE_CPLINES" : 49,
+        "CPE_FF" : 35,
+        "CPE_LT" : 60
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 290.7,
+      "resources" : {
+        "ALU" : 10,
+        "DFF" : 35,
+        "LUT4" : 63,
+        "MUX2_LUT5" : 10,
+        "MUX2_LUT6" : 5,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 76.5,
+      "resources" : {
+        "ICESTORM_LC" : 57
+      },
+      "tested" : true
+    }
+  },
+  "id" : "spi_master",
+  "keywords" : [
+    "spi",
+    "master",
+    "controller",
+    "flash",
+    "sensor",
+    "adc",
+    "display",
+    "serial"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "SPI-Controller für Flash, Sensoren, Displays und ADCs: ein Byte pro Übertragung in allen vier SPI-Modi, Chip-Select in deiner Hand.",
+      "name" : "SPI-Master"
+    }
+  },
+  "name" : "SPI master",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 1000000,
+      "description" : "SPI clock (rounded so a half period is whole clock cycles)",
+      "name" : "SPI_HZ"
+    },
+    {
+      "default" : 0,
+      "description" : "Clock idle level (SPI mode 2 and 3: 1)",
+      "name" : "CPOL"
+    },
+    {
+      "default" : 0,
+      "description" : "0: sample on the first edge, 1: on the second (modes 1 and 3)",
+      "name" : "CPHA"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Byte to send",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "Start a transfer (while ready)",
+      "dir" : "in",
+      "name" : "start"
+    },
+    {
+      "description" : "No transfer running",
+      "dir" : "out",
+      "name" : "ready"
+    },
+    {
+      "description" : "The byte received in the last transfer",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "One-cycle pulse at the end of a transfer",
+      "dir" : "out",
+      "name" : "done"
+    },
+    {
+      "description" : "SPI clock",
+      "dir" : "out",
+      "name" : "sclk"
+    },
+    {
+      "description" : "Data to the device",
+      "dir" : "out",
+      "name" : "mosi"
+    },
+    {
+      "description" : "Data from the device",
+      "dir" : "in",
+      "name" : "miso"
+    }
+  ],
+  "schema" : 1,
+  "top" : "spi_master",
+  "version" : "1.0.0"
+}

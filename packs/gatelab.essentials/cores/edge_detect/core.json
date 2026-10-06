@@ -1,0 +1,80 @@
+{
+  "description" : "One-cycle pulses on the rising and falling edges of a synchronous signal.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 315.9,
+      "resources" : {
+        "TRELLIS_COMB" : 2,
+        "TRELLIS_FF" : 2
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 215.2,
+      "resources" : {
+        "CPE_FF" : 2,
+        "CPE_LT" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "DFF" : 2,
+        "LUT4" : 4
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+        "ICESTORM_LC" : 2
+      },
+      "tested" : true
+    }
+  },
+  "id" : "edge_detect",
+  "keywords" : [
+    "edge",
+    "pulse",
+    "rising",
+    "falling",
+    "press"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein-Takt-Pulse bei steigenden und fallenden Flanken eines synchronen Signals.",
+      "name" : "Flankenerkennung"
+    }
+  },
+  "name" : "Edge detector",
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Signal in the clk domain",
+      "dir" : "in",
+      "name" : "in"
+    },
+    {
+      "description" : "One-cycle pulse after in went high",
+      "dir" : "out",
+      "name" : "rise"
+    },
+    {
+      "description" : "One-cycle pulse after in went low",
+      "dir" : "out",
+      "name" : "fall"
+    }
+  ],
+  "schema" : 1,
+  "top" : "edge_detect",
+  "version" : "1.0.0"
+}

@@ -1,0 +1,105 @@
+{
+  "description" : "Sends bytes over a serial line, 8N1, at any baud rate the clock allows. Valid/ready handshake.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 248.5,
+      "resources" : {
+        "TRELLIS_COMB" : 36,
+        "TRELLIS_FF" : 20
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 111.2,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 5,
+        "CPE_BRIDGE" : 14,
+        "CPE_CPLINES" : 53,
+        "CPE_FF" : 20,
+        "CPE_LT" : 35
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 146.1,
+      "resources" : {
+        "ALU" : 14,
+        "DFF" : 20,
+        "LUT4" : 26,
+        "MUX2_LUT5" : 3
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 89.8,
+      "resources" : {
+        "ICESTORM_LC" : 29
+      },
+      "tested" : true
+    }
+  },
+  "id" : "uart_tx",
+  "keywords" : [
+    "serial",
+    "rs232",
+    "uart",
+    "transmit",
+    "8n1"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Sendet Bytes über eine serielle Leitung, 8N1, mit jeder Baudrate, die der Takt erlaubt. Valid/Ready-Handshake.",
+      "name" : "UART-Sender"
+    }
+  },
+  "name" : "UART transmitter",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 115200,
+      "description" : "Bits per second",
+      "name" : "BAUD"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Byte to send",
+      "dir" : "in",
+      "name" : "data",
+      "width" : 8
+    },
+    {
+      "description" : "data holds a byte to send",
+      "dir" : "in",
+      "name" : "valid"
+    },
+    {
+      "description" : "Takes a byte this cycle if valid is high",
+      "dir" : "out",
+      "name" : "ready"
+    },
+    {
+      "description" : "Serial output, idles high",
+      "dir" : "out",
+      "name" : "tx"
+    }
+  ],
+  "schema" : 1,
+  "top" : "uart_tx",
+  "version" : "1.0.0"
+}

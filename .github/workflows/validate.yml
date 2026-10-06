@@ -1,0 +1,18 @@
+# Every pull request and push: the packs' files must have the right format, ids and names
+# (scripts/check_packs.py, Python standard library only). Whether every core matches its
+# Verilog, passes its testbench and builds on every family is checked with GateLab by the
+# maintainer before publishing; the index is signed and published on the maintainer's Mac.
+name: Check packs
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check packs
+        run: python3 scripts/check_packs.py packs

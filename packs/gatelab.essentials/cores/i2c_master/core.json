@@ -1,0 +1,152 @@
+{
+  "description" : "I²C controller for sensors, EEPROMs, RTCs and displays: byte-level START, WRITE, READ and STOP commands, open-drain outputs, clock stretching.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 220.3,
+      "resources" : {
+        "TRELLIS_COMB" : 91,
+        "TRELLIS_FF" : 46
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 89.4,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 4,
+        "CPE_BRIDGE" : 14,
+        "CPE_CPLINES" : 42,
+        "CPE_FF" : 46,
+        "CPE_LT" : 108,
+        "CPE_MX4" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 188.6,
+      "resources" : {
+        "ALU" : 12,
+        "DFF" : 46,
+        "LUT4" : 82,
+        "MUX2_LUT5" : 6
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 71,
+      "resources" : {
+        "ICESTORM_LC" : 100
+      },
+      "tested" : true
+    }
+  },
+  "id" : "i2c_master",
+  "keywords" : [
+    "i2c",
+    "iic",
+    "twi",
+    "smbus",
+    "sensor",
+    "eeprom",
+    "rtc",
+    "master",
+    "controller"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "I²C-Controller für Sensoren, EEPROMs, Echtzeituhren und Displays: Befehle START, WRITE, READ und STOP auf Byte-Ebene, Open-Drain-Ausgänge, Clock-Stretching.",
+      "name" : "I²C-Master"
+    }
+  },
+  "name" : "I²C master",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 100000,
+      "description" : "Bus clock: 100000 (standard) or 400000 (fast)",
+      "name" : "I2C_HZ"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "0 START, 1 WRITE, 2 READ, 3 STOP",
+      "dir" : "in",
+      "name" : "cmd",
+      "width" : 2
+    },
+    {
+      "description" : "Byte for WRITE",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "READ: 1 = ACK (more bytes follow), 0 = NACK (last byte)",
+      "dir" : "in",
+      "name" : "ack_read"
+    },
+    {
+      "description" : "Run cmd (while ready)",
+      "dir" : "in",
+      "name" : "go"
+    },
+    {
+      "description" : "No command running",
+      "dir" : "out",
+      "name" : "ready"
+    },
+    {
+      "description" : "One-cycle pulse when the command has finished",
+      "dir" : "out",
+      "name" : "done"
+    },
+    {
+      "description" : "Byte from the last READ",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "The device acknowledged the last WRITE",
+      "dir" : "out",
+      "name" : "ack"
+    },
+    {
+      "description" : "1: pull SCL low (open drain)",
+      "dir" : "out",
+      "name" : "scl_oe"
+    },
+    {
+      "description" : "SCL as it is on the bus",
+      "dir" : "in",
+      "name" : "scl_in"
+    },
+    {
+      "description" : "1: pull SDA low (open drain)",
+      "dir" : "out",
+      "name" : "sda_oe"
+    },
+    {
+      "description" : "SDA as it is on the bus",
+      "dir" : "in",
+      "name" : "sda_in"
+    }
+  ],
+  "schema" : 1,
+  "top" : "i2c_master",
+  "version" : "1.0.0"
+}

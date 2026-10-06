@@ -1,0 +1,133 @@
+{
+  "description" : "First-in first-out buffer in one clock domain, with full, empty and fill count. Registered read for block RAM.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 191.5,
+      "resources" : {
+        "TRELLIS_COMB" : 71,
+        "TRELLIS_FF" : 18,
+        "TRELLIS_RAMW" : 2
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 59.2,
+      "resources" : {
+        "CPE_ADDF" : 3,
+        "CPE_ADDF2" : 6,
+        "CPE_BRIDGE" : 48,
+        "CPE_CPLINES" : 61,
+        "CPE_FF" : 146,
+        "CPE_LT" : 198,
+        "CPE_MX4" : 40
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 249.7,
+      "resources" : {
+        "ALU" : 18,
+        "DFF" : 18,
+        "LUT4" : 43,
+        "MUX2_LUT5" : 7,
+        "MUX2_LUT6" : 4,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1,
+        "RAM16SDP4" : 2
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 59.1,
+      "resources" : {
+        "ICESTORM_LC" : 37,
+        "ICESTORM_RAM" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "sync_fifo",
+  "keywords" : [
+    "fifo",
+    "buffer",
+    "queue",
+    "memory"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "First-in-first-out-Puffer in einer Taktdomäne, mit Voll, Leer und Füllstand. Registriertes Lesen für Block-RAM.",
+      "name" : "FIFO (ein Takt)"
+    }
+  },
+  "name" : "FIFO (one clock)",
+  "parameters" : [
+    {
+      "default" : 8,
+      "description" : "Bits per word",
+      "name" : "WIDTH"
+    },
+    {
+      "default" : 4,
+      "description" : "2^DEPTH_LOG2 words",
+      "name" : "DEPTH_LOG2"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Synchronous reset, active high: empties the FIFO",
+      "dir" : "in",
+      "name" : "rst"
+    },
+    {
+      "description" : "Word to write",
+      "dir" : "in",
+      "name" : "wr_data",
+      "width" : 8
+    },
+    {
+      "description" : "Write wr_data (ignored when full)",
+      "dir" : "in",
+      "name" : "wr_en"
+    },
+    {
+      "description" : "No room for another word",
+      "dir" : "out",
+      "name" : "full"
+    },
+    {
+      "description" : "Read a word (ignored when empty)",
+      "dir" : "in",
+      "name" : "rd_en"
+    },
+    {
+      "description" : "The word read, one cycle after rd_en",
+      "dir" : "out",
+      "name" : "rd_data",
+      "width" : 8
+    },
+    {
+      "description" : "No word to read",
+      "dir" : "out",
+      "name" : "empty"
+    },
+    {
+      "description" : "Words stored",
+      "dir" : "out",
+      "name" : "count",
+      "width" : 5
+    }
+  ],
+  "schema" : 1,
+  "top" : "sync_fifo",
+  "version" : "1.0.0"
+}

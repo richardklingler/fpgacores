@@ -1,0 +1,112 @@
+{
+  "description" : "Drives chains of WS2812/WS2812B (NeoPixel) RGB LEDs over one wire: pixel-by-pixel handshake, automatic latch after the last pixel.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 198,
+      "resources" : {
+        "TRELLIS_COMB" : 98,
+        "TRELLIS_FF" : 55
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 73.6,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 30,
+        "CPE_BRIDGE" : 17,
+        "CPE_CPLINES" : 47,
+        "CPE_FF" : 55,
+        "CPE_LT" : 104
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 147.6,
+      "resources" : {
+        "ALU" : 34,
+        "DFF" : 55,
+        "LUT4" : 48,
+        "MUX2_LUT5" : 2
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 73,
+      "resources" : {
+        "ICESTORM_LC" : 80
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ws2812",
+  "keywords" : [
+    "ws2812",
+    "ws2812b",
+    "neopixel",
+    "rgb",
+    "led",
+    "strip",
+    "addressable"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Steuert Ketten von WS2812/WS2812B-RGB-LEDs (NeoPixel) über eine Leitung: Handshake pro Pixel, automatisches Übernehmen nach dem letzten Pixel.",
+      "name" : "WS2812-LED-Treiber"
+    }
+  },
+  "name" : "WS2812 LED driver",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz (8 MHz or more)",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 300,
+      "description" : "Low time that ends a frame, in µs (WS2812B: 280 or more)",
+      "name" : "RESET_US"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Pixel colour {red, green, blue}",
+      "dir" : "in",
+      "name" : "rgb",
+      "width" : 24
+    },
+    {
+      "description" : "rgb holds the next pixel",
+      "dir" : "in",
+      "name" : "valid"
+    },
+    {
+      "description" : "Takes a pixel this cycle if valid is high",
+      "dir" : "out",
+      "name" : "ready"
+    },
+    {
+      "description" : "Data line to the first LED",
+      "dir" : "out",
+      "name" : "dout"
+    },
+    {
+      "description" : "The line has been low for RESET_US: the LEDs show the frame",
+      "dir" : "out",
+      "name" : "idle"
+    }
+  ],
+  "schema" : 1,
+  "top" : "ws2812",
+  "version" : "1.0.0"
+}

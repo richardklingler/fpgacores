@@ -1,0 +1,10 @@
+{
+  "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing. CC0 1.0: no conditions, no attribution needed.",
+  "documentation" : "https://github.com/richardklingler/fpgacores",
+  "id" : "gatelab.essentials",
+  "maintainer" : "GateLab",
+  "name" : "GateLab Essentials",
+  "schema" : 1,
+  "type" : "library",
+  "version" : "1.0.0"
+}

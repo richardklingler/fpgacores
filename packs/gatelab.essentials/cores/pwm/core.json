@@ -1,0 +1,90 @@
+{
+  "description" : "Pulse-width modulation with a set resolution: dims LEDs, drives motors and servos (with the right period), makes analog levels with a filter.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 263,
+      "resources" : {
+        "TRELLIS_COMB" : 32,
+        "TRELLIS_FF" : 17
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 164.2,
+      "resources" : {
+        "CPE_ADDF2" : 8,
+        "CPE_BRIDGE" : 2,
+        "CPE_CPLINES" : 7,
+        "CPE_FF" : 17,
+        "CPE_LT" : 15
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 233.8,
+      "resources" : {
+        "ALU" : 20,
+        "DFF" : 17,
+        "LUT4" : 14,
+        "MUX2_LUT5" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 91.3,
+      "resources" : {
+        "ICESTORM_LC" : 31
+      },
+      "tested" : true
+    }
+  },
+  "id" : "pwm",
+  "keywords" : [
+    "pwm",
+    "dimming",
+    "led",
+    "duty",
+    "motor",
+    "brightness"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Pulsweitenmodulation mit einstellbarer Auflösung: dimmt LEDs, steuert Motoren und Servos (mit passender Periode), erzeugt mit Filter analoge Pegel.",
+      "name" : "PWM-Generator"
+    }
+  },
+  "name" : "PWM generator",
+  "parameters" : [
+    {
+      "default" : 8,
+      "description" : "Resolution in bits: a period is 2^WIDTH cycles",
+      "name" : "WIDTH"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "High cycles per period",
+      "dir" : "in",
+      "name" : "duty",
+      "width" : 8
+    },
+    {
+      "description" : "PWM output",
+      "dir" : "out",
+      "name" : "out"
+    }
+  ],
+  "schema" : 1,
+  "top" : "pwm",
+  "version" : "1.0.0"
+}

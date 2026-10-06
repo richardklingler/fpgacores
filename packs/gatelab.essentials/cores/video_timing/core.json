@@ -1,0 +1,158 @@
+{
+  "description" : "Sync, active-area and pixel-position signals for a VGA or DVI/HDMI display; 640×480 at 60 Hz by default, any mode by parameters.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 207.3,
+      "resources" : {
+        "TRELLIS_COMB" : 116,
+        "TRELLIS_FF" : 44
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 115.3,
+      "resources" : {
+        "CPE_ADDF" : 3,
+        "CPE_ADDF2" : 27,
+        "CPE_BRIDGE" : 17,
+        "CPE_CPLINES" : 19,
+        "CPE_FF" : 44,
+        "CPE_LT" : 95
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 168.2,
+      "resources" : {
+        "ALU" : 76,
+        "DFF" : 44,
+        "LUT4" : 33
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 91.5,
+      "resources" : {
+        "ICESTORM_LC" : 104
+      },
+      "tested" : true
+    }
+  },
+  "id" : "video_timing",
+  "keywords" : [
+    "vga",
+    "dvi",
+    "hdmi",
+    "video",
+    "display",
+    "sync",
+    "timing",
+    "640x480"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Sync-, Aktivbereich- und Pixelpositionssignale für ein VGA- oder DVI/HDMI-Display; standardmäßig 640×480 bei 60 Hz, jeder Modus über Parameter.",
+      "name" : "Video-Timing (VGA/DVI)"
+    }
+  },
+  "name" : "Video timing (VGA/DVI)",
+  "parameters" : [
+    {
+      "default" : 640,
+      "description" : "Visible pixels per line",
+      "name" : "H_ACTIVE"
+    },
+    {
+      "default" : 16,
+      "description" : "Horizontal front porch",
+      "name" : "H_FRONT"
+    },
+    {
+      "default" : 96,
+      "description" : "Horizontal sync width",
+      "name" : "H_SYNC"
+    },
+    {
+      "default" : 48,
+      "description" : "Horizontal back porch",
+      "name" : "H_BACK"
+    },
+    {
+      "default" : 480,
+      "description" : "Visible lines",
+      "name" : "V_ACTIVE"
+    },
+    {
+      "default" : 10,
+      "description" : "Vertical front porch",
+      "name" : "V_FRONT"
+    },
+    {
+      "default" : 2,
+      "description" : "Vertical sync width",
+      "name" : "V_SYNC"
+    },
+    {
+      "default" : 33,
+      "description" : "Vertical back porch",
+      "name" : "V_BACK"
+    },
+    {
+      "default" : 0,
+      "description" : "1: hsync is high during sync",
+      "name" : "H_SYNC_POSITIVE"
+    },
+    {
+      "default" : 0,
+      "description" : "1: vsync is high during sync",
+      "name" : "V_SYNC_POSITIVE"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Pixel clock (25.175 MHz for 640×480 at 60 Hz)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "out",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "out",
+      "name" : "vsync"
+    },
+    {
+      "description" : "The pixel is in the visible area (data enable)",
+      "dir" : "out",
+      "name" : "active"
+    },
+    {
+      "description" : "One-cycle pulse at the first pixel of a frame",
+      "dir" : "out",
+      "name" : "frame_start"
+    },
+    {
+      "description" : "Pixel column (0 … H_ACTIVE - 1 when active)",
+      "dir" : "out",
+      "name" : "x",
+      "width" : 10
+    },
+    {
+      "description" : "Pixel row (0 … V_ACTIVE - 1 when active)",
+      "dir" : "out",
+      "name" : "y",
+      "width" : 10
+    }
+  ],
+  "schema" : 1,
+  "top" : "video_timing",
+  "version" : "1.0.0"
+}

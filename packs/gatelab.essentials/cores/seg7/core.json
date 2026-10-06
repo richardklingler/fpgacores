@@ -1,0 +1,129 @@
+{
+  "description" : "Drives a multiplexed seven-segment display: hexadecimal digits, decimal points, either polarity.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 226.9,
+      "resources" : {
+        "TRELLIS_COMB" : 56,
+        "TRELLIS_FF" : 28
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 85.6,
+      "resources" : {
+        "CPE_ADDF2" : 7,
+        "CPE_BRIDGE" : 19,
+        "CPE_CPLINES" : 30,
+        "CPE_FF" : 28,
+        "CPE_LT" : 47,
+        "CPE_MX4" : 12
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 157.3,
+      "resources" : {
+        "ALU" : 16,
+        "DFF" : 28,
+        "LUT4" : 27,
+        "MUX2_LUT5" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 88.8,
+      "resources" : {
+        "ICESTORM_LC" : 54
+      },
+      "tested" : true
+    }
+  },
+  "id" : "seg7",
+  "keywords" : [
+    "seven segment",
+    "7-segment",
+    "display",
+    "hex",
+    "digits",
+    "led"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Steuert eine gemultiplexte Siebensegmentanzeige: hexadezimale Ziffern, Dezimalpunkte, beide Polaritäten.",
+      "name" : "Siebensegmentanzeige"
+    }
+  },
+  "name" : "Seven-segment display",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 4,
+      "description" : "Number of digits",
+      "name" : "DIGITS"
+    },
+    {
+      "default" : 250,
+      "description" : "How often each digit is lit per second",
+      "name" : "REFRESH_HZ"
+    },
+    {
+      "default" : 0,
+      "description" : "1: a segment lights when its pin is low",
+      "name" : "SEGMENTS_ACTIVE_LOW"
+    },
+    {
+      "default" : 0,
+      "description" : "1: a digit is selected when its pin is low",
+      "name" : "DIGITS_ACTIVE_LOW"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Four bits per digit, digit 0 lowest",
+      "dir" : "in",
+      "name" : "value",
+      "width" : 16
+    },
+    {
+      "description" : "Decimal point per digit",
+      "dir" : "in",
+      "name" : "dots",
+      "width" : 4
+    },
+    {
+      "description" : "Segments {g, f, e, d, c, b, a}",
+      "dir" : "out",
+      "name" : "segments",
+      "width" : 7
+    },
+    {
+      "description" : "Decimal point segment",
+      "dir" : "out",
+      "name" : "dp"
+    },
+    {
+      "description" : "One digit selected at a time",
+      "dir" : "out",
+      "name" : "digit_enable",
+      "width" : 4
+    }
+  ],
+  "schema" : 1,
+  "top" : "seg7",
+  "version" : "1.0.0"
+}

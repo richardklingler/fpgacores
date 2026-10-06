@@ -1,0 +1,113 @@
+{
+  "description" : "SPI device side, mode 0: receives bytes from a microcontroller or other master and answers with your bytes. Oversampled in the system clock.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 278.9,
+      "resources" : {
+        "TRELLIS_COMB" : 20,
+        "TRELLIS_FF" : 31
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 118.3,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 1,
+        "CPE_BRIDGE" : 10,
+        "CPE_CPLINES" : 25,
+        "CPE_FF" : 31,
+        "CPE_LT" : 55
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 303.5,
+      "resources" : {
+        "ALU" : 4,
+        "DFF" : 31,
+        "LUT4" : 53,
+        "MUX2_LUT5" : 7,
+        "MUX2_LUT6" : 3,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 86.8,
+      "resources" : {
+        "ICESTORM_LC" : 44
+      },
+      "tested" : true
+    }
+  },
+  "id" : "spi_slave",
+  "keywords" : [
+    "spi",
+    "slave",
+    "peripheral",
+    "device",
+    "microcontroller",
+    "serial"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "SPI-Geräteseite, Modus 0: empfängt Bytes von einem Mikrocontroller oder anderen Master und antwortet mit deinen Bytes. Im Systemtakt abgetastet.",
+      "name" : "SPI-Slave"
+    }
+  },
+  "name" : "SPI slave",
+  "ports" : [
+    {
+      "description" : "System clock, at least 8 × SCLK",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "SPI clock from the master (asynchronous)",
+      "dir" : "in",
+      "name" : "sclk"
+    },
+    {
+      "description" : "Chip select, active low (asynchronous)",
+      "dir" : "in",
+      "name" : "cs_n"
+    },
+    {
+      "description" : "Data from the master",
+      "dir" : "in",
+      "name" : "mosi"
+    },
+    {
+      "description" : "Data to the master (always driven)",
+      "dir" : "out",
+      "name" : "miso"
+    },
+    {
+      "description" : "The last byte received",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "One-cycle pulse: rx_data holds a new byte",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "Byte to answer with, taken when CS falls and after every byte",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    }
+  ],
+  "schema" : 1,
+  "top" : "spi_slave",
+  "version" : "1.0.0"
+}

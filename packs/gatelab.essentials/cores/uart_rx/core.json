@@ -1,0 +1,108 @@
+{
+  "description" : "Receives bytes from a serial line, 8N1: input synchroniser, glitch filter on the start bit, framing errors reported.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 248.8,
+      "resources" : {
+        "TRELLIS_COMB" : 58,
+        "TRELLIS_FF" : 25
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 93.6,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 6,
+        "CPE_BRIDGE" : 15,
+        "CPE_CPLINES" : 58,
+        "CPE_FF" : 25,
+        "CPE_LT" : 69
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 137.2,
+      "resources" : {
+        "ALU" : 18,
+        "DFF" : 25,
+        "LUT4" : 92,
+        "MUX2_LUT5" : 28,
+        "MUX2_LUT6" : 9,
+        "MUX2_LUT7" : 4,
+        "MUX2_LUT8" : 2
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 59.8,
+      "resources" : {
+        "ICESTORM_LC" : 66
+      },
+      "tested" : true
+    }
+  },
+  "id" : "uart_rx",
+  "keywords" : [
+    "serial",
+    "rs232",
+    "uart",
+    "receive",
+    "8n1"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Empfängt Bytes von einer seriellen Leitung, 8N1: Eingangssynchronisierung, Glitch-Filter für das Startbit, meldet Rahmenfehler.",
+      "name" : "UART-Empfänger"
+    }
+  },
+  "name" : "UART receiver",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 115200,
+      "description" : "Bits per second",
+      "name" : "BAUD"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Serial input (asynchronous), idles high",
+      "dir" : "in",
+      "name" : "rx"
+    },
+    {
+      "description" : "The last byte received",
+      "dir" : "out",
+      "name" : "data",
+      "width" : 8
+    },
+    {
+      "description" : "One-cycle pulse: data holds a new byte",
+      "dir" : "out",
+      "name" : "valid"
+    },
+    {
+      "description" : "One-cycle pulse: a byte with a low stop bit was dropped",
+      "dir" : "out",
+      "name" : "frame_error"
+    }
+  ],
+  "schema" : 1,
+  "top" : "uart_rx",
+  "version" : "1.0.0"
+}

@@ -1,0 +1,93 @@
+{
+  "description" : "A clock-enable tick and a 50 % square wave at a lower rate, from the system clock.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 188.6,
+      "resources" : {
+        "TRELLIS_COMB" : 54,
+        "TRELLIS_FF" : 26
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 129.6,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 20,
+        "CPE_BRIDGE" : 8,
+        "CPE_CPLINES" : 41,
+        "CPE_FF" : 26,
+        "CPE_LT" : 38
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 153.1,
+      "resources" : {
+        "ALU" : 46,
+        "DFF" : 26
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 75.5,
+      "resources" : {
+        "ICESTORM_LC" : 51
+      },
+      "tested" : true
+    }
+  },
+  "id" : "clock_divider",
+  "keywords" : [
+    "clock",
+    "divide",
+    "tick",
+    "enable",
+    "timer",
+    "blink"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein Clock-Enable-Tick und ein 50-%-Rechtecksignal mit niedrigerer Rate, aus dem Systemtakt.",
+      "name" : "Taktteiler"
+    }
+  },
+  "name" : "Clock divider",
+  "parameters" : [
+    {
+      "default" : 12000000,
+      "description" : "Clock frequency in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 1,
+      "description" : "Ticks per second, and the square wave's frequency",
+      "name" : "HZ"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "One-cycle pulse HZ times per second",
+      "dir" : "out",
+      "name" : "tick"
+    },
+    {
+      "description" : "50 % square wave at HZ",
+      "dir" : "out",
+      "name" : "square"
+    }
+  ],
+  "schema" : 1,
+  "top" : "clock_divider",
+  "version" : "1.0.0"
+}
