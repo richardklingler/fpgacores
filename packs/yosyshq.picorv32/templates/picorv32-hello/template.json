@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "picorv32-hello",
+  "name": "PicoRV32 Hello",
+  "description": "A RISC-V CPU running C firmware: prints a line over the UART and counts on the LEDs.",
+  "order": 10,
+  "uses": [
+    "clk",
+    "uart",
+    "leds"
+  ],
+  "cores": [
+    "picorv32",
+    "uart_tx"
+  ],
+  "localized": {
+    "de": {
+      "name": "PicoRV32 Hallo",
+      "description": "Eine RISC-V-CPU mit C-Firmware: schreibt eine Zeile über den UART und zählt auf den LEDs."
+    }
+  },
+  "minimumLUT4": 2000
+}

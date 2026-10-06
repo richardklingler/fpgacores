@@ -1,0 +1,230 @@
+{
+  "description" : "I²C master with an AXI-Stream command and data interface: reads, writes and multi-byte writes with implied starts, clock stretching, missed-ACK and bus status. By Alex Forencich.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 150.3,
+      "resources" : {
+        "TRELLIS_COMB" : 266,
+        "TRELLIS_FF" : 72
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 49.7,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 11,
+        "CPE_BRIDGE" : 73,
+        "CPE_CPLINES" : 162,
+        "CPE_FF" : 61,
+        "CPE_LT" : 371,
+        "CPE_MX4" : 3
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 89.3,
+      "resources" : {
+        "ALU" : 28,
+        "DFF" : 72,
+        "LUT4" : 229,
+        "MUX2_LUT5" : 31
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 37.4,
+      "resources" : {
+        "ICESTORM_LC" : 254
+      },
+      "tested" : true
+    }
+  },
+  "id" : "forencich_i2c_master",
+  "keywords" : [
+    "i2c",
+    "iic",
+    "twi",
+    "master",
+    "axi-stream",
+    "axis",
+    "forencich",
+    "sensor",
+    "eeprom"
+  ],
+  "licence" : "MIT",
+  "localized" : {
+    "de" : {
+      "description" : "I²C-Master mit AXI-Stream-Befehls- und Datenschnittstelle: Lesen, Schreiben und Mehrbyte-Schreiben mit impliziten Starts, Clock-Stretching, Missed-ACK und Busstatus. Von Alex Forencich.",
+      "name" : "I²C-Master (Forencich, AXI-Stream)"
+    }
+  },
+  "name" : "I²C master (Forencich, AXI-Stream)",
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Synchronous reset, active high",
+      "dir" : "in",
+      "name" : "rst"
+    },
+    {
+      "description" : "Device address",
+      "dir" : "in",
+      "name" : "s_axis_cmd_address",
+      "width" : 7
+    },
+    {
+      "description" : "Force a (repeated) start",
+      "dir" : "in",
+      "name" : "s_axis_cmd_start"
+    },
+    {
+      "description" : "Command: read a byte",
+      "dir" : "in",
+      "name" : "s_axis_cmd_read"
+    },
+    {
+      "description" : "Command: write a byte",
+      "dir" : "in",
+      "name" : "s_axis_cmd_write"
+    },
+    {
+      "description" : "Command: write bytes until tlast",
+      "dir" : "in",
+      "name" : "s_axis_cmd_write_multiple"
+    },
+    {
+      "description" : "Stop after this command",
+      "dir" : "in",
+      "name" : "s_axis_cmd_stop"
+    },
+    {
+      "description" : "A command is present",
+      "dir" : "in",
+      "name" : "s_axis_cmd_valid"
+    },
+    {
+      "description" : "The command is taken",
+      "dir" : "out",
+      "name" : "s_axis_cmd_ready"
+    },
+    {
+      "description" : "Byte to write",
+      "dir" : "in",
+      "name" : "s_axis_data_tdata",
+      "width" : 8
+    },
+    {
+      "description" : "s_axis_data_tdata holds a byte",
+      "dir" : "in",
+      "name" : "s_axis_data_tvalid"
+    },
+    {
+      "description" : "The byte is taken",
+      "dir" : "out",
+      "name" : "s_axis_data_tready"
+    },
+    {
+      "description" : "Last byte of a write-multiple",
+      "dir" : "in",
+      "name" : "s_axis_data_tlast"
+    },
+    {
+      "description" : "Byte read",
+      "dir" : "out",
+      "name" : "m_axis_data_tdata",
+      "width" : 8
+    },
+    {
+      "description" : "m_axis_data_tdata holds a byte",
+      "dir" : "out",
+      "name" : "m_axis_data_tvalid"
+    },
+    {
+      "description" : "Your logic takes the byte",
+      "dir" : "in",
+      "name" : "m_axis_data_tready"
+    },
+    {
+      "description" : "Last byte (read with stop)",
+      "dir" : "out",
+      "name" : "m_axis_data_tlast"
+    },
+    {
+      "description" : "SCL as it is on the bus",
+      "dir" : "in",
+      "name" : "scl_i"
+    },
+    {
+      "description" : "SCL output value",
+      "dir" : "out",
+      "name" : "scl_o"
+    },
+    {
+      "description" : "1: let SCL go (tristate)",
+      "dir" : "out",
+      "name" : "scl_t"
+    },
+    {
+      "description" : "SDA as it is on the bus",
+      "dir" : "in",
+      "name" : "sda_i"
+    },
+    {
+      "description" : "SDA output value",
+      "dir" : "out",
+      "name" : "sda_o"
+    },
+    {
+      "description" : "1: let SDA go (tristate)",
+      "dir" : "out",
+      "name" : "sda_t"
+    },
+    {
+      "description" : "Communicating",
+      "dir" : "out",
+      "name" : "busy"
+    },
+    {
+      "description" : "This master controls the active bus",
+      "dir" : "out",
+      "name" : "bus_control"
+    },
+    {
+      "description" : "The bus is active",
+      "dir" : "out",
+      "name" : "bus_active"
+    },
+    {
+      "description" : "Strobe: a device didn't acknowledge",
+      "dir" : "out",
+      "name" : "missed_ack"
+    },
+    {
+      "description" : "Clock frequency / (I²C rate × 4)",
+      "dir" : "in",
+      "name" : "prescale",
+      "width" : 16
+    },
+    {
+      "description" : "Issue a stop when no command follows",
+      "dir" : "in",
+      "name" : "stop_on_idle"
+    }
+  ],
+  "schema" : 1,
+  "top" : "i2c_master",
+  "upstream" : {
+    "commit" : "a65be4045e898a52e791c6ee71f8f79a7cd2e129",
+    "url" : "https://github.com/alexforencich/verilog-i2c"
+  },
+  "version" : "1.0.0"
+}

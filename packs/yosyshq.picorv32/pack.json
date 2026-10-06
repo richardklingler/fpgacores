@@ -1,0 +1,10 @@
+{
+  "description" : "PicoRV32, a small RISC-V CPU (RV32I/E/M/C) by Claire Xenia Wolf / YosysHQ, packaged for GateLab with a self-checking testbench, and a project template that prints Hello over the UART.",
+  "documentation" : "https://github.com/YosysHQ/picorv32",
+  "id" : "yosyshq.picorv32",
+  "maintainer" : "GateLab (packaging); YosysHQ (core)",
+  "name" : "PicoRV32 RISC-V CPU",
+  "schema" : 1,
+  "type" : "library",
+  "version" : "1.0.0"
+}

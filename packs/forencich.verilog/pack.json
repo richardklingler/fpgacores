@@ -1,0 +1,10 @@
+{
+  "description" : "Alex Forencich's MIT-licensed interface cores (verilog-uart, verilog-i2c), packaged for GateLab with self-checking iverilog testbenches. Unchanged upstream sources at pinned commits.",
+  "documentation" : "https://github.com/alexforencich",
+  "id" : "forencich.verilog",
+  "maintainer" : "GateLab (packaging); Alex Forencich (cores)",
+  "name" : "Forencich Verilog cores",
+  "schema" : 1,
+  "type" : "library",
+  "version" : "1.0.0"
+}

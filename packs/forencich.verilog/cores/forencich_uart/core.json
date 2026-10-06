@@ -1,0 +1,161 @@
+{
+  "description" : "Full-duplex UART with AXI-Stream interfaces, run-time baud rate (prescale) and overrun/framing error flags. By Alex Forencich.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 183.1,
+      "resources" : {
+        "TRELLIS_COMB" : 237,
+        "TRELLIS_FF" : 79
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 64.1,
+      "resources" : {
+        "CPE_ADDF" : 3,
+        "CPE_ADDF2" : 38,
+        "CPE_BRIDGE" : 47,
+        "CPE_CPLINES" : 103,
+        "CPE_FF" : 77,
+        "CPE_LT" : 244
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 117.5,
+      "resources" : {
+        "ALU" : 74,
+        "DFF" : 79,
+        "LUT4" : 334,
+        "MUX2_LUT5" : 115,
+        "MUX2_LUT6" : 46,
+        "MUX2_LUT7" : 21,
+        "MUX2_LUT8" : 6
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 51.5,
+      "resources" : {
+        "ICESTORM_LC" : 208,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "forencich_uart",
+  "keywords" : [
+    "uart",
+    "serial",
+    "rs232",
+    "axi-stream",
+    "axis",
+    "forencich"
+  ],
+  "licence" : "MIT",
+  "localized" : {
+    "de" : {
+      "description" : "Vollduplex-UART mit AXI-Stream-Schnittstellen, zur Laufzeit einstellbarer Baudrate (prescale) und Überlauf-/Rahmenfehler-Flags. Von Alex Forencich.",
+      "name" : "UART (Forencich, AXI-Stream)"
+    }
+  },
+  "name" : "UART (Forencich, AXI-Stream)",
+  "parameters" : [
+    {
+      "default" : 8,
+      "description" : "Bits per character",
+      "name" : "DATA_WIDTH"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Synchronous reset, active high",
+      "dir" : "in",
+      "name" : "rst"
+    },
+    {
+      "description" : "Byte to send",
+      "dir" : "in",
+      "name" : "s_axis_tdata",
+      "width" : 8
+    },
+    {
+      "description" : "s_axis_tdata holds a byte",
+      "dir" : "in",
+      "name" : "s_axis_tvalid"
+    },
+    {
+      "description" : "The transmitter takes the byte",
+      "dir" : "out",
+      "name" : "s_axis_tready"
+    },
+    {
+      "description" : "Received byte",
+      "dir" : "out",
+      "name" : "m_axis_tdata",
+      "width" : 8
+    },
+    {
+      "description" : "m_axis_tdata holds a received byte",
+      "dir" : "out",
+      "name" : "m_axis_tvalid"
+    },
+    {
+      "description" : "Your logic takes the received byte",
+      "dir" : "in",
+      "name" : "m_axis_tready"
+    },
+    {
+      "description" : "Serial input",
+      "dir" : "in",
+      "name" : "rxd"
+    },
+    {
+      "description" : "Serial output",
+      "dir" : "out",
+      "name" : "txd"
+    },
+    {
+      "description" : "Transmitting",
+      "dir" : "out",
+      "name" : "tx_busy"
+    },
+    {
+      "description" : "Receiving",
+      "dir" : "out",
+      "name" : "rx_busy"
+    },
+    {
+      "description" : "A byte arrived before the last was taken",
+      "dir" : "out",
+      "name" : "rx_overrun_error"
+    },
+    {
+      "description" : "A byte had a low stop bit",
+      "dir" : "out",
+      "name" : "rx_frame_error"
+    },
+    {
+      "description" : "Clock frequency / (baud × 8)",
+      "dir" : "in",
+      "name" : "prescale",
+      "width" : 16
+    }
+  ],
+  "schema" : 1,
+  "top" : "uart",
+  "upstream" : {
+    "commit" : "1b867e53af738e4a8bc7c839ca2f1c07f40382dc",
+    "url" : "https://github.com/alexforencich/verilog-uart"
+  },
+  "version" : "1.0.0"
+}

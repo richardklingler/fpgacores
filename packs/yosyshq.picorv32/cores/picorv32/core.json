@@ -1,0 +1,268 @@
+{
+  "description" : "A size-optimised RISC-V CPU (RV32I, optional M, C, IRQs) with a simple valid/ready memory interface. By Claire Xenia Wolf / YosysHQ.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 96.5,
+      "resources" : {
+        "TRELLIS_COMB" : 1841,
+        "TRELLIS_FF" : 574,
+        "TRELLIS_RAMW" : 32
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 47.1,
+      "resources" : {
+        "CPE_ADDF" : 5,
+        "CPE_ADDF2" : 175,
+        "CPE_BRIDGE" : 438,
+        "CPE_CPLINES" : 954,
+        "CPE_FF" : 535,
+        "CPE_LT" : 2096,
+        "CPE_MX4" : 67,
+        "CPE_RAMIO" : 194,
+        "RAM_HALF" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 83,
+      "resources" : {
+        "ALU" : 376,
+        "DFF" : 574,
+        "LUT4" : 1621,
+        "MUX2_LUT5" : 228,
+        "MUX2_LUT6" : 12,
+        "RAM16SDP4" : 32
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 26.1,
+      "resources" : {
+        "ICESTORM_LC" : 1736,
+        "ICESTORM_RAM" : 4,
+        "SB_GB" : 4
+      },
+      "tested" : true
+    }
+  },
+  "id" : "picorv32",
+  "keywords" : [
+    "risc-v",
+    "riscv",
+    "cpu",
+    "processor",
+    "rv32i",
+    "soc",
+    "softcore",
+    "picorv32"
+  ],
+  "licence" : "ISC",
+  "localized" : {
+    "de" : {
+      "description" : "Eine auf Größe optimierte RISC-V-CPU (RV32I, optional M, C, Interrupts) mit einfacher Valid/Ready-Speicherschnittstelle. Von Claire Xenia Wolf / YosysHQ.",
+      "name" : "PicoRV32-RISC-V-CPU"
+    }
+  },
+  "name" : "PicoRV32 RISC-V CPU",
+  "parameters" : [
+    {
+      "default" : 1,
+      "description" : "rdcycle/rdinstret counters",
+      "name" : "ENABLE_COUNTERS"
+    },
+    {
+      "default" : 1,
+      "description" : "0: RV32E, 16 registers",
+      "name" : "ENABLE_REGS_16_31"
+    },
+    {
+      "default" : 0,
+      "description" : "1: one-cycle shifts (more logic)",
+      "name" : "BARREL_SHIFTER"
+    },
+    {
+      "default" : 0,
+      "description" : "1: the C extension",
+      "name" : "COMPRESSED_ISA"
+    },
+    {
+      "default" : 0,
+      "description" : "1: the M extension's multiply (through PCPI)",
+      "name" : "ENABLE_MUL"
+    },
+    {
+      "default" : 0,
+      "description" : "1: the M extension's divide (through PCPI)",
+      "name" : "ENABLE_DIV"
+    },
+    {
+      "default" : 0,
+      "description" : "1: interrupts",
+      "name" : "ENABLE_IRQ"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Reset, active low",
+      "dir" : "in",
+      "name" : "resetn"
+    },
+    {
+      "description" : "The CPU stopped on an illegal instruction or misaligned access",
+      "dir" : "out",
+      "name" : "trap"
+    },
+    {
+      "description" : "A memory access is pending",
+      "dir" : "out",
+      "name" : "mem_valid"
+    },
+    {
+      "description" : "The access is an instruction fetch",
+      "dir" : "out",
+      "name" : "mem_instr"
+    },
+    {
+      "description" : "The memory finished the access",
+      "dir" : "in",
+      "name" : "mem_ready"
+    },
+    {
+      "description" : "Byte address",
+      "dir" : "out",
+      "name" : "mem_addr",
+      "width" : 32
+    },
+    {
+      "description" : "Data to write",
+      "dir" : "out",
+      "name" : "mem_wdata",
+      "width" : 32
+    },
+    {
+      "description" : "Byte lanes to write; 0 for a read",
+      "dir" : "out",
+      "name" : "mem_wstrb",
+      "width" : 4
+    },
+    {
+      "description" : "Data read",
+      "dir" : "in",
+      "name" : "mem_rdata",
+      "width" : 32
+    },
+    {
+      "description" : "Look-ahead: a read starts next cycle",
+      "dir" : "out",
+      "name" : "mem_la_read"
+    },
+    {
+      "description" : "Look-ahead: a write starts next cycle",
+      "dir" : "out",
+      "name" : "mem_la_write"
+    },
+    {
+      "description" : "Look-ahead address",
+      "dir" : "out",
+      "name" : "mem_la_addr",
+      "width" : 32
+    },
+    {
+      "description" : "Look-ahead write data",
+      "dir" : "out",
+      "name" : "mem_la_wdata",
+      "width" : 32
+    },
+    {
+      "description" : "Look-ahead byte lanes",
+      "dir" : "out",
+      "name" : "mem_la_wstrb",
+      "width" : 4
+    },
+    {
+      "description" : "Co-processor interface: instruction for a co-processor",
+      "dir" : "out",
+      "name" : "pcpi_valid"
+    },
+    {
+      "description" : "Co-processor instruction",
+      "dir" : "out",
+      "name" : "pcpi_insn",
+      "width" : 32
+    },
+    {
+      "description" : "Co-processor operand 1",
+      "dir" : "out",
+      "name" : "pcpi_rs1",
+      "width" : 32
+    },
+    {
+      "description" : "Co-processor operand 2",
+      "dir" : "out",
+      "name" : "pcpi_rs2",
+      "width" : 32
+    },
+    {
+      "description" : "Co-processor writes rd",
+      "dir" : "in",
+      "name" : "pcpi_wr"
+    },
+    {
+      "description" : "Co-processor result",
+      "dir" : "in",
+      "name" : "pcpi_rd",
+      "width" : 32
+    },
+    {
+      "description" : "Co-processor still working",
+      "dir" : "in",
+      "name" : "pcpi_wait"
+    },
+    {
+      "description" : "Co-processor done",
+      "dir" : "in",
+      "name" : "pcpi_ready"
+    },
+    {
+      "description" : "Interrupt requests (ENABLE_IRQ)",
+      "dir" : "in",
+      "name" : "irq",
+      "width" : 32
+    },
+    {
+      "description" : "End of interrupt",
+      "dir" : "out",
+      "name" : "eoi",
+      "width" : 32
+    },
+    {
+      "description" : "Trace word valid (ENABLE_TRACE)",
+      "dir" : "out",
+      "name" : "trace_valid"
+    },
+    {
+      "description" : "Trace word",
+      "dir" : "out",
+      "name" : "trace_data",
+      "width" : 36
+    }
+  ],
+  "schema" : 1,
+  "top" : "picorv32",
+  "upstream" : {
+    "commit" : "ef203c2b0a3fb793280f5114941416c425c5b461",
+    "url" : "https://github.com/YosysHQ/picorv32"
+  },
+  "version" : "1.0.0"
+}
