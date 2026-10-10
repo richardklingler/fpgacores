@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-10T10:45:24Z",
+  "generated" : "2026-10-10T11:50:26Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -32,6 +32,30 @@
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "async_fifo",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "i2c_master",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_slave",
+            "sync_fifo",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "2cbb33e9cf46b7257599ed306165c0df9d3b0f85b7cdd2d438482972f1cb725b",
+            "size" : 132337,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.0.2.fpgapack"
+          },
+          "version" : "1.0.2"
+        },
         {
           "cores" : [
             "async_fifo",
@@ -90,6 +114,40 @@
       "name" : "GateLab 74xx Logic",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "ic4001",
+            "ic4011",
+            "ic4013",
+            "ic4017",
+            "ic4040",
+            "ic74x00",
+            "ic74x04",
+            "ic74x08",
+            "ic74x121",
+            "ic74x138",
+            "ic74x151",
+            "ic74x153",
+            "ic74x157",
+            "ic74x161",
+            "ic74x163",
+            "ic74x164",
+            "ic74x165",
+            "ic74x244",
+            "ic74x245",
+            "ic74x32",
+            "ic74x373",
+            "ic74x374",
+            "ic74x595",
+            "ic74x74"
+          ],
+          "download" : {
+            "sha256" : "ff28acfbf1665b87b79dd0b52f181282e7ed5c98fb14effa8019089419264b79",
+            "size" : 160351,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.logic74xx-1.5.0.fpgapack"
+          },
+          "version" : "1.5.0"
+        },
         {
           "cores" : [
             "ic74x00",
