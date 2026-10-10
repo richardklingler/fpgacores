@@ -112,6 +112,24 @@ FAMILY = {
     "fmaxMHz": (False, "a number", None),
 }
 UPSTREAM = {"url": (True, "a string", None), "commit": (True, "a string", non_empty)}
+# For GateLab's KiCad schematic import: the part numbers a model stands for and its package pins
+# (by number: KiCad's 74xx symbols leave gate pins unnamed), its clocks, asynchronous inputs and,
+# for a one-shot, where R and C sit.
+ONE_SHOT = {
+    "parameter": (True, "a string", matches(NAME, "Verilog name")),
+    "resistorPin": (True, "a string", non_empty),
+    "capacitorPins": (True, "a list", lambda v: None if len(v) == 2 else "needs two pins"),
+    "internalResistorPin": (False, "a string", None),
+    "internalOhms": (False, "a number", None),
+    "unconnectedNanoseconds": (True, "a number", None),
+}
+SCHEMATIC = {
+    "parts": (True, "a list", lambda v: None if v and all(isinstance(p, str) and p for p in v) else "needs part keys like 74x00"),
+    "pins": (True, "an object", lambda v: None if v and all(isinstance(p, str) for p in v.values()) else "maps pin numbers to port names"),
+    "clocks": (False, "a list", None),
+    "asyncInputs": (False, "a list", None),
+    "oneShot": (False, "an object", None),
+}
 LOCALIZED = {"name": (True, "a string", non_empty), "description": (True, "a string", non_empty)}
 CORE = {
     "schema": (True, "a whole number", lambda v: None if v == 1 else "must be 1"),
@@ -129,6 +147,9 @@ CORE = {
     "upstream": (False, "an object", None),
     "instantiation": (False, "a string", None),
     "localized": (False, "an object", None),
+    "schematic": (False, "an object", None),
+    # A simulation model only (a delay): not measured, not for a design on the FPGA.
+    "simulationOnly": (False, "true or false", None),
 }
 
 
@@ -196,7 +217,23 @@ def check_core(core_path, core_id, pack_has_licence, core_owners, pack_id):
         fields(manifest_path, manifest["upstream"], UPSTREAM, "upstream")
     for language, text in (manifest.get("localized") or {}).items():
         fields(manifest_path, text, LOCALIZED, f"localized.{language}")
-    if not manifest.get("families"):
+    schematic = manifest.get("schematic")
+    if schematic is not None:
+        fields(manifest_path, schematic, SCHEMATIC, "schematic")
+        if isinstance(schematic, dict):
+            ports = {p.get("name") for p in manifest.get("ports") or [] if isinstance(p, dict)}
+            for pin, port in (schematic.get("pins") or {}).items():
+                if port not in ports:
+                    report("error", manifest_path, f"schematic.pins.{pin}: '{port}' isn't a port")
+            for key in ("clocks", "asyncInputs"):
+                for port in schematic.get(key) or []:
+                    if port not in ports:
+                        report("error", manifest_path, f"schematic.{key}: '{port}' isn't a port")
+            if "oneShot" in schematic:
+                fields(manifest_path, schematic["oneShot"], ONE_SHOT, "schematic.oneShot")
+    if manifest.get("simulationOnly") is True:
+        pass  # nothing to measure
+    elif not manifest.get("families"):
         report("warning", manifest_path, "not measured yet (the maintainer's measurement writes 'families')")
 
     # Files: rtl/ and tb/ with the right names, README, licence text.

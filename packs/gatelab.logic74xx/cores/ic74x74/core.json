@@ -1,0 +1,141 @@
+{
+  "description" : "Two D flip-flops with asynchronous preset and clear (74LS74, 74HC74 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "tested" : false
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 173.6,
+      "resources" : {
+        "CPE_BRIDGE" : 2,
+        "CPE_CPLINES" : 3,
+        "CPE_FF" : 6,
+        "CPE_LT" : 22,
+        "CPE_RAMIO" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "tested" : false
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "tested" : false
+    }
+  },
+  "id" : "ic74x74",
+  "keywords" : [
+    "74xx",
+    "7474",
+    "flip-flop",
+    "register",
+    "d",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Zwei D-Flipflops mit asynchronem Setzen und Löschen (74LS74, 74HC74 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x74 zweifaches D-Flipflop"
+    }
+  },
+  "name" : "74x74 dual D flip-flop",
+  "ports" : [
+    {
+      "description" : "Flip-flop 1, data",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Flip-flop 1, clock (rising edge)",
+      "dir" : "in",
+      "name" : "CLK1"
+    },
+    {
+      "description" : "Flip-flop 1, asynchronous preset, active low",
+      "dir" : "in",
+      "name" : "PRE1_n"
+    },
+    {
+      "description" : "Flip-flop 1, asynchronous clear, active low",
+      "dir" : "in",
+      "name" : "CLR1_n"
+    },
+    {
+      "description" : "Flip-flop 1, output",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Flip-flop 1, inverted output",
+      "dir" : "out",
+      "name" : "Q1_n"
+    },
+    {
+      "description" : "Flip-flop 2, data",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Flip-flop 2, clock (rising edge)",
+      "dir" : "in",
+      "name" : "CLK2"
+    },
+    {
+      "description" : "Flip-flop 2, asynchronous preset, active low",
+      "dir" : "in",
+      "name" : "PRE2_n"
+    },
+    {
+      "description" : "Flip-flop 2, asynchronous clear, active low",
+      "dir" : "in",
+      "name" : "CLR2_n"
+    },
+    {
+      "description" : "Flip-flop 2, output",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Flip-flop 2, inverted output",
+      "dir" : "out",
+      "name" : "Q2_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "PRE1_n",
+      "CLR1_n",
+      "PRE2_n",
+      "CLR2_n"
+    ],
+    "clocks" : [
+      "CLK1",
+      "CLK2"
+    ],
+    "parts" : [
+      "74x74"
+    ],
+    "pins" : {
+      "1" : "CLR1_n",
+      "10" : "PRE2_n",
+      "11" : "CLK2",
+      "12" : "D2",
+      "13" : "CLR2_n",
+      "2" : "D1",
+      "3" : "CLK1",
+      "4" : "PRE1_n",
+      "5" : "Q1",
+      "6" : "Q1_n",
+      "8" : "Q2_n",
+      "9" : "Q2"
+    }
+  },
+  "top" : "ic74x74",
+  "version" : "1.0.1"
+}

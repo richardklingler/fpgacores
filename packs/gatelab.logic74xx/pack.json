@@ -1,0 +1,10 @@
+{
+  "description" : "Verilog models of classic 7400-series logic parts for the KiCad schematic import: each with the datasheet's port names, its package pin table and a self-checking testbench. CC0 1.0: no conditions, no attribution needed.",
+  "documentation" : "https://github.com/richardklingler/fpgacores",
+  "id" : "gatelab.logic74xx",
+  "maintainer" : "GateLab",
+  "name" : "GateLab 74xx Logic",
+  "schema" : 1,
+  "type" : "library",
+  "version" : "1.1.0"
+}

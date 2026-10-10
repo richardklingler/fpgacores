@@ -1,0 +1,138 @@
+{
+  "description" : "Four 2-input OR gates (74LS32, 74HC32 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 319,
+      "resources" : {
+        "TRELLIS_COMB" : 4
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 241.8,
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "LUT4" : 4
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 137.5,
+      "resources" : {
+        "ICESTORM_LC" : 4
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x32",
+  "keywords" : [
+    "74xx",
+    "7400",
+    "7432",
+    "or",
+    "gate",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Vier ODER-Gatter mit 2 Eingängen (74LS32, 74HC32 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x32 vierfach ODER mit 2 Eingängen"
+    }
+  },
+  "name" : "74x32 quad 2-input OR",
+  "ports" : [
+    {
+      "description" : "Gate 1, input A",
+      "dir" : "in",
+      "name" : "A1"
+    },
+    {
+      "description" : "Gate 1, input B",
+      "dir" : "in",
+      "name" : "B1"
+    },
+    {
+      "description" : "Gate 1, output",
+      "dir" : "out",
+      "name" : "Y1"
+    },
+    {
+      "description" : "Gate 2, input A",
+      "dir" : "in",
+      "name" : "A2"
+    },
+    {
+      "description" : "Gate 2, input B",
+      "dir" : "in",
+      "name" : "B2"
+    },
+    {
+      "description" : "Gate 2, output",
+      "dir" : "out",
+      "name" : "Y2"
+    },
+    {
+      "description" : "Gate 3, input A",
+      "dir" : "in",
+      "name" : "A3"
+    },
+    {
+      "description" : "Gate 3, input B",
+      "dir" : "in",
+      "name" : "B3"
+    },
+    {
+      "description" : "Gate 3, output",
+      "dir" : "out",
+      "name" : "Y3"
+    },
+    {
+      "description" : "Gate 4, input A",
+      "dir" : "in",
+      "name" : "A4"
+    },
+    {
+      "description" : "Gate 4, input B",
+      "dir" : "in",
+      "name" : "B4"
+    },
+    {
+      "description" : "Gate 4, output",
+      "dir" : "out",
+      "name" : "Y4"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x32"
+    ],
+    "pins" : {
+      "1" : "A1",
+      "10" : "B3",
+      "11" : "Y4",
+      "12" : "A4",
+      "13" : "B4",
+      "2" : "B1",
+      "3" : "Y1",
+      "4" : "A2",
+      "5" : "B2",
+      "6" : "Y2",
+      "8" : "Y3",
+      "9" : "A3"
+    }
+  },
+  "top" : "ic74x32",
+  "version" : "1.0.1"
+}

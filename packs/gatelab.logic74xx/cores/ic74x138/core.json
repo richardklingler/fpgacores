@@ -1,0 +1,151 @@
+{
+  "description" : "3-to-8 line decoder with active-low outputs and three enables (74LS138, 74HC138 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 334.3,
+      "resources" : {
+        "TRELLIS_COMB" : 18
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 215,
+      "resources" : {
+        "CPE_BRIDGE" : 4,
+        "CPE_CPLINES" : 1,
+        "CPE_LT" : 11
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "LUT4" : 9
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 137.5,
+      "resources" : {
+        "ICESTORM_LC" : 10
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x138",
+  "keywords" : [
+    "74xx",
+    "74138",
+    "decoder",
+    "demultiplexer",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "3-zu-8-Decoder mit aktiv-low Ausgängen und drei Freigaben (74LS138, 74HC138 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x138 3-zu-8-Decoder"
+    }
+  },
+  "name" : "74x138 3-to-8 decoder",
+  "ports" : [
+    {
+      "description" : "Address, bit 0 (A)",
+      "dir" : "in",
+      "name" : "A0"
+    },
+    {
+      "description" : "Address, bit 1 (B)",
+      "dir" : "in",
+      "name" : "A1"
+    },
+    {
+      "description" : "Address, bit 2 (C)",
+      "dir" : "in",
+      "name" : "A2"
+    },
+    {
+      "description" : "Enable, active low (G2A)",
+      "dir" : "in",
+      "name" : "E1_n"
+    },
+    {
+      "description" : "Enable, active low (G2B)",
+      "dir" : "in",
+      "name" : "E2_n"
+    },
+    {
+      "description" : "Enable, active high (G1)",
+      "dir" : "in",
+      "name" : "E3"
+    },
+    {
+      "description" : "Output 0, low when selected",
+      "dir" : "out",
+      "name" : "Y0_n"
+    },
+    {
+      "description" : "Output 1, low when selected",
+      "dir" : "out",
+      "name" : "Y1_n"
+    },
+    {
+      "description" : "Output 2, low when selected",
+      "dir" : "out",
+      "name" : "Y2_n"
+    },
+    {
+      "description" : "Output 3, low when selected",
+      "dir" : "out",
+      "name" : "Y3_n"
+    },
+    {
+      "description" : "Output 4, low when selected",
+      "dir" : "out",
+      "name" : "Y4_n"
+    },
+    {
+      "description" : "Output 5, low when selected",
+      "dir" : "out",
+      "name" : "Y5_n"
+    },
+    {
+      "description" : "Output 6, low when selected",
+      "dir" : "out",
+      "name" : "Y6_n"
+    },
+    {
+      "description" : "Output 7, low when selected",
+      "dir" : "out",
+      "name" : "Y7_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x138"
+    ],
+    "pins" : {
+      "1" : "A0",
+      "10" : "Y5_n",
+      "11" : "Y4_n",
+      "12" : "Y3_n",
+      "13" : "Y2_n",
+      "14" : "Y1_n",
+      "15" : "Y0_n",
+      "2" : "A1",
+      "3" : "A2",
+      "4" : "E1_n",
+      "5" : "E2_n",
+      "6" : "E3",
+      "7" : "Y7_n",
+      "9" : "Y6_n"
+    }
+  },
+  "top" : "ic74x138",
+  "version" : "1.0.1"
+}

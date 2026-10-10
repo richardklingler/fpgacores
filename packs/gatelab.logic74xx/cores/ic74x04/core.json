@@ -1,0 +1,137 @@
+{
+  "description" : "Six inverters (74LS04, 74HC04 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 325.4,
+      "resources" : {
+        "TRELLIS_COMB" : 6
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 252.1,
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "LUT4" : 6
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 137.5,
+      "resources" : {
+        "ICESTORM_LC" : 5
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x04",
+  "keywords" : [
+    "74xx",
+    "7404",
+    "inverter",
+    "not",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Sechs Inverter (74LS04, 74HC04 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x04 sechsfacher Inverter"
+    }
+  },
+  "name" : "74x04 hex inverter",
+  "ports" : [
+    {
+      "description" : "Inverter 1, input",
+      "dir" : "in",
+      "name" : "A1"
+    },
+    {
+      "description" : "Inverter 1, output",
+      "dir" : "out",
+      "name" : "Y1"
+    },
+    {
+      "description" : "Inverter 2, input",
+      "dir" : "in",
+      "name" : "A2"
+    },
+    {
+      "description" : "Inverter 2, output",
+      "dir" : "out",
+      "name" : "Y2"
+    },
+    {
+      "description" : "Inverter 3, input",
+      "dir" : "in",
+      "name" : "A3"
+    },
+    {
+      "description" : "Inverter 3, output",
+      "dir" : "out",
+      "name" : "Y3"
+    },
+    {
+      "description" : "Inverter 4, input",
+      "dir" : "in",
+      "name" : "A4"
+    },
+    {
+      "description" : "Inverter 4, output",
+      "dir" : "out",
+      "name" : "Y4"
+    },
+    {
+      "description" : "Inverter 5, input",
+      "dir" : "in",
+      "name" : "A5"
+    },
+    {
+      "description" : "Inverter 5, output",
+      "dir" : "out",
+      "name" : "Y5"
+    },
+    {
+      "description" : "Inverter 6, input",
+      "dir" : "in",
+      "name" : "A6"
+    },
+    {
+      "description" : "Inverter 6, output",
+      "dir" : "out",
+      "name" : "Y6"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x04"
+    ],
+    "pins" : {
+      "1" : "A1",
+      "10" : "Y5",
+      "11" : "A5",
+      "12" : "Y6",
+      "13" : "A6",
+      "2" : "Y1",
+      "3" : "A2",
+      "4" : "Y2",
+      "5" : "A3",
+      "6" : "Y3",
+      "8" : "Y4",
+      "9" : "A4"
+    }
+  },
+  "top" : "ic74x04",
+  "version" : "1.0.1"
+}

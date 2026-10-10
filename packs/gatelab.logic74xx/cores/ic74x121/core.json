@@ -1,0 +1,83 @@
+{
+  "description" : "Monostable multivibrator, not retriggerable (74LS121): a simulation model only, with the pulse length as parameter (the delay doesn't synthesize; on an FPGA a counter replaces it), with the package pin table for the KiCad import.",
+  "id" : "ic74x121",
+  "keywords" : [
+    "74xx",
+    "74121",
+    "monostable",
+    "one-shot",
+    "monoflop",
+    "pulse",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Monostabile Kippstufe, nicht nachtriggerbar (74LS121): nur ein Simulationsmodell, mit der Pulslänge als Parameter (die Verzögerung lässt sich nicht synthetisieren; auf einem FPGA ersetzt sie ein Zähler), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x121 Monoflop"
+    }
+  },
+  "name" : "74x121 one-shot",
+  "parameters" : [
+    {
+      "default" : 30,
+      "description" : "Pulse length in nanoseconds (30 ns: internal resistor, no capacitor)",
+      "name" : "PULSE_NS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Trigger input, falling edge, active low",
+      "dir" : "in",
+      "name" : "A1"
+    },
+    {
+      "description" : "Trigger input, falling edge, active low",
+      "dir" : "in",
+      "name" : "A2"
+    },
+    {
+      "description" : "Trigger input, rising edge (Schmitt trigger on the real part)",
+      "dir" : "in",
+      "name" : "B"
+    },
+    {
+      "description" : "Pulse output",
+      "dir" : "out",
+      "name" : "Q"
+    },
+    {
+      "description" : "Inverted pulse output",
+      "dir" : "out",
+      "name" : "Q_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "oneShot" : {
+      "capacitorPins" : [
+        "10",
+        "11"
+      ],
+      "internalOhms" : 2000,
+      "internalResistorPin" : "9",
+      "parameter" : "PULSE_NS",
+      "resistorPin" : "11",
+      "unconnectedNanoseconds" : 30
+    },
+    "parts" : [
+      "74x121"
+    ],
+    "pins" : {
+      "1" : "Q_n",
+      "3" : "A1",
+      "4" : "A2",
+      "5" : "B",
+      "6" : "Q"
+    }
+  },
+  "simulationOnly" : true,
+  "top" : "ic74x121",
+  "version" : "1.0.1"
+}

@@ -1,0 +1,163 @@
+{
+  "description" : "Synchronous 4-bit binary counter with asynchronous clear, load and two enables (74LS161, 74HC161 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 327.8,
+      "resources" : {
+        "TRELLIS_COMB" : 9,
+        "TRELLIS_FF" : 4
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 200.6,
+      "resources" : {
+        "CPE_ADDF2" : 2,
+        "CPE_BRIDGE" : 6,
+        "CPE_CPLINES" : 34,
+        "CPE_FF" : 4,
+        "CPE_LT" : 9,
+        "CPE_RAMIO" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "ALU" : 6,
+        "DFF" : 4
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+        "ICESTORM_LC" : 12,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x161",
+  "keywords" : [
+    "74xx",
+    "74161",
+    "counter",
+    "binary",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Synchroner 4-Bit-Binärzähler mit asynchronem Löschen, Laden und zwei Freigaben (74LS161, 74HC161 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x161 4-Bit-Binärzähler"
+    }
+  },
+  "name" : "74x161 4-bit binary counter",
+  "ports" : [
+    {
+      "description" : "Clock (rising edge)",
+      "dir" : "in",
+      "name" : "CP"
+    },
+    {
+      "description" : "Master reset, asynchronous, active low (CLR)",
+      "dir" : "in",
+      "name" : "MR_n"
+    },
+    {
+      "description" : "Parallel load, synchronous, active low (LOAD)",
+      "dir" : "in",
+      "name" : "PE_n"
+    },
+    {
+      "description" : "Count enable (ENP)",
+      "dir" : "in",
+      "name" : "CEP"
+    },
+    {
+      "description" : "Count enable, also gates TC (ENT)",
+      "dir" : "in",
+      "name" : "CET"
+    },
+    {
+      "description" : "Load data, bit 0",
+      "dir" : "in",
+      "name" : "D0"
+    },
+    {
+      "description" : "Load data, bit 1",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Load data, bit 2",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Load data, bit 3",
+      "dir" : "in",
+      "name" : "D3"
+    },
+    {
+      "description" : "Count, bit 0",
+      "dir" : "out",
+      "name" : "Q0"
+    },
+    {
+      "description" : "Count, bit 1",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Count, bit 2",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Count, bit 3",
+      "dir" : "out",
+      "name" : "Q3"
+    },
+    {
+      "description" : "Terminal count: high at 15 while CET is high",
+      "dir" : "out",
+      "name" : "TC"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "MR_n"
+    ],
+    "clocks" : [
+      "CP"
+    ],
+    "parts" : [
+      "74x161"
+    ],
+    "pins" : {
+      "1" : "MR_n",
+      "10" : "CET",
+      "11" : "Q3",
+      "12" : "Q2",
+      "13" : "Q1",
+      "14" : "Q0",
+      "15" : "TC",
+      "2" : "CP",
+      "3" : "D0",
+      "4" : "D1",
+      "5" : "D2",
+      "6" : "D3",
+      "7" : "CEP",
+      "9" : "PE_n"
+    }
+  },
+  "top" : "ic74x161",
+  "version" : "1.0.1"
+}
