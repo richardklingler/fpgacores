@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-06T17:09:13Z",
+  "generated" : "2026-10-10T10:45:24Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -79,6 +79,35 @@
             "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.0.0.fpgapack"
           },
           "version" : "1.0.0"
+        }
+      ]
+    },
+    {
+      "description" : "Verilog models of classic 7400-series logic parts for the KiCad schematic import: each with the datasheet's port names, its package pin table and a self-checking testbench. CC0 1.0: no conditions, no attribution needed.",
+      "documentation" : "https://github.com/richardklingler/fpgacores",
+      "id" : "gatelab.logic74xx",
+      "maintainer" : "GateLab",
+      "name" : "GateLab 74xx Logic",
+      "type" : "library",
+      "versions" : [
+        {
+          "cores" : [
+            "ic74x00",
+            "ic74x04",
+            "ic74x08",
+            "ic74x121",
+            "ic74x138",
+            "ic74x161",
+            "ic74x163",
+            "ic74x32",
+            "ic74x74"
+          ],
+          "download" : {
+            "sha256" : "5378d529428e6aae943fe2921da4f85a096657fc7c1419c9d2d7ddb76ce592c7",
+            "size" : 55446,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.logic74xx-1.1.0.fpgapack"
+          },
+          "version" : "1.1.0"
         }
       ]
     },
