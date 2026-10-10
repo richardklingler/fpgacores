@@ -233,6 +233,8 @@ def check_core(core_path, core_id, pack_has_licence, core_owners, pack_id):
                 fields(manifest_path, schematic["oneShot"], ONE_SHOT, "schematic.oneShot")
     if manifest.get("simulationOnly") is True:
         pass  # nothing to measure
+    elif any(isinstance(p, dict) and p.get("dir") == "inout" for p in manifest.get("ports") or []):
+        pass  # bidirectional ports can't be driven out of context: not measured
     elif not manifest.get("families"):
         report("warning", manifest_path, "not measured yet (the maintainer's measurement writes 'families')")
 
