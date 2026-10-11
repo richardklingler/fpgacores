@@ -1,0 +1,179 @@
+{
+  "description" : "Octal D flip-flop with three-state outputs (74LS374, 74HC374 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 326.6,
+      "resources" : {
+        "TRELLIS_FF" : 8
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 177.1,
+      "resources" : {
+        "CPE_BRIDGE" : 1,
+        "CPE_CPLINES" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "DFF" : 8,
+        "LUT4" : 8
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+        "ICESTORM_LC" : 8
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x374",
+  "keywords" : [
+    "74xx",
+    "74374",
+    "flip-flop",
+    "register",
+    "three-state",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Achtfaches D-Flipflop mit Tri-State-Ausgängen (74LS374, 74HC374 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x374 achtfaches D-Flipflop"
+    }
+  },
+  "name" : "74x374 octal D flip-flop",
+  "ports" : [
+    {
+      "description" : "Data input 0",
+      "dir" : "in",
+      "name" : "D0"
+    },
+    {
+      "description" : "Data input 1",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Data input 2",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Data input 3",
+      "dir" : "in",
+      "name" : "D3"
+    },
+    {
+      "description" : "Data input 4",
+      "dir" : "in",
+      "name" : "D4"
+    },
+    {
+      "description" : "Data input 5",
+      "dir" : "in",
+      "name" : "D5"
+    },
+    {
+      "description" : "Data input 6",
+      "dir" : "in",
+      "name" : "D6"
+    },
+    {
+      "description" : "Data input 7",
+      "dir" : "in",
+      "name" : "D7"
+    },
+    {
+      "description" : "Clock, rising edge",
+      "dir" : "in",
+      "name" : "CP"
+    },
+    {
+      "description" : "Output enable, active low (outputs float while high)",
+      "dir" : "in",
+      "name" : "OE_n"
+    },
+    {
+      "description" : "Output 0, three-state",
+      "dir" : "out",
+      "name" : "Q0"
+    },
+    {
+      "description" : "Output 1, three-state",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Output 2, three-state",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Output 3, three-state",
+      "dir" : "out",
+      "name" : "Q3"
+    },
+    {
+      "description" : "Output 4, three-state",
+      "dir" : "out",
+      "name" : "Q4"
+    },
+    {
+      "description" : "Output 5, three-state",
+      "dir" : "out",
+      "name" : "Q5"
+    },
+    {
+      "description" : "Output 6, three-state",
+      "dir" : "out",
+      "name" : "Q6"
+    },
+    {
+      "description" : "Output 7, three-state",
+      "dir" : "out",
+      "name" : "Q7"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "clocks" : [
+      "CP"
+    ],
+    "parts" : [
+      "74x374"
+    ],
+    "pins" : {
+      "1" : "OE_n",
+      "11" : "CP",
+      "12" : "Q4",
+      "13" : "D4",
+      "14" : "D5",
+      "15" : "Q5",
+      "16" : "Q6",
+      "17" : "D6",
+      "18" : "D7",
+      "19" : "Q7",
+      "2" : "Q0",
+      "3" : "D0",
+      "4" : "D1",
+      "5" : "Q1",
+      "6" : "Q2",
+      "7" : "D2",
+      "8" : "D3",
+      "9" : "Q3"
+    }
+  },
+  "top" : "ic74x374",
+  "version" : "1.0.0"
+}

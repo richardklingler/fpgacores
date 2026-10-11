@@ -1,0 +1,165 @@
+{
+  "description" : "Decade (Johnson) counter with ten decoded outputs, clock inhibit and carry out, CMOS 4000 series (CD4017B, HEF4017B …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 309.7,
+      "resources" : {
+        "TRELLIS_COMB" : 16,
+        "TRELLIS_FF" : 4
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 180.4,
+      "resources" : {
+        "CPE_ADDF2" : 2,
+        "CPE_BRIDGE" : 9,
+        "CPE_FF" : 6,
+        "CPE_LT" : 23,
+        "CPE_RAMIO" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 251.8,
+      "resources" : {
+        "ALU" : 10,
+        "DFF" : 4
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 100.9,
+      "resources" : {
+        "ICESTORM_LC" : 21,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic4017",
+  "keywords" : [
+    "4000",
+    "cmos",
+    "4017",
+    "counter",
+    "decade",
+    "johnson",
+    "decoder",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Dekadenzähler (Johnson) mit zehn dekodierten Ausgängen, Takt-Sperre und Übertragsausgang, CMOS-4000-Serie (CD4017B, HEF4017B …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "4017 Dekadenzähler mit dekodierten Ausgängen"
+    }
+  },
+  "name" : "4017 decade counter with decoded outputs",
+  "ports" : [
+    {
+      "description" : "Clock, rising edge (gated by INH)",
+      "dir" : "in",
+      "name" : "CLK"
+    },
+    {
+      "description" : "Clock inhibit, high blocks the clock (KiCad: CKEN)",
+      "dir" : "in",
+      "name" : "INH"
+    },
+    {
+      "description" : "Reset, asynchronous, active high: count 0",
+      "dir" : "in",
+      "name" : "RST"
+    },
+    {
+      "description" : "Decoded output 0: high at count 0",
+      "dir" : "out",
+      "name" : "Q0"
+    },
+    {
+      "description" : "Decoded output 1: high at count 1",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Decoded output 2: high at count 2",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Decoded output 3: high at count 3",
+      "dir" : "out",
+      "name" : "Q3"
+    },
+    {
+      "description" : "Decoded output 4: high at count 4",
+      "dir" : "out",
+      "name" : "Q4"
+    },
+    {
+      "description" : "Decoded output 5: high at count 5",
+      "dir" : "out",
+      "name" : "Q5"
+    },
+    {
+      "description" : "Decoded output 6: high at count 6",
+      "dir" : "out",
+      "name" : "Q6"
+    },
+    {
+      "description" : "Decoded output 7: high at count 7",
+      "dir" : "out",
+      "name" : "Q7"
+    },
+    {
+      "description" : "Decoded output 8: high at count 8",
+      "dir" : "out",
+      "name" : "Q8"
+    },
+    {
+      "description" : "Decoded output 9: high at count 9",
+      "dir" : "out",
+      "name" : "Q9"
+    },
+    {
+      "description" : "Carry out: high for counts 0–4",
+      "dir" : "out",
+      "name" : "COUT"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "RST"
+    ],
+    "clocks" : [
+      "CLK"
+    ],
+    "parts" : [
+      "4017"
+    ],
+    "pins" : {
+      "1" : "Q5",
+      "10" : "Q4",
+      "11" : "Q9",
+      "12" : "COUT",
+      "13" : "INH",
+      "14" : "CLK",
+      "15" : "RST",
+      "2" : "Q1",
+      "3" : "Q0",
+      "4" : "Q2",
+      "5" : "Q6",
+      "6" : "Q7",
+      "7" : "Q3",
+      "9" : "Q8"
+    }
+  },
+  "top" : "ic4017",
+  "version" : "1.0.0"
+}

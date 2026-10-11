@@ -1,0 +1,149 @@
+{
+  "description" : "8-bit parallel-in, serial-out shift register with asynchronous load and a gated (ORed) clock (74LS165, 74HC165 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "tested" : false
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 150.4,
+      "resources" : {
+        "CPE_BRIDGE" : 10,
+        "CPE_CPLINES" : 41,
+        "CPE_FF" : 34,
+        "CPE_LT" : 63
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "tested" : false
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "tested" : false
+    }
+  },
+  "id" : "ic74x165",
+  "keywords" : [
+    "74xx",
+    "74165",
+    "shift register",
+    "parallel to serial",
+    "piso",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "8-Bit-Schieberegister parallel ein, seriell aus, mit asynchronem Laden und verknüpftem (ODER-)Takt (74LS165, 74HC165 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x165 8-Bit-Schieberegister (parallel laden)"
+    }
+  },
+  "name" : "74x165 8-bit parallel-load shift register",
+  "ports" : [
+    {
+      "description" : "Parallel load, asynchronous, active low",
+      "dir" : "in",
+      "name" : "PL_n"
+    },
+    {
+      "description" : "Clock, rising edge (ORed with CE_n)",
+      "dir" : "in",
+      "name" : "CP"
+    },
+    {
+      "description" : "Clock enable, active low (ORed with CP)",
+      "dir" : "in",
+      "name" : "CE_n"
+    },
+    {
+      "description" : "Serial data input (shifted into stage 0)",
+      "dir" : "in",
+      "name" : "DS"
+    },
+    {
+      "description" : "Parallel data input 0",
+      "dir" : "in",
+      "name" : "D0"
+    },
+    {
+      "description" : "Parallel data input 1",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Parallel data input 2",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Parallel data input 3",
+      "dir" : "in",
+      "name" : "D3"
+    },
+    {
+      "description" : "Parallel data input 4",
+      "dir" : "in",
+      "name" : "D4"
+    },
+    {
+      "description" : "Parallel data input 5",
+      "dir" : "in",
+      "name" : "D5"
+    },
+    {
+      "description" : "Parallel data input 6",
+      "dir" : "in",
+      "name" : "D6"
+    },
+    {
+      "description" : "Parallel data input 7",
+      "dir" : "in",
+      "name" : "D7"
+    },
+    {
+      "description" : "Last stage (serial output)",
+      "dir" : "out",
+      "name" : "Q7"
+    },
+    {
+      "description" : "Last stage, inverted",
+      "dir" : "out",
+      "name" : "Q7_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "PL_n"
+    ],
+    "clocks" : [
+      "CP",
+      "CE_n"
+    ],
+    "parts" : [
+      "74x165"
+    ],
+    "pins" : {
+      "1" : "PL_n",
+      "10" : "DS",
+      "11" : "D0",
+      "12" : "D1",
+      "13" : "D2",
+      "14" : "D3",
+      "15" : "CE_n",
+      "2" : "CP",
+      "3" : "D4",
+      "4" : "D5",
+      "5" : "D6",
+      "6" : "D7",
+      "7" : "Q7_n",
+      "9" : "Q7"
+    }
+  },
+  "top" : "ic74x165",
+  "version" : "1.0.0"
+}

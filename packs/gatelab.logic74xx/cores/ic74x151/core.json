@@ -1,0 +1,154 @@
+{
+  "description" : "8-to-1 data selector/multiplexer with strobe and inverted output (74LS151, 74HC151 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 299.9,
+      "resources" : {
+        "TRELLIS_COMB" : 11
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 211.1,
+      "resources" : {
+        "CPE_CPLINES" : 3
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "LUT4" : 23,
+        "MUX2_LUT5" : 11,
+        "MUX2_LUT6" : 4,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 100.9,
+      "resources" : {
+        "ICESTORM_LC" : 12
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x151",
+  "keywords" : [
+    "74xx",
+    "74151",
+    "multiplexer",
+    "mux",
+    "data selector",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "8-zu-1-Datenselektor/Multiplexer mit Strobe und invertiertem Ausgang (74LS151, 74HC151 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x151 8-zu-1-Multiplexer"
+    }
+  },
+  "name" : "74x151 8-to-1 multiplexer",
+  "ports" : [
+    {
+      "description" : "Data input 0",
+      "dir" : "in",
+      "name" : "D0"
+    },
+    {
+      "description" : "Data input 1",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Data input 2",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Data input 3",
+      "dir" : "in",
+      "name" : "D3"
+    },
+    {
+      "description" : "Data input 4",
+      "dir" : "in",
+      "name" : "D4"
+    },
+    {
+      "description" : "Data input 5",
+      "dir" : "in",
+      "name" : "D5"
+    },
+    {
+      "description" : "Data input 6",
+      "dir" : "in",
+      "name" : "D6"
+    },
+    {
+      "description" : "Data input 7",
+      "dir" : "in",
+      "name" : "D7"
+    },
+    {
+      "description" : "Select, bit 0",
+      "dir" : "in",
+      "name" : "A"
+    },
+    {
+      "description" : "Select, bit 1",
+      "dir" : "in",
+      "name" : "B"
+    },
+    {
+      "description" : "Select, bit 2",
+      "dir" : "in",
+      "name" : "C"
+    },
+    {
+      "description" : "Strobe (enable), active low",
+      "dir" : "in",
+      "name" : "G_n"
+    },
+    {
+      "description" : "Selected input (low while G_n is high)",
+      "dir" : "out",
+      "name" : "Y"
+    },
+    {
+      "description" : "Inverted output (W)",
+      "dir" : "out",
+      "name" : "Y_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x151"
+    ],
+    "pins" : {
+      "1" : "D3",
+      "10" : "B",
+      "11" : "A",
+      "12" : "D7",
+      "13" : "D6",
+      "14" : "D5",
+      "15" : "D4",
+      "2" : "D2",
+      "3" : "D1",
+      "4" : "D0",
+      "5" : "Y",
+      "6" : "Y_n",
+      "7" : "G_n",
+      "9" : "C"
+    }
+  },
+  "top" : "ic74x151",
+  "version" : "1.0.0"
+}

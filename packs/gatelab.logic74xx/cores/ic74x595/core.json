@@ -1,0 +1,160 @@
+{
+  "description" : "8-bit serial-in shift register with output latches, three-state outputs and a cascade output (74HC595, 74LS595 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 388.5,
+      "resources" : {
+        "TRELLIS_COMB" : 1,
+        "TRELLIS_FF" : 16
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 190.4,
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "DFF" : 16,
+        "LUT4" : 17
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 131.7,
+      "resources" : {
+        "ICESTORM_LC" : 17
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x595",
+  "keywords" : [
+    "74xx",
+    "74595",
+    "shift register",
+    "serial to parallel",
+    "latch",
+    "led driver",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "8-Bit-Schieberegister seriell ein, mit Ausgangsregister, Tri-State-Ausgängen und Kaskadenausgang (74HC595, 74LS595 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x595 8-Bit-Schieberegister mit Ausgangsregister"
+    }
+  },
+  "name" : "74x595 8-bit shift register with output latches",
+  "ports" : [
+    {
+      "description" : "Serial data input (into stage A)",
+      "dir" : "in",
+      "name" : "SER"
+    },
+    {
+      "description" : "Shift register clock, rising edge",
+      "dir" : "in",
+      "name" : "SRCLK"
+    },
+    {
+      "description" : "Shift register clear, asynchronous, active low (the latches keep theirs)",
+      "dir" : "in",
+      "name" : "SRCLR_n"
+    },
+    {
+      "description" : "Latch (storage register) clock, rising edge",
+      "dir" : "in",
+      "name" : "RCLK"
+    },
+    {
+      "description" : "Output enable for QA–QH, active low",
+      "dir" : "in",
+      "name" : "OE_n"
+    },
+    {
+      "description" : "Latch output A (three-state)",
+      "dir" : "out",
+      "name" : "QA"
+    },
+    {
+      "description" : "Latch output B (three-state)",
+      "dir" : "out",
+      "name" : "QB"
+    },
+    {
+      "description" : "Latch output C (three-state)",
+      "dir" : "out",
+      "name" : "QC"
+    },
+    {
+      "description" : "Latch output D (three-state)",
+      "dir" : "out",
+      "name" : "QD"
+    },
+    {
+      "description" : "Latch output E (three-state)",
+      "dir" : "out",
+      "name" : "QE"
+    },
+    {
+      "description" : "Latch output F (three-state)",
+      "dir" : "out",
+      "name" : "QF"
+    },
+    {
+      "description" : "Latch output G (three-state)",
+      "dir" : "out",
+      "name" : "QG"
+    },
+    {
+      "description" : "Latch output H (three-state)",
+      "dir" : "out",
+      "name" : "QH"
+    },
+    {
+      "description" : "Serial output QH' (the shift register's last stage), for cascading",
+      "dir" : "out",
+      "name" : "QH_prime"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "SRCLR_n"
+    ],
+    "clocks" : [
+      "SRCLK",
+      "RCLK"
+    ],
+    "parts" : [
+      "74x595"
+    ],
+    "pins" : {
+      "1" : "QB",
+      "10" : "SRCLR_n",
+      "11" : "SRCLK",
+      "12" : "RCLK",
+      "13" : "OE_n",
+      "14" : "SER",
+      "15" : "QA",
+      "2" : "QC",
+      "3" : "QD",
+      "4" : "QE",
+      "5" : "QF",
+      "6" : "QG",
+      "7" : "QH",
+      "9" : "QH_prime"
+    }
+  },
+  "top" : "ic74x595",
+  "version" : "1.0.0"
+}

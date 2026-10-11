@@ -3,7 +3,7 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 319,
+      "fmaxMHz" : 314.2,
       "resources" : {
         "TRELLIS_COMB" : 4
       },
@@ -11,9 +11,9 @@
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 308.7,
+      "fmaxMHz" : 213.3,
       "resources" : {
-
+        "CPE_BRIDGE" : 1
       },
       "tested" : true
     },
@@ -26,7 +26,7 @@
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 137.5,
+      "fmaxMHz" : 136,
       "resources" : {
         "ICESTORM_LC" : 4
       },

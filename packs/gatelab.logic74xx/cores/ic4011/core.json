@@ -1,0 +1,137 @@
+{
+  "description" : "Quad 2-input NAND gate, CMOS 4000 series (CD4011B, HEF4011B …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 314.2,
+      "resources" : {
+        "TRELLIS_COMB" : 4
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 213.3,
+      "resources" : {
+        "CPE_BRIDGE" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "LUT4" : 4
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+        "ICESTORM_LC" : 4
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic4011",
+  "keywords" : [
+    "4000",
+    "cmos",
+    "4011",
+    "nand",
+    "gate",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Vierfaches NAND-Gatter mit zwei Eingängen, CMOS-4000-Serie (CD4011B, HEF4011B …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "4011 vierfaches NAND-Gatter"
+    }
+  },
+  "name" : "4011 quad 2-input NAND",
+  "ports" : [
+    {
+      "description" : "Gate 1, input A",
+      "dir" : "in",
+      "name" : "A1"
+    },
+    {
+      "description" : "Gate 1, input B",
+      "dir" : "in",
+      "name" : "B1"
+    },
+    {
+      "description" : "Gate 1, output",
+      "dir" : "out",
+      "name" : "Y1"
+    },
+    {
+      "description" : "Gate 2, input A",
+      "dir" : "in",
+      "name" : "A2"
+    },
+    {
+      "description" : "Gate 2, input B",
+      "dir" : "in",
+      "name" : "B2"
+    },
+    {
+      "description" : "Gate 2, output",
+      "dir" : "out",
+      "name" : "Y2"
+    },
+    {
+      "description" : "Gate 3, input A",
+      "dir" : "in",
+      "name" : "A3"
+    },
+    {
+      "description" : "Gate 3, input B",
+      "dir" : "in",
+      "name" : "B3"
+    },
+    {
+      "description" : "Gate 3, output",
+      "dir" : "out",
+      "name" : "Y3"
+    },
+    {
+      "description" : "Gate 4, input A",
+      "dir" : "in",
+      "name" : "A4"
+    },
+    {
+      "description" : "Gate 4, input B",
+      "dir" : "in",
+      "name" : "B4"
+    },
+    {
+      "description" : "Gate 4, output",
+      "dir" : "out",
+      "name" : "Y4"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "4011"
+    ],
+    "pins" : {
+      "1" : "A1",
+      "10" : "Y3",
+      "11" : "Y4",
+      "12" : "A4",
+      "13" : "B4",
+      "2" : "B1",
+      "3" : "Y1",
+      "4" : "Y2",
+      "5" : "A2",
+      "6" : "B2",
+      "8" : "A3",
+      "9" : "B3"
+    }
+  },
+  "top" : "ic4011",
+  "version" : "1.0.0"
+}

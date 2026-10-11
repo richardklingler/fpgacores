@@ -1,0 +1,175 @@
+{
+  "description" : "Octal buffer/line driver with three-state outputs in two sections of four with their own output enable (74LS244, 74HC244 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 332.9,
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 180.7,
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x244",
+  "keywords" : [
+    "74xx",
+    "74244",
+    "buffer",
+    "line driver",
+    "three-state",
+    "tri-state",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Achtfacher Puffer/Leitungstreiber mit Tri-State-Ausgängen in zwei Gruppen zu vier mit eigener Ausgangsfreigabe (74LS244, 74HC244 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x244 achtfacher Tri-State-Puffer"
+    }
+  },
+  "name" : "74x244 octal three-state buffer",
+  "ports" : [
+    {
+      "description" : "Section 1, input 1 (1A1)",
+      "dir" : "in",
+      "name" : "A1_1"
+    },
+    {
+      "description" : "Section 1, input 2 (1A2)",
+      "dir" : "in",
+      "name" : "A1_2"
+    },
+    {
+      "description" : "Section 1, input 3 (1A3)",
+      "dir" : "in",
+      "name" : "A1_3"
+    },
+    {
+      "description" : "Section 1, input 4 (1A4)",
+      "dir" : "in",
+      "name" : "A1_4"
+    },
+    {
+      "description" : "Section 1, output enable, active low (1OE)",
+      "dir" : "in",
+      "name" : "OE1_n"
+    },
+    {
+      "description" : "Section 1, output 1 (1Y1), three-state",
+      "dir" : "out",
+      "name" : "Y1_1"
+    },
+    {
+      "description" : "Section 1, output 2 (1Y2), three-state",
+      "dir" : "out",
+      "name" : "Y1_2"
+    },
+    {
+      "description" : "Section 1, output 3 (1Y3), three-state",
+      "dir" : "out",
+      "name" : "Y1_3"
+    },
+    {
+      "description" : "Section 1, output 4 (1Y4), three-state",
+      "dir" : "out",
+      "name" : "Y1_4"
+    },
+    {
+      "description" : "Section 2, input 1 (2A1)",
+      "dir" : "in",
+      "name" : "A2_1"
+    },
+    {
+      "description" : "Section 2, input 2 (2A2)",
+      "dir" : "in",
+      "name" : "A2_2"
+    },
+    {
+      "description" : "Section 2, input 3 (2A3)",
+      "dir" : "in",
+      "name" : "A2_3"
+    },
+    {
+      "description" : "Section 2, input 4 (2A4)",
+      "dir" : "in",
+      "name" : "A2_4"
+    },
+    {
+      "description" : "Section 2, output enable, active low (2OE)",
+      "dir" : "in",
+      "name" : "OE2_n"
+    },
+    {
+      "description" : "Section 2, output 1 (2Y1), three-state",
+      "dir" : "out",
+      "name" : "Y2_1"
+    },
+    {
+      "description" : "Section 2, output 2 (2Y2), three-state",
+      "dir" : "out",
+      "name" : "Y2_2"
+    },
+    {
+      "description" : "Section 2, output 3 (2Y3), three-state",
+      "dir" : "out",
+      "name" : "Y2_3"
+    },
+    {
+      "description" : "Section 2, output 4 (2Y4), three-state",
+      "dir" : "out",
+      "name" : "Y2_4"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x244"
+    ],
+    "pins" : {
+      "1" : "OE1_n",
+      "11" : "A2_1",
+      "12" : "Y1_4",
+      "13" : "A2_2",
+      "14" : "Y1_3",
+      "15" : "A2_3",
+      "16" : "Y1_2",
+      "17" : "A2_4",
+      "18" : "Y1_1",
+      "19" : "OE2_n",
+      "2" : "A1_1",
+      "3" : "Y2_4",
+      "4" : "A1_2",
+      "5" : "Y2_3",
+      "6" : "A1_3",
+      "7" : "Y2_2",
+      "8" : "A1_4",
+      "9" : "Y2_1"
+    }
+  },
+  "top" : "ic74x244",
+  "version" : "1.0.0"
+}

@@ -7,13 +7,12 @@
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 173.6,
+      "fmaxMHz" : 234.5,
       "resources" : {
-        "CPE_BRIDGE" : 2,
-        "CPE_CPLINES" : 3,
-        "CPE_FF" : 6,
-        "CPE_LT" : 22,
-        "CPE_RAMIO" : 2
+        "CPE_BRIDGE" : 3,
+        "CPE_CPLINES" : 8,
+        "CPE_FF" : 12,
+        "CPE_LT" : 26
       },
       "tested" : true
     },

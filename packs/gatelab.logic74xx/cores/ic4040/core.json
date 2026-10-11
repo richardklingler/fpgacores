@@ -1,0 +1,164 @@
+{
+  "description" : "12-stage binary ripple counter with asynchronous reset, CMOS 4000 series (CD4040B, HEF4040B …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 286,
+      "resources" : {
+        "TRELLIS_COMB" : 18,
+        "TRELLIS_FF" : 12
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 163.7,
+      "resources" : {
+        "CPE_ADDF2" : 6,
+        "CPE_BRIDGE" : 2,
+        "CPE_CPLINES" : 27,
+        "CPE_FF" : 13,
+        "CPE_LT" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 82.6,
+      "resources" : {
+        "ALU" : 14,
+        "DFF" : 12
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 115.6,
+      "resources" : {
+        "ICESTORM_LC" : 14
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic4040",
+  "keywords" : [
+    "4000",
+    "cmos",
+    "4040",
+    "counter",
+    "binary",
+    "ripple",
+    "divider",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "12-stufiger asynchroner Binärzähler (Ripple) mit asynchronem Rücksetzen, CMOS-4000-Serie (CD4040B, HEF4040B …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "4040 12-stufiger Binärzähler"
+    }
+  },
+  "name" : "4040 12-stage binary counter",
+  "ports" : [
+    {
+      "description" : "Clock, falling edge",
+      "dir" : "in",
+      "name" : "CP"
+    },
+    {
+      "description" : "Master reset, asynchronous, active high",
+      "dir" : "in",
+      "name" : "MR"
+    },
+    {
+      "description" : "Stage 0 (bit 0 of the count)",
+      "dir" : "out",
+      "name" : "Q0"
+    },
+    {
+      "description" : "Stage 1 (bit 1 of the count)",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Stage 2 (bit 2 of the count)",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Stage 3 (bit 3 of the count)",
+      "dir" : "out",
+      "name" : "Q3"
+    },
+    {
+      "description" : "Stage 4 (bit 4 of the count)",
+      "dir" : "out",
+      "name" : "Q4"
+    },
+    {
+      "description" : "Stage 5 (bit 5 of the count)",
+      "dir" : "out",
+      "name" : "Q5"
+    },
+    {
+      "description" : "Stage 6 (bit 6 of the count)",
+      "dir" : "out",
+      "name" : "Q6"
+    },
+    {
+      "description" : "Stage 7 (bit 7 of the count)",
+      "dir" : "out",
+      "name" : "Q7"
+    },
+    {
+      "description" : "Stage 8 (bit 8 of the count)",
+      "dir" : "out",
+      "name" : "Q8"
+    },
+    {
+      "description" : "Stage 9 (bit 9 of the count)",
+      "dir" : "out",
+      "name" : "Q9"
+    },
+    {
+      "description" : "Stage 10 (bit 10 of the count)",
+      "dir" : "out",
+      "name" : "Q10"
+    },
+    {
+      "description" : "Stage 11 (bit 11 of the count)",
+      "dir" : "out",
+      "name" : "Q11"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "MR"
+    ],
+    "clocks" : [
+      "CP"
+    ],
+    "parts" : [
+      "4040"
+    ],
+    "pins" : {
+      "1" : "Q11",
+      "10" : "CP",
+      "11" : "MR",
+      "12" : "Q8",
+      "13" : "Q7",
+      "14" : "Q9",
+      "15" : "Q10",
+      "2" : "Q5",
+      "3" : "Q4",
+      "4" : "Q6",
+      "5" : "Q3",
+      "6" : "Q2",
+      "7" : "Q1",
+      "9" : "Q0"
+    }
+  },
+  "top" : "ic4040",
+  "version" : "1.0.0"
+}

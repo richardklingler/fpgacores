@@ -1,0 +1,139 @@
+{
+  "description" : "Dual D flip-flop with asynchronous set and reset (active high), CMOS 4000 series (CD4013B, HEF4013B …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "tested" : false
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 166.1,
+      "resources" : {
+        "CPE_BRIDGE" : 7,
+        "CPE_CPLINES" : 6,
+        "CPE_FF" : 12,
+        "CPE_LT" : 26
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "tested" : false
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "tested" : false
+    }
+  },
+  "id" : "ic4013",
+  "keywords" : [
+    "4000",
+    "cmos",
+    "4013",
+    "flip-flop",
+    "d flip-flop",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Doppeltes D-Flipflop mit asynchronem Setzen und Rücksetzen (aktiv high), CMOS-4000-Serie (CD4013B, HEF4013B …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "4013 doppeltes D-Flipflop"
+    }
+  },
+  "name" : "4013 dual D flip-flop",
+  "ports" : [
+    {
+      "description" : "Flip-flop 1, data",
+      "dir" : "in",
+      "name" : "D1"
+    },
+    {
+      "description" : "Flip-flop 1, clock, rising edge",
+      "dir" : "in",
+      "name" : "CLK1"
+    },
+    {
+      "description" : "Flip-flop 1, set, asynchronous, active high",
+      "dir" : "in",
+      "name" : "S1"
+    },
+    {
+      "description" : "Flip-flop 1, reset, asynchronous, active high",
+      "dir" : "in",
+      "name" : "R1"
+    },
+    {
+      "description" : "Flip-flop 1, output",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Flip-flop 1, inverted output",
+      "dir" : "out",
+      "name" : "Q1_n"
+    },
+    {
+      "description" : "Flip-flop 2, data",
+      "dir" : "in",
+      "name" : "D2"
+    },
+    {
+      "description" : "Flip-flop 2, clock, rising edge",
+      "dir" : "in",
+      "name" : "CLK2"
+    },
+    {
+      "description" : "Flip-flop 2, set, asynchronous, active high",
+      "dir" : "in",
+      "name" : "S2"
+    },
+    {
+      "description" : "Flip-flop 2, reset, asynchronous, active high",
+      "dir" : "in",
+      "name" : "R2"
+    },
+    {
+      "description" : "Flip-flop 2, output",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Flip-flop 2, inverted output",
+      "dir" : "out",
+      "name" : "Q2_n"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "S1",
+      "R1",
+      "S2",
+      "R2"
+    ],
+    "clocks" : [
+      "CLK1",
+      "CLK2"
+    ],
+    "parts" : [
+      "4013"
+    ],
+    "pins" : {
+      "1" : "Q1",
+      "10" : "R2",
+      "11" : "CLK2",
+      "12" : "Q2_n",
+      "13" : "Q2",
+      "2" : "Q1_n",
+      "3" : "CLK1",
+      "4" : "R1",
+      "5" : "D1",
+      "6" : "S1",
+      "8" : "S2",
+      "9" : "D2"
+    }
+  },
+  "top" : "ic4013",
+  "version" : "1.0.0"
+}

@@ -3,40 +3,43 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 261.3,
+      "fmaxMHz" : 264.6,
       "resources" : {
-        "TRELLIS_COMB" : 35,
+        "TRELLIS_COMB" : 36,
         "TRELLIS_FF" : 20
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 120.2,
+      "fmaxMHz" : 121.9,
       "resources" : {
         "CPE_ADDF" : 1,
         "CPE_ADDF2" : 5,
-        "CPE_BRIDGE" : 11,
-        "CPE_CPLINES" : 49,
-        "CPE_FF" : 11,
-        "CPE_LT" : 25
+        "CPE_BRIDGE" : 6,
+        "CPE_CPLINES" : 7,
+        "CPE_FF" : 12,
+        "CPE_LT" : 22
       },
       "tested" : true
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 146.1,
+      "fmaxMHz" : 184.4,
       "resources" : {
         "ALU" : 14,
         "DFF" : 20,
-        "LUT4" : 22,
-        "MUX2_LUT5" : 1
+        "LUT4" : 77,
+        "MUX2_LUT5" : 30,
+        "MUX2_LUT6" : 13,
+        "MUX2_LUT7" : 3,
+        "MUX2_LUT8" : 1
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 90.6,
+      "fmaxMHz" : 88.1,
       "resources" : {
         "ICESTORM_LC" : 30
       },

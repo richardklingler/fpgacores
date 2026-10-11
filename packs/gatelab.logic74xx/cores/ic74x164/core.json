@@ -1,0 +1,147 @@
+{
+  "description" : "8-bit serial-in, parallel-out shift register with gated serial input and asynchronous clear (74LS164, 74HC164 …), with the package pin table for the KiCad import.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 304,
+      "resources" : {
+        "TRELLIS_COMB" : 2,
+        "TRELLIS_FF" : 8
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 176.9,
+      "resources" : {
+        "CPE_BRIDGE" : 1,
+        "CPE_CPLINES" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "resources" : {
+        "DFF" : 8,
+        "LUT4" : 9
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 136,
+      "resources" : {
+        "ICESTORM_LC" : 1
+      },
+      "tested" : true
+    }
+  },
+  "id" : "ic74x164",
+  "keywords" : [
+    "74xx",
+    "74164",
+    "shift register",
+    "serial to parallel",
+    "sipo",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "8-Bit-Schieberegister seriell ein, parallel aus, mit verknüpftem Serieneingang und asynchronem Löschen (74LS164, 74HC164 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x164 8-Bit-Schieberegister (seriell ein)"
+    }
+  },
+  "name" : "74x164 8-bit serial-in shift register",
+  "ports" : [
+    {
+      "description" : "Serial data input A (shifted in: DSA AND DSB)",
+      "dir" : "in",
+      "name" : "DSA"
+    },
+    {
+      "description" : "Serial data input B (shifted in: DSA AND DSB)",
+      "dir" : "in",
+      "name" : "DSB"
+    },
+    {
+      "description" : "Clock, rising edge",
+      "dir" : "in",
+      "name" : "CP"
+    },
+    {
+      "description" : "Master reset, asynchronous, active low",
+      "dir" : "in",
+      "name" : "MR_n"
+    },
+    {
+      "description" : "Stage 0 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q0"
+    },
+    {
+      "description" : "Stage 1 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q1"
+    },
+    {
+      "description" : "Stage 2 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q2"
+    },
+    {
+      "description" : "Stage 3 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q3"
+    },
+    {
+      "description" : "Stage 4 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q4"
+    },
+    {
+      "description" : "Stage 5 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q5"
+    },
+    {
+      "description" : "Stage 6 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q6"
+    },
+    {
+      "description" : "Stage 7 output (Q0 takes the serial input)",
+      "dir" : "out",
+      "name" : "Q7"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "asyncInputs" : [
+      "MR_n"
+    ],
+    "clocks" : [
+      "CP"
+    ],
+    "parts" : [
+      "74x164"
+    ],
+    "pins" : {
+      "1" : "DSA",
+      "10" : "Q4",
+      "11" : "Q5",
+      "12" : "Q6",
+      "13" : "Q7",
+      "2" : "DSB",
+      "3" : "Q0",
+      "4" : "Q1",
+      "5" : "Q2",
+      "6" : "Q3",
+      "8" : "CP",
+      "9" : "MR_n"
+    }
+  },
+  "top" : "ic74x164",
+  "version" : "1.0.0"
+}

@@ -1,0 +1,142 @@
+{
+  "description" : "Octal bus transceiver with three-state outputs, direction and enable (74LS245, 74HC245 …), with the package pin table for the KiCad import.",
+  "id" : "ic74x245",
+  "keywords" : [
+    "74xx",
+    "74245",
+    "transceiver",
+    "bus",
+    "bidirectional",
+    "three-state",
+    "ttl",
+    "kicad"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Achtfacher Bus-Transceiver mit Tri-State-Ausgängen, Richtung und Freigabe (74LS245, 74HC245 …), mit der Pin-Tabelle des Gehäuses für den KiCad-Import.",
+      "name" : "74x245 achtfacher Bus-Transceiver"
+    }
+  },
+  "name" : "74x245 octal bus transceiver",
+  "ports" : [
+    {
+      "description" : "Direction: high drives B from A, low A from B",
+      "dir" : "in",
+      "name" : "DIR"
+    },
+    {
+      "description" : "Output enable, active low (both sides float while high)",
+      "dir" : "in",
+      "name" : "OE_n"
+    },
+    {
+      "description" : "A side, bit 1",
+      "dir" : "inout",
+      "name" : "A1"
+    },
+    {
+      "description" : "A side, bit 2",
+      "dir" : "inout",
+      "name" : "A2"
+    },
+    {
+      "description" : "A side, bit 3",
+      "dir" : "inout",
+      "name" : "A3"
+    },
+    {
+      "description" : "A side, bit 4",
+      "dir" : "inout",
+      "name" : "A4"
+    },
+    {
+      "description" : "A side, bit 5",
+      "dir" : "inout",
+      "name" : "A5"
+    },
+    {
+      "description" : "A side, bit 6",
+      "dir" : "inout",
+      "name" : "A6"
+    },
+    {
+      "description" : "A side, bit 7",
+      "dir" : "inout",
+      "name" : "A7"
+    },
+    {
+      "description" : "A side, bit 8",
+      "dir" : "inout",
+      "name" : "A8"
+    },
+    {
+      "description" : "B side, bit 1",
+      "dir" : "inout",
+      "name" : "B1"
+    },
+    {
+      "description" : "B side, bit 2",
+      "dir" : "inout",
+      "name" : "B2"
+    },
+    {
+      "description" : "B side, bit 3",
+      "dir" : "inout",
+      "name" : "B3"
+    },
+    {
+      "description" : "B side, bit 4",
+      "dir" : "inout",
+      "name" : "B4"
+    },
+    {
+      "description" : "B side, bit 5",
+      "dir" : "inout",
+      "name" : "B5"
+    },
+    {
+      "description" : "B side, bit 6",
+      "dir" : "inout",
+      "name" : "B6"
+    },
+    {
+      "description" : "B side, bit 7",
+      "dir" : "inout",
+      "name" : "B7"
+    },
+    {
+      "description" : "B side, bit 8",
+      "dir" : "inout",
+      "name" : "B8"
+    }
+  ],
+  "schema" : 1,
+  "schematic" : {
+    "parts" : [
+      "74x245"
+    ],
+    "pins" : {
+      "1" : "DIR",
+      "11" : "B8",
+      "12" : "B7",
+      "13" : "B6",
+      "14" : "B5",
+      "15" : "B4",
+      "16" : "B3",
+      "17" : "B2",
+      "18" : "B1",
+      "19" : "OE_n",
+      "2" : "A1",
+      "3" : "A2",
+      "4" : "A3",
+      "5" : "A4",
+      "6" : "A5",
+      "7" : "A6",
+      "8" : "A7",
+      "9" : "A8"
+    }
+  },
+  "top" : "ic74x245",
+  "version" : "1.0.0"
+}
