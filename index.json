@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-10T11:50:26Z",
+  "generated" : "2026-10-13T16:31:16Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -25,13 +25,39 @@
       ]
     },
     {
-      "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing. CC0 1.0: no conditions, no attribution needed.",
+      "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing, TMDS encoding and an HDMI/DVI output for AMD Xilinx 7-series. CC0 1.0: no conditions, no attribution needed.",
       "documentation" : "https://github.com/richardklingler/fpgacores",
       "id" : "gatelab.essentials",
       "maintainer" : "GateLab",
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "async_fifo",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "hdmi_out",
+            "i2c_master",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_slave",
+            "sync_fifo",
+            "tmds_encoder",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "b22522dff40c60f296d5f847298c51ec62217f54473892e8eb6e6566abcd13ad",
+            "size" : 161847,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.1.0.fpgapack"
+          },
+          "version" : "1.1.0"
+        },
         {
           "cores" : [
             "async_fifo",
