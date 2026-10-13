@@ -5,9 +5,8 @@
 //
 // Clocks: `serial_clk` is five times `pixel_clk` (DDR: ten bits per pixel), both from one MMCM or
 // PLL so they're in phase. On the global buffers (BUFG) that's 720p60 and 1080p30 (74.25 / 371.25
-// MHz). 1080p60's 742.5 MHz serial clock is over a BUFG's limit: put it on a BUFIO and the pixel
-// clock on a BUFR dividing it by 5, both in the TMDS pins' clock region (GateLab's HDMI spike,
-// 2026-10-13). `reset` is synchronous to `pixel_clk`: hold it until the clocks are stable.
+// MHz). 1080p60's 742.5 MHz serial clock is over a BUFG's limit: use `hdmi_out_bufr` below.
+// `reset` is synchronous to `pixel_clk`: hold it until the clocks are stable.
 //
 // The pins take IOSTANDARD TMDS_33 (P and N of each pair, a 3.3 V bank). Bits go out from bit 0.
 // Simulation (no SYNTHESIS) sends the same bits from a behavioural model on both edges of
@@ -37,6 +36,84 @@ module hdmi_out (
     hdmi_out_lane u_lane_green (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_green), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));
     hdmi_out_lane u_lane_red   (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_red),   .out_p(tmds_d_p[2]), .out_n(tmds_d_n[2]));
     hdmi_out_lane u_lane_clock (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(10'b0000011111), .out_p(tmds_clk_p), .out_n(tmds_clk_n));
+endmodule
+
+// hdmi_out for serial clocks over a BUFG's limit (1080p60: 742.5 MHz). The serialisers take
+// `serial_clk` from a BUFIO and `lane_clk` from a BUFR dividing the same MMCM output by 5, in the
+// TMDS pins' clock region. A BUFR reaches that one region only, and nextpnr-xilinx doesn't know:
+// logic it clocks may land in the next region and get its clock over data wires (GateLab's HDMI
+// follow-up, 2026-10-13). So the encoders and everything the design feeds in run on `pixel_clk`, a
+// BUFG at the same frequency from the same MMCM, and only the serialisers, a read pointer and a
+// reset synchroniser are on `lane_clk`. The words cross through a ring of eight, written on
+// `pixel_clk` and read on `lane_clk` about four entries behind: the two clocks have the same
+// frequency, their phase isn't known.
+//
+// BLACK_LAST_PIXEL (default 1) sends each line's last pixel black. At 1080p60 the link runs about
+// 20 % over the HR banks' rating, and on GateLab's test monitor a line whose last pixel was white
+// came out one pixel to the side of the others; a black last pixel cured it. 0 sends the picture
+// unchanged. One register stage in front of the encoders either way, for timing: the pixels come
+// out a clock later than with hdmi_out.
+module hdmi_out_bufr #(
+    parameter BLACK_LAST_PIXEL = 1
+) (
+    input  wire       pixel_clk,
+    input  wire       lane_clk,
+    input  wire       serial_clk,
+    input  wire       reset,
+    input  wire [7:0] red,
+    input  wire [7:0] green,
+    input  wire [7:0] blue,
+    input  wire       de,
+    input  wire       hsync,
+    input  wire       vsync,
+    output wire       tmds_clk_p,
+    output wire       tmds_clk_n,
+    output wire [2:0] tmds_d_p,
+    output wire [2:0] tmds_d_n
+);
+    // One stage: a pixel whose successor has `de` low is the line's last.
+    reg [23:0] colour = 24'd0;
+    reg de_q = 1'b0, hsync_q = 1'b0, vsync_q = 1'b0;
+    always @(posedge pixel_clk) begin
+        colour <= {red, green, blue};
+        de_q <= de;
+        hsync_q <= hsync;
+        vsync_q <= vsync;
+    end
+    wire last = BLACK_LAST_PIXEL != 0 && de_q && !de;
+    wire [23:0] shown = last ? 24'd0 : colour;
+
+    wire [9:0] word_blue, word_green, word_red;
+    tmds_encoder u_blue  (.clk(pixel_clk), .de(de_q), .d(shown[7:0]),   .c0(hsync_q), .c1(vsync_q), .q(word_blue));
+    tmds_encoder u_green (.clk(pixel_clk), .de(de_q), .d(shown[15:8]),  .c0(1'b0),    .c1(1'b0),    .q(word_green));
+    tmds_encoder u_red   (.clk(pixel_clk), .de(de_q), .d(shown[23:16]), .c0(1'b0),    .c1(1'b0),    .q(word_red));
+
+    // The reset reaches lane_clk through two flip-flops, so the read pointer starts a little after
+    // the write pointer. Starting the write pointer at 3 puts the entry being read half the ring
+    // away from the entry being written (the testbench measures it for every phase), so a lane
+    // clock more or less from the synchroniser can't make them meet.
+    reg [1:0] lane_reset_sync = 2'b11;
+    always @(posedge lane_clk or posedge reset) begin
+        if (reset) lane_reset_sync <= 2'b11;
+        else lane_reset_sync <= {lane_reset_sync[0], 1'b0};
+    end
+    wire lane_reset = lane_reset_sync[1];
+
+    reg [29:0] ring [0:7];
+    reg [2:0] write_at = 3'd3, read_at = 3'd0;
+    integer i;
+    initial for (i = 0; i < 8; i = i + 1) ring[i] = 30'd0;   // LUT RAM starts at 0
+    always @(posedge pixel_clk) begin
+        ring[write_at] <= {word_red, word_green, word_blue};
+        write_at <= reset ? 3'd3 : write_at + 3'd1;
+    end
+    always @(posedge lane_clk) read_at <= lane_reset ? 3'd0 : read_at + 3'd1;
+    wire [29:0] words = ring[read_at];
+
+    hdmi_out_lane u_lane_blue  (.pixel_clk(lane_clk), .serial_clk(serial_clk), .reset(lane_reset), .word(words[9:0]),   .out_p(tmds_d_p[0]), .out_n(tmds_d_n[0]));
+    hdmi_out_lane u_lane_green (.pixel_clk(lane_clk), .serial_clk(serial_clk), .reset(lane_reset), .word(words[19:10]), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));
+    hdmi_out_lane u_lane_red   (.pixel_clk(lane_clk), .serial_clk(serial_clk), .reset(lane_reset), .word(words[29:20]), .out_p(tmds_d_p[2]), .out_n(tmds_d_n[2]));
+    hdmi_out_lane u_lane_clock (.pixel_clk(lane_clk), .serial_clk(serial_clk), .reset(lane_reset), .word(10'b0000011111), .out_p(tmds_clk_p), .out_n(tmds_clk_n));
 endmodule
 
 // One TMDS lane: a 10-bit word per pixel clock, bit 0 first, out of a differential pair.

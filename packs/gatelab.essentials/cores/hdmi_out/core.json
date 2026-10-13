@@ -2,7 +2,7 @@
   "dependencies" : [
     "tmds_encoder"
   ],
-  "description" : "Pixels and syncs out of an HDMI or DVI connector on AMD Xilinx 7-series: three TMDS encoders, 10:1 OSERDESE2 serialisers and TMDS_33 differential outputs, plus the clock lane. Needs a pixel clock and a five-times serial clock from one MMCM or PLL (720p60: 74.25 and 371.25 MHz). DVI signalling, no audio.",
+  "description" : "Pixels and syncs out of an HDMI or DVI connector on AMD Xilinx 7-series: three TMDS encoders, 10:1 OSERDESE2 serialisers and TMDS_33 differential outputs, plus the clock lane. Needs a pixel clock and a five-times serial clock from one MMCM or PLL (720p60: 74.25 and 371.25 MHz). For 1080p60 the module hdmi_out_bufr keeps the design on a global clock and only the serialisers on a BUFR. DVI signalling, no audio.",
   "id" : "hdmi_out",
   "keywords" : [
     "hdmi",
@@ -12,12 +12,14 @@
     "display",
     "oserdes",
     "720p",
-    "1080p"
+    "1080p",
+    "1080p60",
+    "bufr"
   ],
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei AMD Xilinx 7-Serie: drei TMDS-Encoder, 10:1-OSERDESE2-Serialisierer und differentielle TMDS_33-Ausgänge, dazu der Takt-Kanal. Braucht einen Pixeltakt und einen fünffachen seriellen Takt aus einem MMCM oder PLL (720p60: 74,25 und 371,25 MHz). DVI-Signalisierung, ohne Ton.",
+      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei AMD Xilinx 7-Serie: drei TMDS-Encoder, 10:1-OSERDESE2-Serialisierer und differentielle TMDS_33-Ausgänge, dazu der Takt-Kanal. Braucht einen Pixeltakt und einen fünffachen seriellen Takt aus einem MMCM oder PLL (720p60: 74,25 und 371,25 MHz). Für 1080p60 hält das Modul hdmi_out_bufr das Design auf einem globalen Takt und nur die Serialisierer auf einem BUFR. DVI-Signalisierung, ohne Ton.",
       "name" : "HDMI/DVI-Ausgang (7-Serie)"
     }
   },
@@ -99,5 +101,5 @@
   ],
   "schema" : 1,
   "top" : "hdmi_out",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }
