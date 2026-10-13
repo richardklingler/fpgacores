@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-13T16:31:16Z",
+  "generated" : "2026-10-13T19:38:40Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -32,6 +32,32 @@
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "async_fifo",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "hdmi_out",
+            "i2c_master",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_slave",
+            "sync_fifo",
+            "tmds_encoder",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "a1a42d12c44d4634fd6e169c02dde340389281f43e15abe367c8a8ce5421f3bc",
+            "size" : 177567,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.2.0.fpgapack"
+          },
+          "version" : "1.2.0"
+        },
         {
           "cores" : [
             "async_fifo",
