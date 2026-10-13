@@ -17,7 +17,7 @@ import sys
 ID = re.compile(r"[a-z0-9]+([._-][a-z0-9]+)*")
 NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_$]*")
 VERSION = re.compile(r"[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}")
-FAMILIES = {"ice40", "ecp5", "gowin", "gatemate"}
+FAMILIES = {"ice40", "ecp5", "gowin", "gatemate", "xilinx7"}
 DIRECTIONS = {"in", "out", "inout"}
 # SPDX ids that need no licence text in the pack.
 PUBLIC_DOMAIN = {"cc0-1.0", "unlicense", "0bsd"}
@@ -150,6 +150,8 @@ CORE = {
     "schematic": (False, "an object", None),
     # A simulation model only (a delay): not measured, not for a design on the FPGA.
     "simulationOnly": (False, "true or false", None),
+    # Built on a vendor's primitives: the only families the core works on (hdmi_out: xilinx7).
+    "requiresFamilies": (False, "a list", lambda v: None if v and all(f in FAMILIES for f in v) else "needs known families like xilinx7"),
 }
 
 
@@ -233,6 +235,8 @@ def check_core(core_path, core_id, pack_has_licence, core_owners, pack_id):
                 fields(manifest_path, schematic["oneShot"], ONE_SHOT, "schematic.oneShot")
     if manifest.get("simulationOnly") is True:
         pass  # nothing to measure
+    elif manifest.get("requiresFamilies"):
+        pass  # vendor primitives drive pads: not measured out of context
     elif any(isinstance(p, dict) and p.get("dir") == "inout" for p in manifest.get("ports") or []):
         pass  # bidirectional ports can't be driven out of context: not measured
     elif not manifest.get("families"):
