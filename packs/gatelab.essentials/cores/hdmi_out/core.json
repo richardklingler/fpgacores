@@ -1,0 +1,103 @@
+{
+  "dependencies" : [
+    "tmds_encoder"
+  ],
+  "description" : "Pixels and syncs out of an HDMI or DVI connector on AMD Xilinx 7-series: three TMDS encoders, 10:1 OSERDESE2 serialisers and TMDS_33 differential outputs, plus the clock lane. Needs a pixel clock and a five-times serial clock from one MMCM or PLL (720p60: 74.25 and 371.25 MHz). DVI signalling, no audio.",
+  "id" : "hdmi_out",
+  "keywords" : [
+    "hdmi",
+    "dvi",
+    "tmds",
+    "video",
+    "display",
+    "oserdes",
+    "720p",
+    "1080p"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei AMD Xilinx 7-Serie: drei TMDS-Encoder, 10:1-OSERDESE2-Serialisierer und differentielle TMDS_33-Ausgänge, dazu der Takt-Kanal. Braucht einen Pixeltakt und einen fünffachen seriellen Takt aus einem MMCM oder PLL (720p60: 74,25 und 371,25 MHz). DVI-Signalisierung, ohne Ton.",
+      "name" : "HDMI/DVI-Ausgang (7-Serie)"
+    }
+  },
+  "name" : "HDMI/DVI output (7-series)",
+  "ports" : [
+    {
+      "description" : "Pixel clock (74.25 MHz for 720p60 and 1080p30)",
+      "dir" : "in",
+      "name" : "pixel_clk"
+    },
+    {
+      "description" : "Five times the pixel clock, in phase with it",
+      "dir" : "in",
+      "name" : "serial_clk"
+    },
+    {
+      "description" : "Synchronous to pixel_clk: hold until the clocks are stable",
+      "dir" : "in",
+      "name" : "reset"
+    },
+    {
+      "description" : "Red",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "Data enable: high in the visible area",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "TMDS clock lane, P (TMDS_33)",
+      "dir" : "out",
+      "name" : "tmds_clk_p"
+    },
+    {
+      "description" : "TMDS clock lane, N",
+      "dir" : "out",
+      "name" : "tmds_clk_n"
+    },
+    {
+      "description" : "TMDS data lanes 0 (blue), 1 (green), 2 (red), P",
+      "dir" : "out",
+      "name" : "tmds_d_p",
+      "width" : 3
+    },
+    {
+      "description" : "TMDS data lanes, N",
+      "dir" : "out",
+      "name" : "tmds_d_n",
+      "width" : 3
+    }
+  ],
+  "requiresFamilies" : [
+    "xilinx7"
+  ],
+  "schema" : 1,
+  "top" : "hdmi_out",
+  "version" : "1.0.0"
+}

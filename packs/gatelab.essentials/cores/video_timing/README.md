@@ -14,3 +14,13 @@ The default is 640×480 at 60 Hz: pixel clock 25.175 MHz (a PLL making 25 MHz is
 most monitors). Other modes come from the parameters (e.g. 800×600 at 60 Hz: 800/40/128/88,
 600/1/4/23, positive syncs, 40 MHz). For DVI or HDMI the outputs still need TMDS encoding and
 serialisers, which are family-specific.
+
+HDMI modes (CEA-861, both syncs positive; set `H_SYNC_POSITIVE` and `V_SYNC_POSITIVE` to 1):
+
+| Mode | Pixel clock | H active/front/sync/back | V active/front/sync/back |
+|---|---|---|---|
+| 720p60 | 74.25 MHz | 1280/110/40/220 | 720/5/5/20 |
+| 1080p30 | 74.25 MHz | 1920/88/44/148 | 1080/4/5/36 |
+| 1080p60 | 148.5 MHz | 1920/88/44/148 | 1080/4/5/36 |
+
+On AMD Xilinx 7-series, `hdmi_out` encodes and serialises them.

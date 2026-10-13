@@ -1,0 +1,114 @@
+{
+  "description" : "One channel of DVI/HDMI's TMDS code: a byte becomes a DC-balanced 10-bit word while data is enabled, the control word for c1/c0 in blanking. One clock of latency; the serialiser is family-specific.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 107.1,
+      "resources" : {
+        "TRELLIS_COMB" : 123,
+        "TRELLIS_FF" : 16
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 28.7,
+      "resources" : {
+        "CPE_ADDF" : 3,
+        "CPE_ADDF2" : 15,
+        "CPE_BRIDGE" : 27,
+        "CPE_CPLINES" : 22,
+        "CPE_FF" : 17,
+        "CPE_LT" : 84,
+        "CPE_MX4" : 13
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 79.6,
+      "resources" : {
+        "ALU" : 30,
+        "DFF" : 16,
+        "LUT4" : 97,
+        "MUX2_LUT5" : 21,
+        "MUX2_LUT6" : 7,
+        "MUX2_LUT7" : 3
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 25.2,
+      "resources" : {
+        "ICESTORM_LC" : 103
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 110.6,
+      "resources" : {
+        "CARRY4" : 9,
+        "SLICE_FFX" : 16,
+        "SLICE_LUTX" : 114
+      },
+      "tested" : true
+    }
+  },
+  "id" : "tmds_encoder",
+  "keywords" : [
+    "tmds",
+    "dvi",
+    "hdmi",
+    "video",
+    "8b10b",
+    "encoder",
+    "display"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein Kanal des TMDS-Codes von DVI/HDMI: Ein Byte wird bei aktivem Datenfreigabesignal zu einem gleichspannungsfreien 10-Bit-Wort, in der Austastlücke zum Steuerwort für c1/c0. Ein Takt Latenz; der Serialisierer ist familienspezifisch.",
+      "name" : "TMDS-Encoder (DVI/HDMI)"
+    }
+  },
+  "name" : "TMDS encoder (DVI/HDMI)",
+  "ports" : [
+    {
+      "description" : "Pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Data enable: high in the visible area",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "The channel's colour byte",
+      "dir" : "in",
+      "name" : "d",
+      "width" : 8
+    },
+    {
+      "description" : "Control bit 0 in blanking (blue: hsync)",
+      "dir" : "in",
+      "name" : "c0"
+    },
+    {
+      "description" : "Control bit 1 in blanking (blue: vsync)",
+      "dir" : "in",
+      "name" : "c1"
+    },
+    {
+      "description" : "The TMDS word, bit 0 goes out first",
+      "dir" : "out",
+      "name" : "q",
+      "width" : 10
+    }
+  ],
+  "schema" : 1,
+  "top" : "tmds_encoder",
+  "version" : "1.0.0"
+}
