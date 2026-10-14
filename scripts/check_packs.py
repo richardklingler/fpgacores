@@ -152,6 +152,8 @@ CORE = {
     "simulationOnly": (False, "true or false", None),
     # Built on a vendor's primitives: the only families the core works on (hdmi_out: xilinx7).
     "requiresFamilies": (False, "a list", lambda v: None if v and all(f in FAMILIES for f in v) else "needs known families like xilinx7"),
+    # Stands in for another core on its own families (hdmi_out_gowin: hdmi_out), same top and ports.
+    "variantOf": (False, "a string", matches(NAME, "core id")),
 }
 
 
