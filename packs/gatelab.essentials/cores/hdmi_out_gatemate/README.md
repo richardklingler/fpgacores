@@ -23,8 +23,12 @@ counter ÷ 5 through a `CC_BUFG`: from the EVB's 10 MHz, 125 and 25 MHz for 640�
 25.175 MHz; monitors take it). The pixel clock therefore arrives a little after its serial edge.
 The lanes don't count on their own: they watch a bit that toggles with every pixel clock and take
 the word three serial clocks after the pixel edge, two before the next one, whatever the
-divider's delay. The serial clock reaches about 130 MHz, so 640×480 is the mode; the encoders at
-25 MHz have room to spare.
+divider's delay. The load comes from a flip-flop per lane, and each pin's two bits sit in a register
+next to its `CC_ODDR` (it takes D1 on the falling edge, so that hop has half a clock). In a full
+design the serial clock then closes at 150–180 MHz in nextpnr's worst case for speed mode (126
+needed for 640×480) and about 110 MHz in economy mode, the GateMate EVB's factory setting (JP12) —
+640×480 ran there on the user's monitor anyway, but move JP12 to speed for the guarantee. The
+encoders at 25 MHz have room to spare.
 
 **Reset** is synchronous to `pixel_clk` (the encoders); the lanes need none.
 
