@@ -52,19 +52,27 @@ module hdmi_out_lane (
     output wire       out_n
 );
     // Five serial clocks per pixel, two bits per clock: load every fifth clock, shift by two.
+    // N has a shift register of its own with the inverted word, so both ODDRX1Fs take their bits
+    // straight from flip-flops: an inverter between them was the 370 MHz path in a larger design
+    // (354 MHz on the i9 with the image, text and sprite template).
     reg [4:0] ring = 5'b00001;
     reg [9:0] shift = 10'd0;
+    reg [9:0] shift_n = 10'h3FF;
     always @(posedge serial_clk) begin
         ring <= {ring[3:0], ring[4]};
         shift <= ring[4] ? word : {2'b00, shift[9:2]};
+        shift_n <= ring[4] ? ~word : {2'b11, shift_n[9:2]};
     end
 `ifdef SYNTHESIS
     ODDRX1F u_p (.SCLK(serial_clk), .RST(1'b0), .D0(shift[0]), .D1(shift[1]), .Q(out_p));
-    ODDRX1F u_n (.SCLK(serial_clk), .RST(1'b0), .D0(~shift[0]), .D1(~shift[1]), .Q(out_n));
+    ODDRX1F u_n (.SCLK(serial_clk), .RST(1'b0), .D0(shift_n[0]), .D1(shift_n[1]), .Q(out_n));
 `else
-    reg [1:0] bits = 2'b00;
-    always @(posedge serial_clk) bits <= shift[1:0];
+    reg [1:0] bits = 2'b00, bits_n = 2'b11;
+    always @(posedge serial_clk) begin
+        bits <= shift[1:0];
+        bits_n <= shift_n[1:0];
+    end
     assign out_p = serial_clk ? bits[0] : bits[1];
-    assign out_n = ~out_p;
+    assign out_n = serial_clk ? bits_n[0] : bits_n[1];
 `endif
 endmodule

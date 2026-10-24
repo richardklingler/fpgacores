@@ -1,0 +1,288 @@
+{
+  "description" : "Draws a sprite from an image ROM (Add Image ROM) over a video picture: position, ×1–×8 scaling, mirroring, transparency by palette index 0 or mask, or alpha blending. Layers chain; LATENCY = ROM_LATENCY + 2 clocks.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 155.4,
+      "resources" : {
+        "TRELLIS_COMB" : 89,
+        "TRELLIS_FF" : 204
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 95.7,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 18,
+        "CPE_FF" : 44,
+        "CPE_LT" : 53
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 128.3,
+      "resources" : {
+        "ALU" : 46,
+        "DFF" : 204,
+        "LUT4" : 217,
+        "MUX2_LUT5" : 8,
+        "MUX2_LUT6" : 4,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 46.3,
+      "resources" : {
+        "ICESTORM_LC" : 257
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 312.8,
+      "resources" : {
+        "CARRY4" : 6,
+        "SLICE_FFX" : 126,
+        "SLICE_LUTX" : 107
+      },
+      "tested" : true
+    }
+  },
+  "id" : "sprite_layer",
+  "keywords" : [
+    "sprite",
+    "video",
+    "hdmi",
+    "vga",
+    "dvi",
+    "image",
+    "rom",
+    "alpha",
+    "overlay",
+    "game"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Zeichnet ein Sprite aus einem Bild-ROM (Add Image ROM) über ein Videobild: Position, Skalierung ×1–×8, Spiegelung, Transparenz über Palettenindex 0 oder Maske oder Alpha-Überblendung. Ebenen lassen sich verketten; LATENCY = ROM_LATENCY + 2 Takte.",
+      "name" : "Sprite-Ebene"
+    }
+  },
+  "name" : "Sprite layer",
+  "parameters" : [
+    {
+      "default" : 11,
+      "description" : "Width of x (video_timing's x)",
+      "name" : "X_BITS"
+    },
+    {
+      "default" : 10,
+      "description" : "Width of y",
+      "name" : "Y_BITS"
+    },
+    {
+      "default" : 16,
+      "description" : "Sprite width in image pixels (a frame's width for a sprite sheet)",
+      "name" : "WIDTH"
+    },
+    {
+      "default" : 16,
+      "description" : "Sprite height in image pixels",
+      "name" : "HEIGHT"
+    },
+    {
+      "default" : 0,
+      "description" : "Each image pixel is 2^SCALE_SHIFT screen pixels wide and high",
+      "name" : "SCALE_SHIFT"
+    },
+    {
+      "default" : 2,
+      "description" : "The image ROM reader's read latency (2, or 3 for tiles)",
+      "name" : "ROM_LATENCY"
+    },
+    {
+      "default" : 0,
+      "description" : "1: blend the reader's premultiplied colour by its alpha output",
+      "name" : "ALPHA"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Pixel column from video_timing (or the previous layer's x_out)",
+      "dir" : "in",
+      "name" : "x",
+      "width" : 11
+    },
+    {
+      "description" : "Pixel row",
+      "dir" : "in",
+      "name" : "y",
+      "width" : 10
+    },
+    {
+      "description" : "Data enable: the pixel is visible",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "Red of the picture below",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green of the picture below",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue of the picture below",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "Draw the sprite",
+      "dir" : "in",
+      "name" : "enable"
+    },
+    {
+      "description" : "Screen column of the sprite's left edge",
+      "dir" : "in",
+      "name" : "sprite_x",
+      "width" : 11
+    },
+    {
+      "description" : "Screen row of the sprite's top edge",
+      "dir" : "in",
+      "name" : "sprite_y",
+      "width" : 10
+    },
+    {
+      "description" : "Mirror left to right",
+      "dir" : "in",
+      "name" : "flip_x"
+    },
+    {
+      "description" : "Mirror top to bottom",
+      "dir" : "in",
+      "name" : "flip_y"
+    },
+    {
+      "description" : "To the image ROM reader's x",
+      "dir" : "out",
+      "name" : "rom_x",
+      "width" : 4
+    },
+    {
+      "description" : "To the image ROM reader's y",
+      "dir" : "out",
+      "name" : "rom_y",
+      "width" : 4
+    },
+    {
+      "description" : "From the reader: red",
+      "dir" : "in",
+      "name" : "rom_red",
+      "width" : 8
+    },
+    {
+      "description" : "From the reader: green",
+      "dir" : "in",
+      "name" : "rom_green",
+      "width" : 8
+    },
+    {
+      "description" : "From the reader: blue",
+      "dir" : "in",
+      "name" : "rom_blue",
+      "width" : 8
+    },
+    {
+      "description" : "From the reader: the pixel is not transparent",
+      "dir" : "in",
+      "name" : "rom_opaque"
+    },
+    {
+      "description" : "From the reader: alpha (ALPHA = 1; tie to 0 otherwise)",
+      "dir" : "in",
+      "name" : "rom_alpha",
+      "width" : 8
+    },
+    {
+      "description" : "x, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "x_out",
+      "width" : 11
+    },
+    {
+      "description" : "y, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "y_out",
+      "width" : 10
+    },
+    {
+      "description" : "de, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "de_out"
+    },
+    {
+      "description" : "hsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "hsync_out"
+    },
+    {
+      "description" : "vsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "vsync_out"
+    },
+    {
+      "description" : "Red with the layer drawn",
+      "dir" : "out",
+      "name" : "red_out",
+      "width" : 8
+    },
+    {
+      "description" : "Green with the layer drawn",
+      "dir" : "out",
+      "name" : "green_out",
+      "width" : 8
+    },
+    {
+      "description" : "Blue with the layer drawn",
+      "dir" : "out",
+      "name" : "blue_out",
+      "width" : 8
+    },
+    {
+      "description" : "The sprite covers this output pixel (collisions)",
+      "dir" : "out",
+      "name" : "covered"
+    }
+  ],
+  "schema" : 1,
+  "top" : "sprite_layer",
+  "version" : "1.0.0"
+}

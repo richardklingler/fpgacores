@@ -82,6 +82,11 @@ module tmds_encoder_tb;
         end
     endfunction
 
+    // The encoder's latency; the expected words wait in a short history.
+    localparam LATENCY = 3;
+    reg [9:0] expected_q [0:LATENCY-1];
+    reg [7:0] sent_d [0:LATENCY-1];
+    reg sent_de [0:LATENCY-1];
     integer errors = 0, cycle, balance = 0, worst = 0, words = 0, k;
     reg [9:0] expected;
     reg [15:0] lfsr = 16'hACE1;
@@ -99,24 +104,30 @@ module tmds_encoder_tb;
             else if (cycle >= 500 && cycle < 560) d = 8'h10;
             else d = lfsr[7:0];
             reference(de, d, c0, c1, expected);
+            for (k = LATENCY - 1; k > 0; k = k - 1) begin
+                expected_q[k] = expected_q[k - 1]; sent_d[k] = sent_d[k - 1]; sent_de[k] = sent_de[k - 1];
+            end
+            expected_q[0] = expected; sent_d[0] = d; sent_de[0] = de;
             @(posedge clk);
             #1;
-            // q now holds the word for the inputs at this edge.
-            if (q !== expected) begin
-                $display("FAIL: cycle %0d: word %b, expected %b (de %b, d %h)", cycle, q, expected, de, d);
-                errors = errors + 1;
-            end
-            if (de) begin
-                if (decode(q) !== d) begin
-                    $display("FAIL: cycle %0d: %b decodes to %h, sent %h", cycle, q, decode(q), d);
+            // q now holds the word for the inputs LATENCY - 1 edges before this one.
+            if (cycle >= LATENCY - 1) begin
+                if (q !== expected_q[LATENCY - 1]) begin
+                    $display("FAIL: cycle %0d: word %b, expected %b (de %b, d %h)", cycle, q, expected_q[LATENCY - 1], sent_de[LATENCY - 1], sent_d[LATENCY - 1]);
                     errors = errors + 1;
                 end
-                for (k = 0; k < 10; k = k + 1) balance = balance + (q[k] ? 1 : -1);
-                if (balance > worst) worst = balance;
-                if (-balance > worst) worst = -balance;
-                words = words + 1;
-            end else begin
-                balance = 0;
+                if (sent_de[LATENCY - 1]) begin
+                    if (decode(q) !== sent_d[LATENCY - 1]) begin
+                        $display("FAIL: cycle %0d: %b decodes to %h, sent %h", cycle, q, decode(q), sent_d[LATENCY - 1]);
+                        errors = errors + 1;
+                    end
+                    for (k = 0; k < 10; k = k + 1) balance = balance + (q[k] ? 1 : -1);
+                    if (balance > worst) worst = balance;
+                    if (-balance > worst) worst = -balance;
+                    words = words + 1;
+                end else begin
+                    balance = 0;
+                end
             end
             if (errors > 5) cycle = 4000;
         end

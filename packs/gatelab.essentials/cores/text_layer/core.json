@@ -1,0 +1,313 @@
+{
+  "description" : "Draws a grid of characters from a font ROM (Add Font ROM) over a video picture: its own text RAM with a colour per cell (16-colour palette), written at any time or loaded from a hex file, scaling, an optional background. Layers chain; LATENCY = FONT_LATENCY + 2 clocks.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 148.5,
+      "resources" : {
+        "TRELLIS_COMB" : 199,
+        "TRELLIS_FF" : 163,
+        "TRELLIS_RAMW" : 15
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 95.2,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 8,
+        "CPE_BRIDGE" : 17,
+        "CPE_CPLINES" : 60,
+        "CPE_FF" : 93,
+        "CPE_LT" : 191,
+        "CPE_RAMIO" : 61,
+        "RAM_HALF" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 229.9,
+      "resources" : {
+        "ALU" : 24,
+        "DFF" : 163,
+        "LUT4" : 263,
+        "MUX2_LUT5" : 11,
+        "RAM16SDP4" : 15
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 68.3,
+      "resources" : {
+        "ICESTORM_LC" : 220,
+        "ICESTORM_RAM" : 1
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 280.2,
+      "resources" : {
+        "CARRY4" : 2,
+        "SLICE_FFX" : 156,
+        "SLICE_LUTX" : 110
+      },
+      "tested" : true
+    }
+  },
+  "id" : "text_layer",
+  "keywords" : [
+    "text",
+    "font",
+    "characters",
+    "video",
+    "hdmi",
+    "vga",
+    "dvi",
+    "console",
+    "overlay",
+    "rom"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Zeichnet ein Zeichenraster aus einem Font-ROM (Add Font ROM) über ein Videobild: eigener Text-RAM mit einer Farbe pro Zelle (Palette mit 16 Farben), jederzeit beschreibbar oder aus einer Hex-Datei geladen, Skalierung, optionaler Hintergrund. Ebenen lassen sich verketten; LATENCY = FONT_LATENCY + 2 Takte.",
+      "name" : "Text-Ebene"
+    }
+  },
+  "name" : "Text layer",
+  "parameters" : [
+    {
+      "default" : 11,
+      "description" : "Width of x (video_timing's x)",
+      "name" : "X_BITS"
+    },
+    {
+      "default" : 10,
+      "description" : "Width of y",
+      "name" : "Y_BITS"
+    },
+    {
+      "default" : 40,
+      "description" : "Characters per row",
+      "name" : "COLUMNS"
+    },
+    {
+      "default" : 2,
+      "description" : "Rows of characters",
+      "name" : "ROWS"
+    },
+    {
+      "default" : 8,
+      "description" : "The font's cell width in pixels (a power of two)",
+      "name" : "CELL_WIDTH"
+    },
+    {
+      "default" : 8,
+      "description" : "The font's cell height in pixels (a power of two)",
+      "name" : "CELL_HEIGHT"
+    },
+    {
+      "default" : 0,
+      "description" : "Each font pixel is 2^SCALE_SHIFT screen pixels wide and high",
+      "name" : "SCALE_SHIFT"
+    },
+    {
+      "default" : 0,
+      "description" : "Screen column of the grid's left edge",
+      "name" : "TEXT_X"
+    },
+    {
+      "default" : 0,
+      "description" : "Screen row of the grid's top edge",
+      "name" : "TEXT_Y"
+    },
+    {
+      "default" : 8,
+      "description" : "Width of the font ROM reader's code input",
+      "name" : "CODE_BITS"
+    },
+    {
+      "default" : 1,
+      "description" : "The font ROM reader's read latency",
+      "name" : "FONT_LATENCY"
+    },
+    {
+      "description" : "Hex file with the starting text, one word per cell (colour, code: F41 is a white A); empty: blank",
+      "name" : "INIT_FILE"
+    },
+    {
+      "default" : 32,
+      "description" : "The code of an empty cell when there is no INIT_FILE",
+      "name" : "BLANK_CODE"
+    },
+    {
+      "default" : 0,
+      "description" : "1: the grid's cells show BACKGROUND_COLOUR where there is no ink",
+      "name" : "BACKGROUND"
+    },
+    {
+      "default" : 0,
+      "description" : "The grid's background as 24'hRRGGBB",
+      "name" : "BACKGROUND_COLOUR"
+    },
+    {
+      "description" : "16 colours as 24'hRRGGBB each, index 0 in the lowest bits; the CGA palette by default (15 is white)",
+      "name" : "PALETTE"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Pixel column from video_timing (or the previous layer's x_out)",
+      "dir" : "in",
+      "name" : "x",
+      "width" : 11
+    },
+    {
+      "description" : "Pixel row",
+      "dir" : "in",
+      "name" : "y",
+      "width" : 10
+    },
+    {
+      "description" : "Data enable: the pixel is visible",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "Red of the picture below",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green of the picture below",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue of the picture below",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "Write write_code and write_colour into the cell at write_address",
+      "dir" : "in",
+      "name" : "write"
+    },
+    {
+      "description" : "Cell to write: row × COLUMNS + column",
+      "dir" : "in",
+      "name" : "write_address",
+      "width" : 7
+    },
+    {
+      "description" : "Character code",
+      "dir" : "in",
+      "name" : "write_code",
+      "width" : 8
+    },
+    {
+      "description" : "Palette index of the character",
+      "dir" : "in",
+      "name" : "write_colour",
+      "width" : 4
+    },
+    {
+      "description" : "To the font ROM reader's code",
+      "dir" : "out",
+      "name" : "font_code",
+      "width" : 8
+    },
+    {
+      "description" : "To the font ROM reader's row",
+      "dir" : "out",
+      "name" : "font_row",
+      "width" : 3
+    },
+    {
+      "description" : "To the font ROM reader's column",
+      "dir" : "out",
+      "name" : "font_column",
+      "width" : 3
+    },
+    {
+      "description" : "From the font ROM reader: pixel",
+      "dir" : "in",
+      "name" : "font_pixel"
+    },
+    {
+      "description" : "x, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "x_out",
+      "width" : 11
+    },
+    {
+      "description" : "y, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "y_out",
+      "width" : 10
+    },
+    {
+      "description" : "de, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "de_out"
+    },
+    {
+      "description" : "hsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "hsync_out"
+    },
+    {
+      "description" : "vsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "vsync_out"
+    },
+    {
+      "description" : "Red with the layer drawn",
+      "dir" : "out",
+      "name" : "red_out",
+      "width" : 8
+    },
+    {
+      "description" : "Green with the layer drawn",
+      "dir" : "out",
+      "name" : "green_out",
+      "width" : 8
+    },
+    {
+      "description" : "Blue with the layer drawn",
+      "dir" : "out",
+      "name" : "blue_out",
+      "width" : 8
+    },
+    {
+      "description" : "A character draws this output pixel",
+      "dir" : "out",
+      "name" : "ink"
+    }
+  ],
+  "schema" : 1,
+  "top" : "text_layer",
+  "version" : "1.0.1"
+}

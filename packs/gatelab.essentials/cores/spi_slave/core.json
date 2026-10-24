@@ -39,6 +39,16 @@
         "ICESTORM_LC" : 47
       },
       "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 324.1,
+      "resources" : {
+        "CARRY4" : 1,
+        "SLICE_FFX" : 27,
+        "SLICE_LUTX" : 27
+      },
+      "tested" : true
     }
   },
   "id" : "spi_slave",

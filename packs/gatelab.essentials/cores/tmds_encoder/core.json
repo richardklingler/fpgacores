@@ -1,57 +1,58 @@
 {
-  "description" : "One channel of DVI/HDMI's TMDS code: a byte becomes a DC-balanced 10-bit word while data is enabled, the control word for c1/c0 in blanking. One clock of latency; the serialiser is family-specific.",
+  "description" : "One channel of DVI/HDMI's TMDS code: a byte becomes a DC-balanced 10-bit word while data is enabled, the control word for c1/c0 in blanking. Three clocks of latency (pipelined for 1080p60 on 7-series); the serialiser is family-specific.",
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 107.1,
+      "fmaxMHz" : 188,
       "resources" : {
-        "TRELLIS_COMB" : 123,
-        "TRELLIS_FF" : 16
+        "TRELLIS_COMB" : 139,
+        "TRELLIS_FF" : 48
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 28.7,
+      "fmaxMHz" : 63.8,
       "resources" : {
         "CPE_ADDF" : 3,
         "CPE_ADDF2" : 15,
-        "CPE_BRIDGE" : 27,
-        "CPE_CPLINES" : 22,
-        "CPE_FF" : 17,
-        "CPE_LT" : 84,
+        "CPE_BRIDGE" : 25,
+        "CPE_CPLINES" : 15,
+        "CPE_FF" : 41,
+        "CPE_LT" : 103,
         "CPE_MX4" : 13
       },
       "tested" : true
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 79.6,
+      "fmaxMHz" : 180.3,
       "resources" : {
-        "ALU" : 30,
-        "DFF" : 16,
-        "LUT4" : 97,
-        "MUX2_LUT5" : 21,
-        "MUX2_LUT6" : 7,
-        "MUX2_LUT7" : 3
+        "ALU" : 32,
+        "DFF" : 48,
+        "LUT4" : 127,
+        "MUX2_LUT5" : 28,
+        "MUX2_LUT6" : 10,
+        "MUX2_LUT7" : 5,
+        "MUX2_LUT8" : 3
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 25.2,
+      "fmaxMHz" : 48.2,
       "resources" : {
-        "ICESTORM_LC" : 103
+        "ICESTORM_LC" : 116
       },
       "tested" : true
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 110.6,
+      "fmaxMHz" : 198.7,
       "resources" : {
         "CARRY4" : 9,
-        "SLICE_FFX" : 16,
-        "SLICE_LUTX" : 114
+        "SLICE_FFX" : 39,
+        "SLICE_LUTX" : 116
       },
       "tested" : true
     }
@@ -69,7 +70,7 @@
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Ein Kanal des TMDS-Codes von DVI/HDMI: Ein Byte wird bei aktivem Datenfreigabesignal zu einem gleichspannungsfreien 10-Bit-Wort, in der Austastlücke zum Steuerwort für c1/c0. Ein Takt Latenz; der Serialisierer ist familienspezifisch.",
+      "description" : "Ein Kanal des TMDS-Codes von DVI/HDMI: Ein Byte wird bei aktivem Datenfreigabesignal zu einem gleichspannungsfreien 10-Bit-Wort, in der Austastlücke zum Steuerwort für c1/c0. Drei Takte Latenz (für 1080p60 auf der 7-Serie in Stufen); der Serialisierer ist familienspezifisch.",
       "name" : "TMDS-Encoder (DVI/HDMI)"
     }
   },
@@ -110,5 +111,5 @@
   ],
   "schema" : 1,
   "top" : "tmds_encoder",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

@@ -1,0 +1,344 @@
+{
+  "description" : "Draws an analogue clock over a video picture: outer ring, hour and minute ticks, hour, minute and second hands of even width and a centre cap, from hour, minute and second inputs. Each pixel's angle and radius come from a pipelined CORDIC (adders only); three small multiplies test the hands. Layers chain like sprite_layer, text_layer and bar_graph; LATENCY = 20 clocks.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 126.5,
+      "resources" : {
+        "MULT18X18D" : 4,
+        "TRELLIS_COMB" : 1948,
+        "TRELLIS_FF" : 1020,
+        "TRELLIS_RAMW" : 24
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 59.9,
+      "resources" : {
+        "CPE_ADDF" : 24,
+        "CPE_ADDF2" : 512,
+        "CPE_BRIDGE" : 218,
+        "CPE_COMP" : 122,
+        "CPE_CPLINES" : 639,
+        "CPE_FF" : 1068,
+        "CPE_LT" : 1180,
+        "CPE_MULT" : 162,
+        "CPE_RAMIO" : 128,
+        "RAM_HALF" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 89.3,
+      "resources" : {
+        "ALU" : 1220,
+        "DFF" : 1020,
+        "DUMMY_CELL" : 12,
+        "LUT4" : 911,
+        "MULT18X18" : 3,
+        "MUX2_LUT5" : 1,
+        "RAM16SDP4" : 24
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 32,
+      "resources" : {
+        "ICESTORM_LC" : 2740,
+        "ICESTORM_RAM" : 3,
+        "SB_GB" : 4
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 175.9,
+      "resources" : {
+        "CARRY4" : 248,
+        "DSP48E1" : 3,
+        "SLICE_FFX" : 914,
+        "SLICE_LUTX" : 2335
+      },
+      "tested" : true
+    }
+  },
+  "id" : "analog_clock",
+  "keywords" : [
+    "clock",
+    "analogue",
+    "analog",
+    "watch",
+    "dial",
+    "dashboard",
+    "video",
+    "hdmi",
+    "vga",
+    "dvi",
+    "overlay",
+    "hmi",
+    "cordic"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Zeichnet eine Analoguhr über ein Videobild: äußerer Ring, Stunden- und Minutenstriche, Stunden-, Minuten- und Sekundenzeiger gleichmäßiger Breite und eine Mittelkappe, aus den Eingängen für Stunde, Minute und Sekunde. Winkel und Radius jedes Pixels liefert ein CORDIC in Pipeline (nur Addierer); drei kleine Multiplikationen prüfen die Zeiger. Ebenen lassen sich verketten wie sprite_layer, text_layer und bar_graph; LATENCY = 20 Takte.",
+      "name" : "Analoguhr-Ebene"
+    }
+  },
+  "name" : "Analogue clock layer",
+  "parameters" : [
+    {
+      "default" : 11,
+      "description" : "Width of x (video_timing's x)",
+      "name" : "X_BITS"
+    },
+    {
+      "default" : 10,
+      "description" : "Width of y",
+      "name" : "Y_BITS"
+    },
+    {
+      "default" : 160,
+      "description" : "Screen column of the clock's centre",
+      "name" : "CENTER_X"
+    },
+    {
+      "default" : 120,
+      "description" : "Screen row of the clock's centre",
+      "name" : "CENTER_Y"
+    },
+    {
+      "default" : 100,
+      "description" : "Outer radius in pixels (up to 1000)",
+      "name" : "RADIUS"
+    },
+    {
+      "default" : 4,
+      "description" : "Width of the outer ring in pixels (0 = none)",
+      "name" : "RING"
+    },
+    {
+      "default" : 12,
+      "description" : "Length of the hour ticks inside the ring (0 = no ticks)",
+      "name" : "TICK_LENGTH"
+    },
+    {
+      "default" : 4,
+      "description" : "Width of the hour ticks in pixels",
+      "name" : "TICK_WIDTH"
+    },
+    {
+      "default" : 1,
+      "description" : "1: minute ticks, half as long as the hour ticks",
+      "name" : "MINUTE_TICKS"
+    },
+    {
+      "default" : 2,
+      "description" : "Width of the minute ticks in pixels",
+      "name" : "MINUTE_TICK_WIDTH"
+    },
+    {
+      "default" : 55,
+      "description" : "Length of the hour hand (0 = none)",
+      "name" : "HOUR_LENGTH"
+    },
+    {
+      "default" : 8,
+      "description" : "Width of the hour hand in pixels",
+      "name" : "HOUR_WIDTH"
+    },
+    {
+      "default" : 80,
+      "description" : "Length of the minute hand (0 = none)",
+      "name" : "MINUTE_LENGTH"
+    },
+    {
+      "default" : 6,
+      "description" : "Width of the minute hand",
+      "name" : "MINUTE_WIDTH"
+    },
+    {
+      "default" : 88,
+      "description" : "Length of the second hand (0 = none)",
+      "name" : "SECOND_LENGTH"
+    },
+    {
+      "default" : 2,
+      "description" : "Width of the second hand",
+      "name" : "SECOND_WIDTH"
+    },
+    {
+      "default" : 6,
+      "description" : "Radius of the centre cap (0 = none); at least 0.65 × the widest hand hides the hands' bases",
+      "name" : "CAP"
+    },
+    {
+      "default" : 0,
+      "description" : "1: FACE_COLOUR inside the ring where nothing else is drawn",
+      "name" : "FILL"
+    },
+    {
+      "description" : "The face as 24'hRRGGBB",
+      "name" : "FACE_COLOUR"
+    },
+    {
+      "description" : "The ring",
+      "name" : "RING_COLOUR"
+    },
+    {
+      "description" : "The hour ticks",
+      "name" : "TICK_COLOUR"
+    },
+    {
+      "description" : "The minute ticks",
+      "name" : "MINUTE_TICK_COLOUR"
+    },
+    {
+      "description" : "The hour hand",
+      "name" : "HOUR_COLOUR"
+    },
+    {
+      "description" : "The minute hand",
+      "name" : "MINUTE_COLOUR"
+    },
+    {
+      "description" : "The second hand",
+      "name" : "SECOND_COLOUR"
+    },
+    {
+      "description" : "The centre cap",
+      "name" : "CAP_COLOUR"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Pixel column from video_timing (or the previous layer's x_out)",
+      "dir" : "in",
+      "name" : "x",
+      "width" : 11
+    },
+    {
+      "description" : "Pixel row",
+      "dir" : "in",
+      "name" : "y",
+      "width" : 10
+    },
+    {
+      "description" : "Data enable: the pixel is visible",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "Red of the picture below",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green of the picture below",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue of the picture below",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "0: the clock isn't drawn",
+      "dir" : "in",
+      "name" : "enable"
+    },
+    {
+      "description" : "Hours, 0–23",
+      "dir" : "in",
+      "name" : "hour",
+      "width" : 5
+    },
+    {
+      "description" : "Minutes, 0–59",
+      "dir" : "in",
+      "name" : "minute",
+      "width" : 6
+    },
+    {
+      "description" : "Seconds, 0–59",
+      "dir" : "in",
+      "name" : "second",
+      "width" : 6
+    },
+    {
+      "description" : "x, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "x_out",
+      "width" : 11
+    },
+    {
+      "description" : "y, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "y_out",
+      "width" : 10
+    },
+    {
+      "description" : "de, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "de_out"
+    },
+    {
+      "description" : "hsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "hsync_out"
+    },
+    {
+      "description" : "vsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "vsync_out"
+    },
+    {
+      "description" : "Red with the clock drawn",
+      "dir" : "out",
+      "name" : "red_out",
+      "width" : 8
+    },
+    {
+      "description" : "Green with the clock drawn",
+      "dir" : "out",
+      "name" : "green_out",
+      "width" : 8
+    },
+    {
+      "description" : "Blue with the clock drawn",
+      "dir" : "out",
+      "name" : "blue_out",
+      "width" : 8
+    },
+    {
+      "description" : "The clock draws this output pixel",
+      "dir" : "out",
+      "name" : "covered"
+    }
+  ],
+  "schema" : 1,
+  "top" : "analog_clock",
+  "version" : "1.0.0"
+}

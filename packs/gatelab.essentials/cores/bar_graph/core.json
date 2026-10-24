@@ -1,0 +1,300 @@
+{
+  "description" : "Draws a bar graph over a video picture: up to BARS bars with two values each (series A in front, inset; series B behind, e.g. today and yesterday), heights in pixels written at any time, optional baseline, grid lines and background. Layers chain like text_layer and sprite_layer; LATENCY = 3 clocks.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 166.6,
+      "resources" : {
+        "TRELLIS_COMB" : 217,
+        "TRELLIS_FF" : 200,
+        "TRELLIS_RAMW" : 12
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 93.6,
+      "resources" : {
+        "CPE_ADDF" : 7,
+        "CPE_ADDF2" : 25,
+        "CPE_BRIDGE" : 36,
+        "CPE_CPLINES" : 149,
+        "CPE_FF" : 174,
+        "CPE_LT" : 428,
+        "CPE_RAMIO" : 120,
+        "RAM_HALF" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 127.8,
+      "resources" : {
+        "ALU" : 64,
+        "DFF" : 200,
+        "LUT4" : 257,
+        "MUX2_LUT5" : 3,
+        "RAM16SDP4" : 12
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 54.7,
+      "resources" : {
+        "ICESTORM_LC" : 311,
+        "ICESTORM_RAM" : 2
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 243.2,
+      "resources" : {
+        "CARRY4" : 7,
+        "SLICE_FFX" : 188,
+        "SLICE_LUTX" : 140
+      },
+      "tested" : true
+    }
+  },
+  "id" : "bar_graph",
+  "keywords" : [
+    "bar",
+    "graph",
+    "chart",
+    "histogram",
+    "dashboard",
+    "video",
+    "hdmi",
+    "vga",
+    "dvi",
+    "overlay",
+    "hmi"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Zeichnet ein Balkendiagramm über ein Videobild: bis zu BARS Balken mit je zwei Werten (Reihe A vorne, schmaler; Reihe B dahinter, z. B. heute und gestern), Höhen in Pixeln, jederzeit beschreibbar, optional Grundlinie, Rasterlinien und Hintergrund. Ebenen lassen sich verketten wie text_layer und sprite_layer; LATENCY = 3 Takte.",
+      "name" : "Balkendiagramm-Ebene"
+    }
+  },
+  "name" : "Bar graph layer",
+  "parameters" : [
+    {
+      "default" : 11,
+      "description" : "Width of x (video_timing's x)",
+      "name" : "X_BITS"
+    },
+    {
+      "default" : 10,
+      "description" : "Width of y",
+      "name" : "Y_BITS"
+    },
+    {
+      "default" : 24,
+      "description" : "Number of bars",
+      "name" : "BARS"
+    },
+    {
+      "default" : 0,
+      "description" : "Screen column of the first bar's left edge",
+      "name" : "BAR_X"
+    },
+    {
+      "default" : 0,
+      "description" : "Screen row of the bars' top",
+      "name" : "BAR_Y"
+    },
+    {
+      "default" : 16,
+      "description" : "Width of a bar in pixels",
+      "name" : "BAR_WIDTH"
+    },
+    {
+      "default" : 4,
+      "description" : "Pixels between bars",
+      "name" : "GAP"
+    },
+    {
+      "default" : 256,
+      "description" : "Height of the bars' area in pixels",
+      "name" : "HEIGHT"
+    },
+    {
+      "default" : 9,
+      "description" : "Width of a value (a height in pixels; more than HEIGHT fills the column)",
+      "name" : "VALUE_BITS"
+    },
+    {
+      "default" : 3,
+      "description" : "Series A is this many pixels narrower on each side than series B",
+      "name" : "INSET"
+    },
+    {
+      "default" : 0,
+      "description" : "A grid line every GRID_STEP pixels of height (a power of two; 0 = none)",
+      "name" : "GRID_STEP"
+    },
+    {
+      "default" : 1,
+      "description" : "1: a line one pixel below the bars",
+      "name" : "BASELINE"
+    },
+    {
+      "default" : 0,
+      "description" : "1: BACKGROUND_COLOUR inside the graph where nothing is drawn",
+      "name" : "BACKGROUND"
+    },
+    {
+      "description" : "Series A as 24'hRRGGBB",
+      "name" : "COLOUR_A"
+    },
+    {
+      "description" : "Series B as 24'hRRGGBB",
+      "name" : "COLOUR_B"
+    },
+    {
+      "description" : "Grid lines as 24'hRRGGBB",
+      "name" : "GRID_COLOUR"
+    },
+    {
+      "description" : "The baseline as 24'hRRGGBB",
+      "name" : "BASELINE_COLOUR"
+    },
+    {
+      "description" : "The background as 24'hRRGGBB",
+      "name" : "BACKGROUND_COLOUR"
+    },
+    {
+      "description" : "Hex file with series A's starting values, one per bar; empty: 0",
+      "name" : "INIT_A"
+    },
+    {
+      "description" : "Hex file with series B's starting values; empty: 0",
+      "name" : "INIT_B"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Pixel column from video_timing (or the previous layer's x_out); counts up by one per clock",
+      "dir" : "in",
+      "name" : "x",
+      "width" : 11
+    },
+    {
+      "description" : "Pixel row",
+      "dir" : "in",
+      "name" : "y",
+      "width" : 10
+    },
+    {
+      "description" : "Data enable: the pixel is visible",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "Red of the picture below",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green of the picture below",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue of the picture below",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "Write write_value to the bar at write_address",
+      "dir" : "in",
+      "name" : "write"
+    },
+    {
+      "description" : "Top bit: series (0 = A, 1 = B); below it: the bar",
+      "dir" : "in",
+      "name" : "write_address",
+      "width" : 6
+    },
+    {
+      "description" : "The bar's height in pixels",
+      "dir" : "in",
+      "name" : "write_value",
+      "width" : 9
+    },
+    {
+      "description" : "x, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "x_out",
+      "width" : 11
+    },
+    {
+      "description" : "y, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "y_out",
+      "width" : 10
+    },
+    {
+      "description" : "de, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "de_out"
+    },
+    {
+      "description" : "hsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "hsync_out"
+    },
+    {
+      "description" : "vsync, LATENCY clocks later",
+      "dir" : "out",
+      "name" : "vsync_out"
+    },
+    {
+      "description" : "Red with the graph drawn",
+      "dir" : "out",
+      "name" : "red_out",
+      "width" : 8
+    },
+    {
+      "description" : "Green with the graph drawn",
+      "dir" : "out",
+      "name" : "green_out",
+      "width" : 8
+    },
+    {
+      "description" : "Blue with the graph drawn",
+      "dir" : "out",
+      "name" : "blue_out",
+      "width" : 8
+    },
+    {
+      "description" : "A bar draws this output pixel",
+      "dir" : "out",
+      "name" : "covered"
+    }
+  ],
+  "schema" : 1,
+  "top" : "bar_graph",
+  "version" : "1.0.0"
+}
