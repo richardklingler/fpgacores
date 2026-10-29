@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-24T11:14:47Z",
+  "generated" : "2026-10-29T18:35:06Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -25,13 +25,51 @@
       ]
     },
     {
-      "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing, sprite, text, bar graph and analogue clock layers, SPI registers for a microcontroller, TMDS encoding and HDMI/DVI outputs for AMD Xilinx 7-series, Gowin, ECP5 and GateMate. CC0 1.0: no conditions, no attribution needed.",
+      "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing, sprite, text, bar graph and analogue clock layers, I2S audio (clocks, transmitter, receiver) and a sine tone generator, SPI registers for a microcontroller, TMDS encoding and HDMI/DVI outputs for AMD Xilinx 7-series, Gowin, ECP5 and GateMate. CC0 1.0: no conditions, no attribution needed.",
       "documentation" : "https://github.com/richardklingler/fpgacores",
       "id" : "gatelab.essentials",
       "maintainer" : "GateLab",
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "analog_clock",
+            "async_fifo",
+            "bar_graph",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "hdmi_out",
+            "hdmi_out_ecp5",
+            "hdmi_out_gatemate",
+            "hdmi_out_gowin",
+            "i2c_master",
+            "i2s_clocks",
+            "i2s_receiver",
+            "i2s_transmitter",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_registers",
+            "spi_slave",
+            "sprite_layer",
+            "sync_fifo",
+            "text_layer",
+            "tmds_encoder",
+            "tone_generator",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "04229d06baad211c4ecb4e466d187fb1be455351e6b3b0b59d4a7c92587e46ed",
+            "size" : 413045,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.8.0.fpgapack"
+          },
+          "version" : "1.8.0"
+        },
         {
           "cores" : [
             "analog_clock",
