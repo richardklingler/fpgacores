@@ -1,0 +1,137 @@
+{
+  "description" : "MCLK, SCLK (64 Fs) and LRCK for I2S codecs that take their clocks from the FPGA (Cirrus CS4344/CS5343, Digilent Pmod I2S2), made from the system clock with counters only: Fs = clock / (MCLK_DIV · RATIO), e.g. 27 MHz / 1024 = 26.37 kHz, 100 MHz / 2048 = 48.83 kHz. Strobes tell i2s_transmitter when to change its bit and i2s_receiver when to take one.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 259.1,
+      "resources" : {
+        "TRELLIS_COMB" : 19,
+        "TRELLIS_FF" : 11
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 133.7,
+      "resources" : {
+        "CPE_ADDF2" : 5,
+        "CPE_BRIDGE" : 2,
+        "CPE_FF" : 11,
+        "CPE_LT" : 26
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 164.1,
+      "resources" : {
+        "ALU" : 14,
+        "DFF" : 12
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 81.9,
+      "resources" : {
+        "ICESTORM_LC" : 26
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 361.3,
+      "resources" : {
+        "CARRY4" : 4,
+        "SLICE_FFX" : 12,
+        "SLICE_LUTX" : 36
+      },
+      "tested" : true
+    }
+  },
+  "id" : "i2s_clocks",
+  "keywords" : [
+    "i2s",
+    "audio",
+    "codec",
+    "dac",
+    "adc",
+    "mclk",
+    "lrck",
+    "sclk",
+    "pmod",
+    "clock"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "MCLK, SCLK (64 Fs) und LRCK für I2S-Codecs, die ihre Takte vom FPGA bekommen (Cirrus CS4344/CS5343, Digilent Pmod I2S2), nur mit Zählern aus dem Systemtakt: Fs = Takt / (MCLK_DIV · RATIO), z. B. 27 MHz / 1024 = 26,37 kHz, 100 MHz / 2048 = 48,83 kHz. Strobes sagen i2s_transmitter, wann es sein Bit wechselt, und i2s_receiver, wann es eines übernimmt.",
+      "name" : "I2S-Takte"
+    }
+  },
+  "name" : "I2S clocks",
+  "parameters" : [
+    {
+      "default" : 2,
+      "description" : "System clocks per MCLK (even, at least 2)",
+      "name" : "MCLK_DIV"
+    },
+    {
+      "default" : 512,
+      "description" : "MCLK per frame (MCLK/LRCK): 256, 384, 512 or 768; MCLK_DIV · RATIO / 64 at least 8",
+      "name" : "RATIO"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "System clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Master clock to the codec",
+      "dir" : "out",
+      "name" : "mclk"
+    },
+    {
+      "description" : "Bit clock, 64 Fs, falls as a bit slot starts",
+      "dir" : "out",
+      "name" : "sclk"
+    },
+    {
+      "description" : "Word clock, Fs: low = left",
+      "dir" : "out",
+      "name" : "lrck"
+    },
+    {
+      "description" : "The outputs start slot slot_next at the next clock edge",
+      "dir" : "out",
+      "name" : "bit_start"
+    },
+    {
+      "description" : "The slot (0 … 63) starting at the next edge",
+      "dir" : "out",
+      "name" : "slot_next",
+      "width" : 6
+    },
+    {
+      "description" : "A two-flip-flop-synchronised input now shows the bit of slot (middle of SCLK's high half)",
+      "dir" : "out",
+      "name" : "bit_sample"
+    },
+    {
+      "description" : "The current slot",
+      "dir" : "out",
+      "name" : "slot",
+      "width" : 6
+    },
+    {
+      "description" : "bit_start for slot 0",
+      "dir" : "out",
+      "name" : "frame_start"
+    }
+  ],
+  "schema" : 1,
+  "top" : "i2s_clocks",
+  "version" : "1.0.0"
+}

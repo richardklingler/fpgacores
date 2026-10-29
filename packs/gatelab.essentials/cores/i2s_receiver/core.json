@@ -1,0 +1,121 @@
+{
+  "dependencies" : [
+    "i2s_clocks"
+  ],
+  "description" : "Receives 24-bit stereo samples from an I2S ADC (CS5343, Pmod I2S2's line in) with i2s_clocks: the data pin through two flip-flops, each bit taken in the middle of SCLK's high half. `valid` pulses when a frame's left and right are in.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 188.3,
+      "resources" : {
+        "TRELLIS_COMB" : 17,
+        "TRELLIS_FF" : 98
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 120.9,
+      "resources" : {
+        "CPE_ADDF" : 1,
+        "CPE_ADDF2" : 2,
+        "CPE_BRIDGE" : 8,
+        "CPE_CPLINES" : 36,
+        "CPE_FF" : 6,
+        "CPE_LT" : 20
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 116.6,
+      "resources" : {
+        "ALU" : 8,
+        "DFF" : 98,
+        "LUT4" : 88
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 64.4,
+      "resources" : {
+        "ICESTORM_LC" : 111,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 317.3,
+      "resources" : {
+        "SLICE_FFX" : 95,
+        "SLICE_LUTX" : 7
+      },
+      "tested" : true
+    }
+  },
+  "id" : "i2s_receiver",
+  "keywords" : [
+    "i2s",
+    "audio",
+    "adc",
+    "codec",
+    "cs5343",
+    "pmod",
+    "stereo",
+    "sound",
+    "microphone"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Empfängt 24-Bit-Stereo-Samples von einem I2S-ADC (CS5343, Line-In des Pmod I2S2) mit i2s_clocks: der Datenpin über zwei Flipflops, jedes Bit in der Mitte der High-Phase von SCLK übernommen. `valid` pulst, wenn links und rechts eines Rahmens da sind.",
+      "name" : "I2S-Empfänger"
+    }
+  },
+  "name" : "I2S receiver",
+  "ports" : [
+    {
+      "description" : "System clock (i2s_clocks')",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "From i2s_clocks",
+      "dir" : "in",
+      "name" : "bit_sample"
+    },
+    {
+      "description" : "From i2s_clocks",
+      "dir" : "in",
+      "name" : "slot",
+      "width" : 6
+    },
+    {
+      "description" : "Serial data from the ADC (the pin)",
+      "dir" : "in",
+      "name" : "sdout"
+    },
+    {
+      "description" : "Left sample of the last frame",
+      "dir" : "out",
+      "name" : "left",
+      "width" : 24
+    },
+    {
+      "description" : "Right sample of the last frame",
+      "dir" : "out",
+      "name" : "right",
+      "width" : 24
+    },
+    {
+      "description" : "Pulses when a frame is complete",
+      "dir" : "out",
+      "name" : "valid"
+    }
+  ],
+  "schema" : 1,
+  "top" : "i2s_receiver",
+  "version" : "1.0.0"
+}

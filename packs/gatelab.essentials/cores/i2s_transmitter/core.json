@@ -1,0 +1,124 @@
+{
+  "dependencies" : [
+    "i2s_clocks"
+  ],
+  "description" : "Sends 24-bit stereo samples to an I2S DAC (CS4344, Pmod I2S2's line out) with i2s_clocks: MSB first, one SCLK after LRCK changes. Samples are taken at the start of each frame; `taken` pulses then (once per sample period).",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 158.8,
+      "resources" : {
+        "TRELLIS_COMB" : 58,
+        "TRELLIS_FF" : 50
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 105.1,
+      "resources" : {
+        "CPE_ADDF" : 2,
+        "CPE_ADDF2" : 4,
+        "CPE_BRIDGE" : 9,
+        "CPE_CPLINES" : 47,
+        "CPE_FF" : 103,
+        "CPE_LT" : 122,
+        "CPE_MX4" : 15
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 96.7,
+      "resources" : {
+        "ALU" : 16,
+        "DFF" : 50,
+        "LUT4" : 89,
+        "MUX2_LUT5" : 3,
+        "MUX2_LUT6" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 50.7,
+      "resources" : {
+        "ICESTORM_LC" : 130,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 276,
+      "resources" : {
+        "CARRY4" : 2,
+        "SLICE_FFX" : 50,
+        "SLICE_LUTX" : 38
+      },
+      "tested" : true
+    }
+  },
+  "id" : "i2s_transmitter",
+  "keywords" : [
+    "i2s",
+    "audio",
+    "dac",
+    "codec",
+    "cs4344",
+    "pmod",
+    "stereo",
+    "sound"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Sendet 24-Bit-Stereo-Samples an einen I2S-DAC (CS4344, Line-Out des Pmod I2S2) mit i2s_clocks: MSB zuerst, einen SCLK nach dem LRCK-Wechsel. Die Samples werden am Anfang jedes Rahmens übernommen; `taken` pulst dann (einmal pro Abtastperiode).",
+      "name" : "I2S-Sender"
+    }
+  },
+  "name" : "I2S transmitter",
+  "ports" : [
+    {
+      "description" : "System clock (i2s_clocks')",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "From i2s_clocks",
+      "dir" : "in",
+      "name" : "bit_start"
+    },
+    {
+      "description" : "From i2s_clocks",
+      "dir" : "in",
+      "name" : "slot_next",
+      "width" : 6
+    },
+    {
+      "description" : "Left sample (24-bit, two's complement)",
+      "dir" : "in",
+      "name" : "left",
+      "width" : 24
+    },
+    {
+      "description" : "Right sample",
+      "dir" : "in",
+      "name" : "right",
+      "width" : 24
+    },
+    {
+      "description" : "Pulses when left and right were taken (frame start)",
+      "dir" : "out",
+      "name" : "taken"
+    },
+    {
+      "description" : "Serial data to the DAC",
+      "dir" : "out",
+      "name" : "sdin"
+    }
+  ],
+  "schema" : 1,
+  "top" : "i2s_transmitter",
+  "version" : "1.0.0"
+}

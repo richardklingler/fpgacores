@@ -1,10 +1,10 @@
 {
-  "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing, sprite, text, bar graph and analogue clock layers, SPI registers for a microcontroller, TMDS encoding and HDMI/DVI outputs for AMD Xilinx 7-series, Gowin, ECP5 and GateMate. CC0 1.0: no conditions, no attribution needed.",
+  "description" : "GateLab's own basic cores, each with a self-checking testbench: UART, SPI, I²C, debouncer, edge detector, FIFOs, clock divider, PWM, seven-segment display, WS2812 LEDs, VGA/DVI timing, sprite, text, bar graph and analogue clock layers, I2S audio (clocks, transmitter, receiver) and a sine tone generator, SPI registers for a microcontroller, TMDS encoding and HDMI/DVI outputs for AMD Xilinx 7-series, Gowin, ECP5 and GateMate. CC0 1.0: no conditions, no attribution needed.",
   "documentation" : "https://github.com/richardklingler/fpgacores",
   "id" : "gatelab.essentials",
   "maintainer" : "GateLab",
   "name" : "GateLab Essentials",
   "schema" : 1,
   "type" : "library",
-  "version" : "1.7.0"
+  "version" : "1.8.0"
 }

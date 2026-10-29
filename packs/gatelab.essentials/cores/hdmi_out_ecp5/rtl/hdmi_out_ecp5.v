@@ -54,14 +54,17 @@ module hdmi_out_lane (
     // Five serial clocks per pixel, two bits per clock: load every fifth clock, shift by two.
     // N has a shift register of its own with the inverted word, so both ODDRX1Fs take their bits
     // straight from flip-flops: an inverter between them was the 370 MHz path in a larger design
-    // (354 MHz on the i9 with the image, text and sprite template).
+    // (354 MHz on the i9 with the image, text and sprite template). Both registers rotate rather
+    // than shift constants in: a constant made Yosys load those bits through the flip-flops'
+    // set/reset (LSR), and the ring's path through a LUT into LSR missed 370 MHz in the test card
+    // (322–357 MHz). The bits rotated round are reloaded before they go out.
     reg [4:0] ring = 5'b00001;
     reg [9:0] shift = 10'd0;
     reg [9:0] shift_n = 10'h3FF;
     always @(posedge serial_clk) begin
         ring <= {ring[3:0], ring[4]};
-        shift <= ring[4] ? word : {2'b00, shift[9:2]};
-        shift_n <= ring[4] ? ~word : {2'b11, shift_n[9:2]};
+        shift <= ring[4] ? word : {shift[1:0], shift[9:2]};
+        shift_n <= ring[4] ? ~word : {shift_n[1:0], shift_n[9:2]};
     end
 `ifdef SYNTHESIS
     ODDRX1F u_p (.SCLK(serial_clk), .RST(1'b0), .D0(shift[0]), .D1(shift[1]), .Q(out_p));
