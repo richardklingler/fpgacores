@@ -3,19 +3,20 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 259.1,
+      "fmaxMHz" : 232.3,
       "resources" : {
-        "TRELLIS_COMB" : 19,
+        "TRELLIS_COMB" : 22,
         "TRELLIS_FF" : 11
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 133.7,
+      "fmaxMHz" : 108.7,
       "resources" : {
         "CPE_ADDF2" : 5,
         "CPE_BRIDGE" : 2,
+        "CPE_CPLINES" : 13,
         "CPE_FF" : 11,
         "CPE_LT" : 26
       },
@@ -23,7 +24,7 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 164.1,
+      "fmaxMHz" : 164.5,
       "resources" : {
         "ALU" : 14,
         "DFF" : 12
@@ -34,13 +35,13 @@
       "device" : "up5k",
       "fmaxMHz" : 81.9,
       "resources" : {
-        "ICESTORM_LC" : 26
+        "ICESTORM_LC" : 27
       },
       "tested" : true
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 361.3,
+      "fmaxMHz" : 323.5,
       "resources" : {
         "CARRY4" : 4,
         "SLICE_FFX" : 12,
@@ -115,7 +116,7 @@
       "width" : 6
     },
     {
-      "description" : "A two-flip-flop-synchronised input now shows the bit of slot (middle of SCLK's high half)",
+      "description" : "A two-flip-flop-synchronised input now shows the bit of slot (as it was just before SCLK rose)",
       "dir" : "out",
       "name" : "bit_sample"
     },
@@ -133,5 +134,5 @@
   ],
   "schema" : 1,
   "top" : "i2s_clocks",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

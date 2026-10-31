@@ -1,6 +1,6 @@
 // Self-checking testbench for i2s_receiver with i2s_clocks at 8 system clocks per SCLK: a model of an ADC
-// (CS5343: I2S, 24 bits, data changed on SCLK's falling edge, valid 35 ns later — of a 40 ns half period, so only a
-// sample at the rising edge reads it)
+// (CS5343: I2S, 24 bits, each bit put out after SCLK's rising edge — here 5 ns after it, the CS5343 holds the old
+// bit at least 40 ns — so only a sample taken before the rising edge reads the right bit)
 // sends asymmetric samples; each `valid` must bring the frame sent, left and right. Prints PASS or every
 // failed check.
 
@@ -22,8 +22,8 @@ module i2s_receiver_tb;
     i2s_receiver dut (.clk(clk), .bit_sample(bit_sample), .slot(slot), .sdout(sdout), .left(left), .right(right), .valid(valid));
 
     // The ADC: LRCK's change seen on SCLK's rising edge (LRCK changes on the falling one, so reading it there
-    // would race), a new word for the channel, each bit out on the next falling edge: the MSB one SCLK after
-    // LRCK changed.
+    // would race), a new word for the channel, each bit put out 5 ns after a rising edge for the next slot: the MSB
+    // after the first rising edge, so it's read at the second, one SCLK after LRCK changed (DS687 figure 1).
     reg [23:0] lfsr = 24'h5F3A91, word = 0;
     reg [23:0] sent_left [0:63], sent_right [0:63];
     integer adc_slot = 0, frames_sent = 0;
@@ -42,9 +42,8 @@ module i2s_receiver_tb;
         end else begin
             adc_slot = adc_slot + 1;
         end
+        sdout <= #5 (adc_slot + 1 >= 1 && adc_slot + 1 <= 24 ? word[24 - (adc_slot + 1)] : 1'b1);   // ones between words
     end
-    always @(negedge sclk)
-        sdout <= #35 (adc_slot + 1 >= 1 && adc_slot + 1 <= 24 ? word[24 - (adc_slot + 1)] : 1'b1);   // ones between words
 
     integer frames_got = 0;
     always @(posedge clk)

@@ -2,7 +2,7 @@
   "dependencies" : [
     "i2s_clocks"
   ],
-  "description" : "Receives 24-bit stereo samples from an I2S ADC (CS5343, Pmod I2S2's line in) with i2s_clocks: the data pin through two flip-flops, each bit taken in the middle of SCLK's high half. `valid` pulses when a frame's left and right are in.",
+  "description" : "Receives 24-bit stereo samples from an I2S ADC (CS5343, Pmod I2S2's line in) with i2s_clocks: the data pin through two flip-flops, each bit taken just before SCLK rises (the ADC changes it after the rising edge). `valid` pulses when a frame's left and right are in.",
   "families" : {
     "ecp5" : {
       "device" : "45k",
@@ -70,7 +70,7 @@
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Empfängt 24-Bit-Stereo-Samples von einem I2S-ADC (CS5343, Line-In des Pmod I2S2) mit i2s_clocks: der Datenpin über zwei Flipflops, jedes Bit in der Mitte der High-Phase von SCLK übernommen. `valid` pulst, wenn links und rechts eines Rahmens da sind.",
+      "description" : "Empfängt 24-Bit-Stereo-Samples von einem I2S-ADC (CS5343, Line-In des Pmod I2S2) mit i2s_clocks: der Datenpin über zwei Flipflops, jedes Bit kurz vor der steigenden Flanke von SCLK übernommen (der ADC ändert es danach). `valid` pulst, wenn links und rechts eines Rahmens da sind.",
       "name" : "I2S-Empfänger"
     }
   },
@@ -117,5 +117,5 @@
   ],
   "schema" : 1,
   "top" : "i2s_receiver",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

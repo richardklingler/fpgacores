@@ -7,8 +7,9 @@
 //   bit_start   the outputs start bit slot `slot_next` (0 … 63) at the next clock edge (SCLK falls then; LRCK
 //               changes with slot 0 and 32) — a transmitter registers its data bit on it (i2s_transmitter);
 //   bit_sample  an input through a two-flip-flop synchroniser now shows the bit of slot `slot` as it was on
-//               the pin in the middle of SCLK's high half (the most margin to both edges) — a receiver takes
-//               it then (i2s_receiver).
+//               the pin one clock before SCLK rose — a receiver takes it then (i2s_receiver). I2S ADCs change
+//               their data *after* SCLK's rising edge (the CS5343 holds the old bit at least 40 ns; on the
+//               Pmod I2S2 it changed 70–90 ns after), so the bit is taken before that edge, never after it.
 // frame_start is bit_start for slot 0.
 //
 // MCLK_DIV is even and at least 2; RATIO (MCLK per LRCK) a multiple of 64 the codec accepts (256, 384, 512,
@@ -33,7 +34,7 @@ module i2s_clocks #(
     localparam M_BITS = MCLK_DIV > 2 ? $clog2(MCLK_DIV) : 1;
     // The positions as integers first, then their low bits (a typed localparam set from a 32-bit expression is a
     // truncation warning in Quartus).
-    localparam integer S_LAST_I = S - 1, S_HALF_I = S / 2, S_SAMPLE_I = S / 2 + S / 4 + 1;
+    localparam integer S_LAST_I = S - 1, S_HALF_I = S / 2, S_SAMPLE_I = S / 2;
     localparam integer M_LAST_I = MCLK_DIV - 1, M_HALF_I = MCLK_DIV / 2;
     localparam [S_BITS-1:0] S_LAST = S_LAST_I[S_BITS-1:0], S_HALF = S_HALF_I[S_BITS-1:0], S_SAMPLE = S_SAMPLE_I[S_BITS-1:0];
     localparam [M_BITS-1:0] M_LAST = M_LAST_I[M_BITS-1:0], M_HALF = M_HALF_I[M_BITS-1:0];

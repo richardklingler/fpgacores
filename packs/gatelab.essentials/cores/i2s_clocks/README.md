@@ -12,7 +12,8 @@ and CS5343 (ADC) on the Digilent Pmod I2S2. Counters only, no PLL: the sample ra
 
 SCLK is 64 Fs (32 bit slots a channel, 24 data bits). The two strobes keep transmitters and receivers in
 step with the pins: `bit_start` (the outputs start slot `slot_next` at the next edge) and `bit_sample` (an
-input through two flip-flops now shows its bit as it was in the middle of SCLK's high half).
+input through two flip-flops now shows its bit as it was just before SCLK rose: I2S ADCs change their data
+after the rising edge).
 
 ```verilog
 wire mclk, sclk, lrck, bit_start, bit_sample, frame_start;

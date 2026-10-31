@@ -1,7 +1,8 @@
 // Self-checking testbench for i2s_clocks at two settings (12 and 16 system clocks per SCLK): the periods and
 // duty of MCLK, SCLK and LRCK, MCLK cycles per frame, LRCK changing with SCLK's falling edge, bit_start and
-// slot_next against the slots counted on the pins, and bit_sample against a data pin that changes just before the
-// middle of SCLK's high half (so an earlier sample gets the old bit), read through two flip-flops. Prints PASS or every failed check.
+// slot_next against the slots counted on the pins, and bit_sample against a data pin that changes to the next
+// slot's bit 5 ns after SCLK rises, as an I2S ADC does (the CS5343 after at least 40 ns): a sample taken after the
+// rising edge gets the next bit. Read through two flip-flops. Prints PASS or every failed check.
 
 `timescale 1ns / 1ps
 
@@ -55,9 +56,6 @@ module i2s_clocks_tb;
             NAME``_pin_slot = NAME``_pin_slot >= 0 ? (NAME``_pin_slot + 1) % 64 : -1; \
             check(NAME``_start_was, `"NAME SCLK fell without bit_start the clock before`"); \
             if (NAME``_pin_slot >= 0) check(NAME``_next_was == NAME``_pin_slot, `"NAME slot_next against the slot on the pins`"); \
-            /* The data pin changes half a clock before the middle of the high half (counted from the edge SCLK fell on, \
-               a clock before this check sees it): an earlier read gets the old bit */ \
-            NAME``_data <= #((MDIV * RAT / 128 + MDIV * RAT / 256) * 10 - 15) (NAME``_pin_slot >= 0 ? NAME``_pin_slot[0] ^ NAME``_pin_slot[1] : 1'b0); \
         end \
         if (SCLK != NAME``_s_was) ; else if (NAME``_start_was && NAME``_s_was) check(0, `"NAME bit_start without SCLK falling`"); \
         if (LRCK != NAME``_l_was) begin \
@@ -78,7 +76,10 @@ module i2s_clocks_tb;
         end \
         if (FRAME) check(NEXT == 6'd0 && START, `"NAME frame_start off slot 0`"); \
         NAME``_m_was = MCLK; NAME``_s_was = SCLK; NAME``_l_was = LRCK; NAME``_start_was = START; NAME``_next_was = NEXT; \
-    end
+    end \
+    /* The ADC: after SCLK rises in slot k, the bit of slot k + 1 (k counted when SCLK fell, a clock before) */ \
+    always @(posedge SCLK) \
+        NAME``_data <= #5 (NAME``_pin_slot >= 0 ? ((NAME``_pin_slot + 1) % 64) % 4 == 1 || ((NAME``_pin_slot + 1) % 64) % 4 == 2 : 1'b0);
 
     `CHECKER(a, mclk_a, sclk_a, lrck_a, start_a, next_a, sample_a, slot_a, frame_a, 2, 384)
     `CHECKER(b, mclk_b, sclk_b, lrck_b, start_b, next_b, sample_b, slot_b, frame_b, 4, 256)

@@ -1,5 +1,5 @@
 // I2S receiver for an ADC (24-bit samples, 32 bit slots a channel) with i2s_clocks: `sdout` from the pin
-// through two flip-flops, each bit taken on bit_sample (the value in the middle of SCLK's high half), MSB first, the MSB one
+// through two flip-flops, each bit taken on bit_sample (the value just before SCLK rose: the ADC changes it after), MSB first, the MSB one
 // SCLK after LRCK changes. `left` and `right` hold the last complete frame; `valid` pulses when the right
 // channel's last bit is in (both are then from the same frame).
 
