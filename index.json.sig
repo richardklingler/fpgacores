@@ -1,5 +1,5 @@
 {
   "algorithm" : "ed25519",
   "keyId" : "05b6d6395beb597e",
-  "signature" : "+k4eBdVzNnceFNW\/\/KuxxBBsRjZ0RI3XAVdcaj8s6ZMKtYfR03yntShA4\/mUN+w598nWWTBPVExVa\/Upahb4CA=="
+  "signature" : "I3d+XSJlklPiLhw2ud5UkVfaPWjRl6c\/94\/VVaNs7+N2V4qcVXNJr6iS+0Oic\/4n6\/PR4kcnnhU4Z60p0UcMBw=="
 }
