@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-31T08:38:58Z",
+  "generated" : "2026-11-04T17:24:11Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -32,6 +32,44 @@
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "analog_clock",
+            "async_fifo",
+            "bar_graph",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "hdmi_out",
+            "hdmi_out_ecp5",
+            "hdmi_out_gatemate",
+            "hdmi_out_gowin",
+            "i2c_master",
+            "i2s_clocks",
+            "i2s_receiver",
+            "i2s_transmitter",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_registers",
+            "spi_slave",
+            "sprite_layer",
+            "sync_fifo",
+            "text_layer",
+            "tmds_encoder",
+            "tone_generator",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "2b55eff41dd3669b55a2a75839233c360019d06ae8dfc0b14226970a61ce770c",
+            "size" : 418701,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.8.2.fpgapack"
+          },
+          "version" : "1.8.2"
+        },
         {
           "cores" : [
             "analog_clock",
@@ -362,6 +400,40 @@
       "name" : "GateLab 74xx Logic",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "ic4001",
+            "ic4011",
+            "ic4013",
+            "ic4017",
+            "ic4040",
+            "ic74x00",
+            "ic74x04",
+            "ic74x08",
+            "ic74x121",
+            "ic74x138",
+            "ic74x151",
+            "ic74x153",
+            "ic74x157",
+            "ic74x161",
+            "ic74x163",
+            "ic74x164",
+            "ic74x165",
+            "ic74x244",
+            "ic74x245",
+            "ic74x32",
+            "ic74x373",
+            "ic74x374",
+            "ic74x595",
+            "ic74x74"
+          ],
+          "download" : {
+            "sha256" : "bf02fcaaaa5c21e607e0976450296e83590bd46bb9ababcc6a06ef5df47955f7",
+            "size" : 164091,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.logic74xx-1.5.1.fpgapack"
+          },
+          "version" : "1.5.1"
+        },
         {
           "cores" : [
             "ic4001",
