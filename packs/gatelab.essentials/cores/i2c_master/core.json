@@ -45,6 +45,15 @@
         "ICESTORM_LC" : 94
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 138.1,
+      "resources" : {
+        "TRELLIS_COMB" : 68,
+        "TRELLIS_FF" : 46
+      },
+      "tested" : true
     }
   },
   "id" : "i2c_master",

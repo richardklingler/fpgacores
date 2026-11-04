@@ -39,6 +39,16 @@
         "SB_GB" : 1
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 221.1,
+      "resources" : {
+        "DCCA" : 1,
+        "TRELLIS_COMB" : 16,
+        "TRELLIS_FF" : 4
+      },
+      "tested" : true
     }
   },
   "id" : "ic4017",

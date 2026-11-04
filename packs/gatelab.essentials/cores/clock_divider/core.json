@@ -40,6 +40,15 @@
         "ICESTORM_LC" : 53
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 131.6,
+      "resources" : {
+        "TRELLIS_COMB" : 58,
+        "TRELLIS_FF" : 26
+      },
+      "tested" : true
     }
   },
   "id" : "clock_divider",

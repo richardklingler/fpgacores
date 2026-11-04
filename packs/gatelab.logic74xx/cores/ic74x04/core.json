@@ -31,6 +31,14 @@
         "ICESTORM_LC" : 6
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 285.7,
+      "resources" : {
+        "TRELLIS_COMB" : 6
+      },
+      "tested" : true
     }
   },
   "id" : "ic74x04",

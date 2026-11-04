@@ -40,6 +40,15 @@
         "ICESTORM_LC" : 97
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 112.8,
+      "resources" : {
+        "TRELLIS_COMB" : 104,
+        "TRELLIS_FF" : 44
+      },
+      "tested" : true
     }
   },
   "id" : "video_timing",

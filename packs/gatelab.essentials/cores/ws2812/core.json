@@ -43,6 +43,15 @@
         "ICESTORM_LC" : 83
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 84.9,
+      "resources" : {
+        "TRELLIS_COMB" : 144,
+        "TRELLIS_FF" : 55
+      },
+      "tested" : true
     }
   },
   "id" : "ws2812",

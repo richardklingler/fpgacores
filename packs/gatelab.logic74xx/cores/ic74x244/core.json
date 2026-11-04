@@ -31,6 +31,14 @@
 
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 240.7,
+      "resources" : {
+
+      },
+      "tested" : true
     }
   },
   "id" : "ic74x244",

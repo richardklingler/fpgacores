@@ -23,6 +23,10 @@
     "ice40" : {
       "device" : "up5k",
       "tested" : false
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "tested" : false
     }
   },
   "id" : "ic74x165",

@@ -48,6 +48,15 @@
       },
       "tested" : true
     },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 105.1,
+      "resources" : {
+        "TRELLIS_COMB" : 64,
+        "TRELLIS_FF" : 50
+      },
+      "tested" : true
+    },
     "xilinx7" : {
       "device" : "xc7a35t",
       "fmaxMHz" : 276,

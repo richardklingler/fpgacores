@@ -44,6 +44,16 @@
         "ICESTORM_RAM" : 1
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 103,
+      "resources" : {
+        "TRELLIS_COMB" : 52,
+        "TRELLIS_FF" : 18,
+        "TRELLIS_RAMW" : 2
+      },
+      "tested" : true
     }
   },
   "id" : "sync_fifo",

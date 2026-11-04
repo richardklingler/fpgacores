@@ -44,6 +44,15 @@
         "ICESTORM_LC" : 30
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 154.1,
+      "resources" : {
+        "TRELLIS_COMB" : 34,
+        "TRELLIS_FF" : 20
+      },
+      "tested" : true
     }
   },
   "id" : "uart_tx",

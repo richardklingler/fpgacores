@@ -40,6 +40,15 @@
         "ICESTORM_LC" : 29
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 180.2,
+      "resources" : {
+        "TRELLIS_COMB" : 29,
+        "TRELLIS_FF" : 17
+      },
+      "tested" : true
     }
   },
   "id" : "pwm",

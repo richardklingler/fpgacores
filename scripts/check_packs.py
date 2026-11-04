@@ -17,7 +17,7 @@ import sys
 ID = re.compile(r"[a-z0-9]+([._-][a-z0-9]+)*")
 NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_$]*")
 VERSION = re.compile(r"[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}")
-FAMILIES = {"ice40", "ecp5", "gowin", "gatemate", "xilinx7"}
+FAMILIES = {"ice40", "ecp5", "gowin", "gatemate", "xilinx7", "machxo2"}
 DIRECTIONS = {"in", "out", "inout"}
 # SPDX ids that need no licence text in the pack.
 PUBLIC_DOMAIN = {"cc0-1.0", "unlicense", "0bsd"}

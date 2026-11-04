@@ -39,6 +39,15 @@
         "ICESTORM_LC" : 31
       },
       "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 146.5,
+      "resources" : {
+        "TRELLIS_COMB" : 31,
+        "TRELLIS_FF" : 20
+      },
+      "tested" : true
     }
   },
   "id" : "debouncer",
