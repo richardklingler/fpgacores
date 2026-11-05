@@ -1,0 +1,169 @@
+{
+  "dependencies" : [
+    "async_fifo"
+  ],
+  "description" : "MII interface to a 10/100 Ethernet PHY at 100 Mbit/s (DP83848 on the Arty A7, KSZ8081 …) with the same byte interface as eth_rmii_phy, on a system clock of its own (at least four times the 25 MHz nibble clock, e.g. 100 MHz): the PHY's rx_clk and tx_clk are crossed through async_fifo. Received bytes after the SFD with rx_end/rx_error; bytes to send paced one every fourth clock, the frame's end queued when tx_valid falls, the 96-bit gap kept on tx_clk.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 139.2,
+      "resources" : {
+        "TRELLIS_COMB" : 211,
+        "TRELLIS_FF" : 163,
+        "TRELLIS_RAMW" : 6
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 59.7,
+      "resources" : {
+        "CPE_ADDF" : 5,
+        "CPE_ADDF2" : 12,
+        "CPE_BRIDGE" : 50,
+        "CPE_CPLINES" : 239,
+        "CPE_FF" : 315,
+        "CPE_LT" : 495,
+        "CPE_MX4" : 47,
+        "CPE_RAMIO" : 55,
+        "RAM_HALF" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 101.7,
+      "resources" : {
+        "ALU" : 36,
+        "DFF" : 163,
+        "LUT4" : 233,
+        "MUX2_LUT5" : 14,
+        "MUX2_LUT6" : 4,
+        "MUX2_LUT7" : 2,
+        "RAM16SDP4" : 6
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 49.2,
+      "resources" : {
+        "ICESTORM_LC" : 306,
+        "ICESTORM_RAM" : 2
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 301.8,
+      "resources" : {
+        "CARRY4" : 11,
+        "SLICE_FFX" : 115,
+        "SLICE_LUTX" : 222
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_mii_phy",
+  "keywords" : [
+    "ethernet",
+    "mii",
+    "phy",
+    "dp83848",
+    "arty",
+    "network",
+    "100base-tx"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "MII-Schnittstelle zu einem 10/100-Ethernet-PHY bei 100 Mbit/s (DP83848 auf dem Arty A7, KSZ8081 …) mit derselben Byte-Schnittstelle wie eth_rmii_phy, an einem eigenen Systemtakt (mindestens das Vierfache des 25-MHz-Nibbletakts, z. B. 100 MHz): rx_clk und tx_clk des PHY werden über async_fifo überquert. Empfangene Bytes nach dem SFD mit rx_end/rx_error; zu sendende Bytes eines je vierten Takt, das Rahmenende eingereiht, wenn tx_valid fällt, die 96-Bit-Pause auf tx_clk eingehalten.",
+      "name" : "Ethernet MII-PHY"
+    }
+  },
+  "name" : "Ethernet MII PHY",
+  "ports" : [
+    {
+      "description" : "System clock (at least 4 × the nibble clock: 100 MHz for 100 Mbit/s)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "MII RX_CLK from the PHY (25 MHz)",
+      "dir" : "in",
+      "name" : "mii_rx_clk"
+    },
+    {
+      "description" : "MII RXD from the PHY",
+      "dir" : "in",
+      "name" : "mii_rxd",
+      "width" : 4
+    },
+    {
+      "description" : "MII RX_DV from the PHY",
+      "dir" : "in",
+      "name" : "mii_rx_dv"
+    },
+    {
+      "description" : "MII RX_ER from the PHY",
+      "dir" : "in",
+      "name" : "mii_rx_er"
+    },
+    {
+      "description" : "MII TX_CLK from the PHY (25 MHz)",
+      "dir" : "in",
+      "name" : "mii_tx_clk"
+    },
+    {
+      "description" : "MII TXD to the PHY",
+      "dir" : "out",
+      "name" : "mii_txd",
+      "width" : 4
+    },
+    {
+      "description" : "MII TX_EN to the PHY",
+      "dir" : "out",
+      "name" : "mii_tx_en"
+    },
+    {
+      "description" : "Received byte (after the SFD, the FCS included), on clk",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "Pulses with each received byte",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "Pulses when a frame is over",
+      "dir" : "out",
+      "name" : "rx_end"
+    },
+    {
+      "description" : "With rx_end: RX_ER was seen, or the frame ended on a stray nibble",
+      "dir" : "out",
+      "name" : "rx_error"
+    },
+    {
+      "description" : "Byte to send (preamble, SFD and FCS included)",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "High for every byte of a frame; falling ends it",
+      "dir" : "in",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "High when tx_data is taken (with tx_valid), at most every fourth clock",
+      "dir" : "out",
+      "name" : "tx_ready"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_mii_phy",
+  "version" : "1.0.0"
+}

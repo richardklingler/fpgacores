@@ -1,7 +1,7 @@
 # Ethernet UDP stack
 
 Everything a design needs to be on the network through a 10/100 PHY on RMII (the Tang Primer 20K Dock's
-RTL8201F), in one core:
+RTL8201F), in one core — `eth_rmii_phy` and `eth_udp_core` (for an MII PHY: `eth_udp_stack_mii`):
 
 - `eth_rmii_phy` and `eth_mac` (FCS, padding, the inter-frame gap) on the PHY's 50 MHz reference clock;
 - `eth_mdio`: after `SETTLE_MS` it advertises 100BASE-TX full duplex and restarts auto-negotiation, then watches

@@ -1,0 +1,326 @@
+{
+  "dependencies" : [
+    "eth_mii_phy",
+    "eth_udp_core"
+  ],
+  "description" : "A small IPv4 stack for a 10/100 Ethernet PHY on MII (the Arty A7's DP83848J), in one core (eth_mii_phy and eth_udp_core): MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, and UDP on one port for the design. The byte side on a system clock of at least four times the PHY's 25 MHz (100 MHz); the PHY's own reference is the design's to make. The same design-side ports as eth_udp_stack.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 102.3,
+      "resources" : {
+        "DP16KD" : 2,
+        "TRELLIS_COMB" : 3427,
+        "TRELLIS_FF" : 2155,
+        "TRELLIS_RAMW" : 6
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 42,
+      "resources" : {
+        "CPE_ADDF" : 45,
+        "CPE_ADDF2" : 556,
+        "CPE_BRIDGE" : 883,
+        "CPE_CPLINES" : 2098,
+        "CPE_FF" : 2239,
+        "CPE_LT" : 4490,
+        "CPE_MX4" : 148,
+        "CPE_RAMIO" : 170,
+        "RAM_HALF" : 3
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 55.8,
+      "resources" : {
+        "ALU" : 1188,
+        "BSRAM" : 2,
+        "DFF" : 2155,
+        "LUT4" : 3454,
+        "MUX2_LUT5" : 395,
+        "MUX2_LUT6" : 125,
+        "MUX2_LUT7" : 48,
+        "MUX2_LUT8" : 15,
+        "RAM16SDP4" : 6
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 29.9,
+      "resources" : {
+        "ICESTORM_LC" : 4080,
+        "ICESTORM_RAM" : 10,
+        "SB_GB" : 7
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 138.5,
+      "resources" : {
+        "CARRY4" : 215,
+        "RAMB18E1" : 2,
+        "SLICE_FFX" : 2020,
+        "SLICE_LUTX" : 3242
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_udp_stack_mii",
+  "keywords" : [
+    "ethernet",
+    "udp",
+    "ipv4",
+    "arp",
+    "ping",
+    "icmp",
+    "mii",
+    "network",
+    "stack",
+    "dp83848",
+    "arty"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein kleiner IPv4-Stack für einen 10/100-Ethernet-PHY an MII (der DP83848J des Arty A7), in einem Kern (eth_mii_phy und eth_udp_core): MAC, MDIO-Einrichtung (100 Vollduplex) und Link-Überwachung, ARP und Ping beantwortet er selbst, und UDP auf einem Port für das Design. Die Byte-Seite an einem Systemtakt von mindestens dem Vierfachen der 25 MHz des PHY (100 MHz); den Referenztakt des PHY erzeugt das Design. Dieselben Ports auf der Design-Seite wie eth_udp_stack.",
+      "name" : "Ethernet-UDP-Stack (MII)"
+    }
+  },
+  "name" : "Ethernet UDP stack (MII)",
+  "parameters" : [
+    {
+      "default" : 1234,
+      "description" : "The UDP port received on and sent from",
+      "name" : "PORT"
+    },
+    {
+      "default" : 100000000,
+      "description" : "The system clock in Hz (at least 4 × the nibble clock)",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 1,
+      "description" : "The PHY's MDIO address (from its straps)",
+      "name" : "PHY_ADDR"
+    },
+    {
+      "default" : 200,
+      "description" : "Milliseconds before the first MDIO transaction",
+      "name" : "SETTLE_MS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "The system clock (100 MHz)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "MII RX_CLK from the PHY (25 MHz)",
+      "dir" : "in",
+      "name" : "mii_rx_clk"
+    },
+    {
+      "description" : "MII RXD (the pins)",
+      "dir" : "in",
+      "name" : "mii_rxd",
+      "width" : 4
+    },
+    {
+      "description" : "MII RX_DV",
+      "dir" : "in",
+      "name" : "mii_rx_dv"
+    },
+    {
+      "description" : "MII RX_ER",
+      "dir" : "in",
+      "name" : "mii_rx_er"
+    },
+    {
+      "description" : "MII TX_CLK from the PHY (25 MHz)",
+      "dir" : "in",
+      "name" : "mii_tx_clk"
+    },
+    {
+      "description" : "MII TXD",
+      "dir" : "out",
+      "name" : "mii_txd",
+      "width" : 4
+    },
+    {
+      "description" : "MII TX_EN",
+      "dir" : "out",
+      "name" : "mii_tx_en"
+    },
+    {
+      "description" : "MDC (the pin)",
+      "dir" : "out",
+      "name" : "mdc"
+    },
+    {
+      "description" : "MDIO's value while mdio_oe is high",
+      "dir" : "out",
+      "name" : "mdio_out"
+    },
+    {
+      "description" : "Drive MDIO (assign mdio = mdio_oe ? mdio_out : 1'bz)",
+      "dir" : "out",
+      "name" : "mdio_oe"
+    },
+    {
+      "description" : "MDIO as it is (the pin, with a pull-up)",
+      "dir" : "in",
+      "name" : "mdio_in"
+    },
+    {
+      "description" : "The PHY reports a link",
+      "dir" : "out",
+      "name" : "link_up"
+    },
+    {
+      "description" : "Pulses for each frame with a good FCS (to anyone)",
+      "dir" : "out",
+      "name" : "frame_good"
+    },
+    {
+      "description" : "Pulses for each frame with a bad FCS or RX_ER",
+      "dir" : "out",
+      "name" : "frame_bad"
+    },
+    {
+      "description" : "Pulses when an ARP reply is queued",
+      "dir" : "out",
+      "name" : "arp_replied"
+    },
+    {
+      "description" : "Pulses when an echo reply is queued",
+      "dir" : "out",
+      "name" : "ping_replied"
+    },
+    {
+      "description" : "A received datagram's byte",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte is there",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "With the datagram's last byte",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "The design takes the byte",
+      "dir" : "in",
+      "name" : "rx_ready"
+    },
+    {
+      "description" : "Bytes in the datagram handed over",
+      "dir" : "out",
+      "name" : "rx_length",
+      "width" : 11
+    },
+    {
+      "description" : "The sender's MAC",
+      "dir" : "out",
+      "name" : "peer_mac",
+      "width" : 48
+    },
+    {
+      "description" : "The sender's IP",
+      "dir" : "out",
+      "name" : "peer_ip",
+      "width" : 32
+    },
+    {
+      "description" : "The sender's port",
+      "dir" : "out",
+      "name" : "peer_port",
+      "width" : 16
+    },
+    {
+      "description" : "Pulses when a datagram is handed over",
+      "dir" : "out",
+      "name" : "rx_new"
+    },
+    {
+      "description" : "Pulses when a datagram was dropped (the one before wasn't taken yet)",
+      "dir" : "out",
+      "name" : "rx_dropped"
+    },
+    {
+      "description" : "Starts a datagram (with send_ready)",
+      "dir" : "in",
+      "name" : "send"
+    },
+    {
+      "description" : "With send: payload bytes (0 … 1472)",
+      "dir" : "in",
+      "name" : "send_length",
+      "width" : 11
+    },
+    {
+      "description" : "With send: the receiver's MAC",
+      "dir" : "in",
+      "name" : "dst_mac",
+      "width" : 48
+    },
+    {
+      "description" : "With send: the receiver's IP",
+      "dir" : "in",
+      "name" : "dst_ip",
+      "width" : 32
+    },
+    {
+      "description" : "With send: the receiver's port",
+      "dir" : "in",
+      "name" : "dst_port",
+      "width" : 16
+    },
+    {
+      "description" : "A datagram can be started",
+      "dir" : "out",
+      "name" : "send_ready"
+    },
+    {
+      "description" : "The payload's byte",
+      "dir" : "in",
+      "name" : "payload_data",
+      "width" : 8
+    },
+    {
+      "description" : "The payload's byte is there (within three clocks of the last)",
+      "dir" : "in",
+      "name" : "payload_valid"
+    },
+    {
+      "description" : "The payload's byte is taken",
+      "dir" : "out",
+      "name" : "payload_ready"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_udp_stack_mii",
+  "version" : "1.0.0"
+}

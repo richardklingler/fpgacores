@@ -1,0 +1,325 @@
+{
+  "dependencies" : [
+    "eth_mac",
+    "eth_mdio",
+    "eth_arp",
+    "eth_icmp_echo",
+    "eth_udp"
+  ],
+  "description" : "The PHY-independent part of GateLab's IPv4 stack: MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, UDP on one port for the design, and the multiplexer sharing the MAC among them — on the byte interface of eth_rmii_phy or eth_mii_phy (eth_udp_stack and eth_udp_stack_mii put them together). About three block RAMs.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 108.4,
+      "resources" : {
+        "DP16KD" : 2,
+        "TRELLIS_COMB" : 3304,
+        "TRELLIS_FF" : 1992
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 44.4,
+      "resources" : {
+        "CPE_ADDF" : 37,
+        "CPE_ADDF2" : 539,
+        "CPE_BRIDGE" : 878,
+        "CPE_CPLINES" : 1945,
+        "CPE_FF" : 1925,
+        "CPE_LT" : 4013,
+        "CPE_MX4" : 100,
+        "CPE_RAMIO" : 106,
+        "RAM_HALF" : 2
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 56.5,
+      "resources" : {
+        "ALU" : 1160,
+        "BSRAM" : 2,
+        "DFF" : 1992,
+        "LUT4" : 3212,
+        "MUX2_LUT5" : 387,
+        "MUX2_LUT6" : 121,
+        "MUX2_LUT7" : 46,
+        "MUX2_LUT8" : 14
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 30.4,
+      "resources" : {
+        "ICESTORM_LC" : 3766,
+        "ICESTORM_RAM" : 8,
+        "SB_GB" : 7
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 143.9,
+      "resources" : {
+        "CARRY4" : 181,
+        "RAMB18E1" : 2,
+        "SLICE_FFX" : 1913,
+        "SLICE_LUTX" : 2906
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_udp_core",
+  "keywords" : [
+    "ethernet",
+    "udp",
+    "ipv4",
+    "arp",
+    "ping",
+    "icmp",
+    "network",
+    "stack",
+    "mac"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Der PHY-unabhängige Teil des IPv4-Stacks von GateLab: MAC, MDIO-Einrichtung (100 Vollduplex) und Link-Überwachung, ARP und Ping beantwortet er selbst, UDP auf einem Port für das Design und der Multiplexer, der den MAC unter ihnen teilt — an der Byte-Schnittstelle von eth_rmii_phy oder eth_mii_phy (eth_udp_stack und eth_udp_stack_mii setzen sie zusammen). Etwa drei Block-RAMs.",
+      "name" : "Ethernet-UDP-Kern"
+    }
+  },
+  "name" : "Ethernet UDP core",
+  "parameters" : [
+    {
+      "default" : 1234,
+      "description" : "The UDP port received on and sent from",
+      "name" : "PORT"
+    },
+    {
+      "default" : 50000000,
+      "description" : "Clock frequency in Hz (the RMII reference or the MII system clock)",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 1,
+      "description" : "The PHY's MDIO address (from its straps)",
+      "name" : "PHY_ADDR"
+    },
+    {
+      "default" : 200,
+      "description" : "Milliseconds before the first MDIO transaction",
+      "name" : "SETTLE_MS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "The RMII reference (50 MHz) or the MII system clock (100 MHz)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "From the PHY adapter's rx_data",
+      "dir" : "in",
+      "name" : "phy_rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "From the PHY adapter's rx_valid",
+      "dir" : "in",
+      "name" : "phy_rx_valid"
+    },
+    {
+      "description" : "From the PHY adapter's rx_end",
+      "dir" : "in",
+      "name" : "phy_rx_end"
+    },
+    {
+      "description" : "From the PHY adapter's rx_error",
+      "dir" : "in",
+      "name" : "phy_rx_error"
+    },
+    {
+      "description" : "To the PHY adapter's tx_data",
+      "dir" : "out",
+      "name" : "phy_tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "To the PHY adapter's tx_valid",
+      "dir" : "out",
+      "name" : "phy_tx_valid"
+    },
+    {
+      "description" : "From the PHY adapter's tx_ready",
+      "dir" : "in",
+      "name" : "phy_tx_ready"
+    },
+    {
+      "description" : "MDC (the pin)",
+      "dir" : "out",
+      "name" : "mdc"
+    },
+    {
+      "description" : "MDIO's value while mdio_oe is high",
+      "dir" : "out",
+      "name" : "mdio_out"
+    },
+    {
+      "description" : "Drive MDIO (assign mdio = mdio_oe ? mdio_out : 1'bz)",
+      "dir" : "out",
+      "name" : "mdio_oe"
+    },
+    {
+      "description" : "MDIO as it is (the pin, with a pull-up)",
+      "dir" : "in",
+      "name" : "mdio_in"
+    },
+    {
+      "description" : "The PHY reports a link",
+      "dir" : "out",
+      "name" : "link_up"
+    },
+    {
+      "description" : "Pulses for each frame with a good FCS (to anyone)",
+      "dir" : "out",
+      "name" : "frame_good"
+    },
+    {
+      "description" : "Pulses for each frame with a bad FCS or RX_ER",
+      "dir" : "out",
+      "name" : "frame_bad"
+    },
+    {
+      "description" : "Pulses when an ARP reply is queued",
+      "dir" : "out",
+      "name" : "arp_replied"
+    },
+    {
+      "description" : "Pulses when an echo reply is queued",
+      "dir" : "out",
+      "name" : "ping_replied"
+    },
+    {
+      "description" : "A received datagram's byte",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte is there",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "With the datagram's last byte",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "The design takes the byte",
+      "dir" : "in",
+      "name" : "rx_ready"
+    },
+    {
+      "description" : "Bytes in the datagram handed over",
+      "dir" : "out",
+      "name" : "rx_length",
+      "width" : 11
+    },
+    {
+      "description" : "The sender's MAC",
+      "dir" : "out",
+      "name" : "peer_mac",
+      "width" : 48
+    },
+    {
+      "description" : "The sender's IP",
+      "dir" : "out",
+      "name" : "peer_ip",
+      "width" : 32
+    },
+    {
+      "description" : "The sender's port",
+      "dir" : "out",
+      "name" : "peer_port",
+      "width" : 16
+    },
+    {
+      "description" : "Pulses when a datagram is handed over",
+      "dir" : "out",
+      "name" : "rx_new"
+    },
+    {
+      "description" : "Pulses when a datagram was dropped (the one before wasn't taken yet)",
+      "dir" : "out",
+      "name" : "rx_dropped"
+    },
+    {
+      "description" : "Starts a datagram (with send_ready)",
+      "dir" : "in",
+      "name" : "send"
+    },
+    {
+      "description" : "With send: payload bytes (0 … 1472)",
+      "dir" : "in",
+      "name" : "send_length",
+      "width" : 11
+    },
+    {
+      "description" : "With send: the receiver's MAC",
+      "dir" : "in",
+      "name" : "dst_mac",
+      "width" : 48
+    },
+    {
+      "description" : "With send: the receiver's IP",
+      "dir" : "in",
+      "name" : "dst_ip",
+      "width" : 32
+    },
+    {
+      "description" : "With send: the receiver's port",
+      "dir" : "in",
+      "name" : "dst_port",
+      "width" : 16
+    },
+    {
+      "description" : "A datagram can be started",
+      "dir" : "out",
+      "name" : "send_ready"
+    },
+    {
+      "description" : "The payload's byte",
+      "dir" : "in",
+      "name" : "payload_data",
+      "width" : 8
+    },
+    {
+      "description" : "The payload's byte is there (within three clocks of the last)",
+      "dir" : "in",
+      "name" : "payload_valid"
+    },
+    {
+      "description" : "The payload's byte is taken",
+      "dir" : "out",
+      "name" : "payload_ready"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_udp_core",
+  "version" : "1.0.0"
+}

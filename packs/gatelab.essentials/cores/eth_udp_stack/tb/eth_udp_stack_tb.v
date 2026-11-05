@@ -289,7 +289,7 @@ module eth_udp_stack_tb;
             begin
                 // Once the echo reply is going out (its tx_valid drops between bytes), the design sends: the datagram
                 // must wait for the reply's last byte.
-                wait (dut.sel == 2'd2 && dut.u_mac.state == 3'd2);
+                wait (dut.u_core.sel == 2'd2 && dut.u_core.u_mac.state == 3'd2);
                 repeat (40) @(posedge clk);
                 @(negedge clk); own_send = 1'b1; @(posedge clk); #1; own_send = 1'b0;
             end

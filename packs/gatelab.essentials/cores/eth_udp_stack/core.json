@@ -1,35 +1,31 @@
 {
   "dependencies" : [
     "eth_rmii_phy",
-    "eth_mac",
-    "eth_mdio",
-    "eth_arp",
-    "eth_icmp_echo",
-    "eth_udp"
+    "eth_udp_core"
   ],
-  "description" : "A small IPv4 stack for a 10/100 Ethernet PHY on RMII, in one core: PHY interface, MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, and UDP on one port for the design (received datagrams with their sender, datagrams sent anywhere). Everything on the PHY's 50 MHz; `mac` and `ip` are inputs. About three block RAMs.",
+  "description" : "A small IPv4 stack for a 10/100 Ethernet PHY on RMII, in one core (eth_rmii_phy and eth_udp_core): PHY interface, MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, and UDP on one port for the design (received datagrams with their sender, datagrams sent anywhere). Everything on the PHY's 50 MHz; `mac` and `ip` are inputs. About three block RAMs.",
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 90.2,
+      "fmaxMHz" : 91,
       "resources" : {
         "DP16KD" : 2,
-        "TRELLIS_COMB" : 3357,
+        "TRELLIS_COMB" : 3331,
         "TRELLIS_FF" : 2030
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 42.8,
+      "fmaxMHz" : 43.1,
       "resources" : {
-        "CPE_ADDF" : 37,
-        "CPE_ADDF2" : 539,
-        "CPE_BRIDGE" : 880,
-        "CPE_CPLINES" : 1947,
+        "CPE_ADDF" : 40,
+        "CPE_ADDF2" : 545,
+        "CPE_BRIDGE" : 811,
+        "CPE_CPLINES" : 1905,
         "CPE_FF" : 1952,
-        "CPE_LT" : 4080,
-        "CPE_MX4" : 100,
+        "CPE_LT" : 3992,
+        "CPE_MX4" : 101,
         "CPE_RAMIO" : 106,
         "RAM_HALF" : 2
       },
@@ -37,24 +33,24 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 52.4,
+      "fmaxMHz" : 63.3,
       "resources" : {
-        "ALU" : 1152,
+        "ALU" : 1116,
         "BSRAM" : 2,
         "DFF" : 2030,
-        "LUT4" : 3214,
-        "MUX2_LUT5" : 359,
-        "MUX2_LUT6" : 101,
-        "MUX2_LUT7" : 35,
-        "MUX2_LUT8" : 11
+        "LUT4" : 3100,
+        "MUX2_LUT5" : 298,
+        "MUX2_LUT6" : 72,
+        "MUX2_LUT7" : 20,
+        "MUX2_LUT8" : 3
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 32.6,
+      "fmaxMHz" : 30.9,
       "resources" : {
-        "ICESTORM_LC" : 3816,
+        "ICESTORM_LC" : 3846,
         "ICESTORM_RAM" : 8,
         "SB_GB" : 7
       },
@@ -62,12 +58,12 @@
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 125.1,
+      "fmaxMHz" : 139.4,
       "resources" : {
-        "CARRY4" : 178,
+        "CARRY4" : 177,
         "RAMB18E1" : 2,
         "SLICE_FFX" : 1943,
-        "SLICE_LUTX" : 2910
+        "SLICE_LUTX" : 2872
       },
       "tested" : true
     }
@@ -88,7 +84,7 @@
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Ein kleiner IPv4-Stack für einen 10/100-Ethernet-PHY an RMII, in einem Kern: PHY-Schnittstelle, MAC, MDIO-Einrichtung (100 Vollduplex) und Link-Überwachung, ARP und Ping beantwortet er selbst, und UDP auf einem Port für das Design (empfangene Datagramme mit Absender, gesendete an beliebige Ziele). Alles am 50-MHz-Takt des PHY; `mac` und `ip` sind Eingänge. Etwa drei Block-RAMs.",
+      "description" : "Ein kleiner IPv4-Stack für einen 10/100-Ethernet-PHY an RMII, in einem Kern (eth_rmii_phy und eth_udp_core): PHY-Schnittstelle, MAC, MDIO-Einrichtung (100 Vollduplex) und Link-Überwachung, ARP und Ping beantwortet er selbst, und UDP auf einem Port für das Design (empfangene Datagramme mit Absender, gesendete an beliebige Ziele). Alles am 50-MHz-Takt des PHY; `mac` und `ip` sind Eingänge. Etwa drei Block-RAMs.",
       "name" : "Ethernet-UDP-Stack"
     }
   },
@@ -313,5 +309,5 @@
   ],
   "schema" : 1,
   "top" : "eth_udp_stack",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

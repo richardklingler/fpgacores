@@ -4,7 +4,8 @@
 //   - MDC never faster than 2.5 MHz; MDIO never driven by both sides at once;
 //   - nothing before SETTLE_MS; then register 4 = 0101 and register 0 = 1200, in that order (none with ADVERTISE 0);
 //   - `link_up` follows the PHY's link (up, down, up again) through the polls;
-//   - the design's read of register 3 and write of register 0x1F reach the PHY and come back; `done` pulses once each.
+//   - the design's read of register 3 and write of register 0x1F reach the PHY and come back; `done` pulses once each;
+//   - with the design asking for transactions back to back, the polls still run and `link_up` follows the link.
 // Prints PASS or every failed check.
 
 `timescale 1ns / 1ps
@@ -106,6 +107,10 @@ module eth_mdio_tb;
     integer dones = 0;
     always @(posedge clk) if (done_a) dones = dones + 1;
 
+    // A design that asks for a read of register 2 whenever the core is ready.
+    reg busy_reads = 1'b0;
+    always @(negedge clk) if (busy_reads) begin go = ready_a; write = 1'b0; reg_addr = 5'd2; end
+
     task wait_ready;
         begin
             @(negedge clk);
@@ -144,6 +149,16 @@ module eth_mdio_tb;
         @(posedge clk); #1;
         if (phy_a.regs[31] !== 16'h5A3C) fail("the write of register 31");
         if (dones != 2) fail("done pulses");
+
+        // A design asking for transactions back to back (the Arty spike did): the polls still run, link_up follows.
+        busy_reads = 1'b1;
+        phy_a.regs[1] = 16'h782D & ~16'h0004;
+        #1_500_000;
+        if (link_a !== 1'b0) fail("link_up starved by back-to-back transactions (link down)");
+        phy_a.regs[1] = 16'h782D;
+        #1_500_000;
+        if (link_a !== 1'b1) fail("link_up starved by back-to-back transactions (link up)");
+        busy_reads = 1'b0;
 
         if (shortest < 400) fail("MDC faster than 2.5 MHz");
         if (phy_a.contention != 0 || phy_b.contention != 0) fail("MDIO driven by both sides");

@@ -3,7 +3,7 @@
 // After SETTLE_MS (the PHY needs about 150 ms after its reset before it answers), the core writes ADVERTISE into
 // register 4 and restarts auto-negotiation (register 0 = 1200) — unless ADVERTISE is 0 — and from then on reads
 // register 1 (BMSR) POLL_HZ times a second: `link_up` is its bit 2. `setup_done` goes high after the first read.
-// Between polls it runs the design's own transactions: with `ready` high, `go` starts one — `write` with `wdata`, or
+// Between polls it runs the design's own transactions (a poll that's due goes first, so they can't starve it): with `ready` high, `go` starts one — `write` with `wdata`, or
 // a read into `rdata` — on register `reg_addr` of PHY_ADDR; `done` pulses when it's over.
 //
 // A frame is 32 ones, 01, the operation (10 read, 01 write), the PHY's address, the register, the turnaround and 16
@@ -94,13 +94,14 @@ module eth_mdio #(
     reg        waiting = 1'b0;   // a frame of ours is under way
     reg [31:0] timer = 32'd0;
 
-    assign ready = step == S_IDLE && !waiting;
+    assign ready = step == S_IDLE && !waiting && timer < POLL;
 
     always @(posedge clk) begin
         start <= 1'b0;
         done <= 1'b0;
-        // The timer runs while settling and between transactions; whoever uses it clears it.
-        if ((step == S_SETTLE || step == S_IDLE) && !waiting) timer <= timer + 32'd1;
+        // The timer runs from the start — through transactions too, so polls come due however busy the design keeps
+        // the core; whoever uses it clears it.
+        if (timer != 32'hFFFF_FFFF) timer <= timer + 32'd1;
         if (waiting) begin
             if (frame_done) begin
                 waiting <= 1'b0;
@@ -136,13 +137,15 @@ module eth_mdio #(
                     start <= 1'b1; start_write <= 1'b0; start_reg <= 5'd1; start_data <= 16'd0; waiting <= 1'b1;
                 end
                 S_IDLE:
-                    if (go) begin
+                    // The link poll first when it's due: a design that asks for transactions back to back must not
+                    // starve it (link_up would keep the first poll's answer, read while auto-negotiation restarted).
+                    if (timer >= POLL) begin
+                        timer <= 32'd0;
+                        step <= S_POLL;
+                    end else if (go) begin
                         start <= 1'b1; start_write <= write; start_reg <= reg_addr; start_data <= wdata;
                         waiting <= 1'b1;
                         step <= S_USER;
-                    end else if (timer >= POLL) begin
-                        timer <= 32'd0;
-                        step <= S_POLL;
                     end
                 default: ;
             endcase
