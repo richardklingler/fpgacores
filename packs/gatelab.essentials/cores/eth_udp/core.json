@@ -1,0 +1,268 @@
+{
+  "dependencies" : [
+    "eth_mac"
+  ],
+  "description" : "UDP over IPv4 and Ethernet on one port: datagrams to PORT are checked (unicast or broadcast, not a fragment, header and UDP checksums, lengths), kept in a block RAM and handed to the design with the sender's MAC, IP and port once the frame is good; datagrams of up to 1472 bytes are sent to any MAC, IP and port with the headers and IP checksum built in. The receive side can feed the send side directly (an echo).",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 115.8,
+      "resources" : {
+        "DP16KD" : 1,
+        "TRELLIS_COMB" : 1531,
+        "TRELLIS_FF" : 815
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 52.2,
+      "resources" : {
+        "CPE_ADDF" : 17,
+        "CPE_ADDF2" : 271,
+        "CPE_BRIDGE" : 342,
+        "CPE_CPLINES" : 882,
+        "CPE_FF" : 798,
+        "CPE_LT" : 1737,
+        "CPE_MX4" : 62,
+        "CPE_RAMIO" : 49,
+        "RAM_HALF" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 62.9,
+      "resources" : {
+        "ALU" : 554,
+        "BSRAM" : 1,
+        "DFF" : 815,
+        "LUT4" : 1434,
+        "MUX2_LUT5" : 190,
+        "MUX2_LUT6" : 60,
+        "MUX2_LUT7" : 21,
+        "MUX2_LUT8" : 3
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 30.2,
+      "resources" : {
+        "ICESTORM_LC" : 1752,
+        "ICESTORM_RAM" : 4,
+        "SB_GB" : 5
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 151.2,
+      "resources" : {
+        "CARRY4" : 111,
+        "RAMB18E1" : 1,
+        "SLICE_FFX" : 786,
+        "SLICE_LUTX" : 1419
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_udp",
+  "keywords" : [
+    "ethernet",
+    "udp",
+    "ipv4",
+    "datagram",
+    "network",
+    "socket"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "UDP über IPv4 und Ethernet auf einem Port: Datagramme an PORT werden geprüft (Unicast oder Broadcast, kein Fragment, Header- und UDP-Prüfsumme, Längen), in einem Block-RAM gehalten und dem Design mit MAC, IP und Port des Absenders übergeben, sobald der Rahmen gut ist; Datagramme bis 1472 Bytes gehen an beliebige MAC, IP und Ports, Header und IP-Prüfsumme baut der Kern. Die Empfangsseite kann die Sendeseite direkt speisen (ein Echo).",
+      "name" : "Ethernet-UDP"
+    }
+  },
+  "name" : "Ethernet UDP",
+  "parameters" : [
+    {
+      "default" : 1234,
+      "description" : "The UDP port received on and sent from",
+      "name" : "PORT"
+    },
+    {
+      "default" : 11,
+      "description" : "The receive buffer holds 2^ADDR_BITS bytes of payload (11: 2048, one block RAM)",
+      "name" : "ADDR_BITS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock (eth_mac's)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "From eth_mac's rx_data",
+      "dir" : "in",
+      "name" : "frame_data",
+      "width" : 8
+    },
+    {
+      "description" : "From eth_mac's rx_valid",
+      "dir" : "in",
+      "name" : "frame_valid"
+    },
+    {
+      "description" : "From eth_mac's rx_last",
+      "dir" : "in",
+      "name" : "frame_last"
+    },
+    {
+      "description" : "From eth_mac's rx_good",
+      "dir" : "in",
+      "name" : "frame_good"
+    },
+    {
+      "description" : "A received datagram's byte",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte is there (low for two clocks after each)",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "With the datagram's last byte",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "The design takes the byte (with rx_valid)",
+      "dir" : "in",
+      "name" : "rx_ready"
+    },
+    {
+      "description" : "Bytes in the datagram handed over",
+      "dir" : "out",
+      "name" : "rx_length",
+      "width" : 11
+    },
+    {
+      "description" : "The sender's MAC (of the datagram handed over last)",
+      "dir" : "out",
+      "name" : "peer_mac",
+      "width" : 48
+    },
+    {
+      "description" : "The sender's IP",
+      "dir" : "out",
+      "name" : "peer_ip",
+      "width" : 32
+    },
+    {
+      "description" : "The sender's port",
+      "dir" : "out",
+      "name" : "peer_port",
+      "width" : 16
+    },
+    {
+      "description" : "Pulses when a datagram is handed over (also an empty one)",
+      "dir" : "out",
+      "name" : "rx_new"
+    },
+    {
+      "description" : "Pulses when a good datagram was dropped (the one before wasn't taken yet)",
+      "dir" : "out",
+      "name" : "rx_dropped"
+    },
+    {
+      "description" : "Starts a datagram (with send_ready)",
+      "dir" : "in",
+      "name" : "send"
+    },
+    {
+      "description" : "With send: payload bytes (0 … 1472)",
+      "dir" : "in",
+      "name" : "send_length",
+      "width" : 11
+    },
+    {
+      "description" : "With send: the receiver's MAC (FF:FF:FF:FF:FF:FF for broadcast)",
+      "dir" : "in",
+      "name" : "dst_mac",
+      "width" : 48
+    },
+    {
+      "description" : "With send: the receiver's IP",
+      "dir" : "in",
+      "name" : "dst_ip",
+      "width" : 32
+    },
+    {
+      "description" : "With send: the receiver's port",
+      "dir" : "in",
+      "name" : "dst_port",
+      "width" : 16
+    },
+    {
+      "description" : "A datagram can be started",
+      "dir" : "out",
+      "name" : "send_ready"
+    },
+    {
+      "description" : "The payload's byte",
+      "dir" : "in",
+      "name" : "payload_data",
+      "width" : 8
+    },
+    {
+      "description" : "The payload's byte is there (within three clocks of the last one taken)",
+      "dir" : "in",
+      "name" : "payload_valid"
+    },
+    {
+      "description" : "The payload's byte is taken",
+      "dir" : "out",
+      "name" : "payload_ready"
+    },
+    {
+      "description" : "To eth_mac's tx_data",
+      "dir" : "out",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "To eth_mac's tx_valid",
+      "dir" : "out",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "To eth_mac's tx_last",
+      "dir" : "out",
+      "name" : "tx_last"
+    },
+    {
+      "description" : "From eth_mac's tx_ready",
+      "dir" : "in",
+      "name" : "tx_ready"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_udp",
+  "version" : "1.0.0"
+}

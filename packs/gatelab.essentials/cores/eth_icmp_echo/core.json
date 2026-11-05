@@ -1,0 +1,160 @@
+{
+  "dependencies" : [
+    "eth_mac"
+  ],
+  "description" : "ICMP echo responder (ping, RFC 792) for IPv4 over Ethernet: keeps eth_mac's received frames in a block RAM, checks an echo request to `mac` and `ip` (IPv4 without options, not a fragment, header checksum, type 8 code 0) and sends the reply from the buffer with the addresses swapped, type 0 and the ICMP checksum adjusted (RFC 1624). Up to 2^ADDR_BITS bytes a frame (1514 at 11); one reply waits at a time.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 110.4,
+      "resources" : {
+        "DP16KD" : 1,
+        "TRELLIS_COMB" : 648,
+        "TRELLIS_FF" : 288
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 54.1,
+      "resources" : {
+        "CPE_ADDF" : 13,
+        "CPE_ADDF2" : 169,
+        "CPE_BRIDGE" : 144,
+        "CPE_CPLINES" : 391,
+        "CPE_FF" : 365,
+        "CPE_LT" : 705,
+        "CPE_RAMIO" : 50,
+        "RAM_HALF" : 1
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 76,
+      "resources" : {
+        "ALU" : 346,
+        "BSRAM" : 1,
+        "DFF" : 288,
+        "LUT4" : 427,
+        "MUX2_LUT5" : 42,
+        "MUX2_LUT6" : 17,
+        "MUX2_LUT7" : 7
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 38.8,
+      "resources" : {
+        "ICESTORM_LC" : 706,
+        "ICESTORM_RAM" : 4
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 229,
+      "resources" : {
+        "CARRY4" : 34,
+        "RAMB18E1" : 1,
+        "SLICE_FFX" : 259,
+        "SLICE_LUTX" : 501
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_icmp_echo",
+  "keywords" : [
+    "ethernet",
+    "icmp",
+    "ping",
+    "echo",
+    "ipv4",
+    "network"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "ICMP-Echo-Antwort (Ping, RFC 792) für IPv4 über Ethernet: hält die empfangenen Rahmen von eth_mac in einem Block-RAM, prüft eine Echo-Anfrage an `mac` und `ip` (IPv4 ohne Optionen, kein Fragment, Header-Prüfsumme, Typ 8 Code 0) und sendet die Antwort aus dem Puffer mit vertauschten Adressen, Typ 0 und angepasster ICMP-Prüfsumme (RFC 1624). Bis zu 2^ADDR_BITS Bytes je Rahmen (1514 bei 11); eine Antwort wartet zugleich.",
+      "name" : "Ethernet-Ping"
+    }
+  },
+  "name" : "Ethernet ping (ICMP echo)",
+  "parameters" : [
+    {
+      "default" : 11,
+      "description" : "The buffer holds 2^ADDR_BITS bytes (11: 2048, one block RAM, pings up to 1472 bytes of data)",
+      "name" : "ADDR_BITS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Clock (eth_mac's)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "From eth_mac's rx_data",
+      "dir" : "in",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "From eth_mac's rx_valid",
+      "dir" : "in",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "From eth_mac's rx_last",
+      "dir" : "in",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "From eth_mac's rx_good",
+      "dir" : "in",
+      "name" : "rx_good"
+    },
+    {
+      "description" : "The reply's byte (to eth_mac's tx_data)",
+      "dir" : "out",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte of the reply is ready (low for two clocks after each byte)",
+      "dir" : "out",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "With the reply's last byte",
+      "dir" : "out",
+      "name" : "tx_last"
+    },
+    {
+      "description" : "From eth_mac's tx_ready",
+      "dir" : "in",
+      "name" : "tx_ready"
+    },
+    {
+      "description" : "Pulses when a reply is queued",
+      "dir" : "out",
+      "name" : "replied"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_icmp_echo",
+  "version" : "1.0.0"
+}

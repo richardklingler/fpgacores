@@ -1,0 +1,148 @@
+{
+  "dependencies" : [
+    "eth_mac"
+  ],
+  "description" : "ARP responder (RFC 826, Ethernet/IPv4): watches eth_mac's received frames and answers a request for `ip` — broadcast or to `mac` — with a 42-byte reply on a valid/ready/last stream (eth_mac pads it). Checked as it arrives, queued when the frame is good; one reply waits at a time. `mac` and `ip` are inputs: constants, switches or a register.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 149.5,
+      "resources" : {
+        "TRELLIS_COMB" : 465,
+        "TRELLIS_FF" : 615
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 61,
+      "resources" : {
+        "CPE_ADDF" : 3,
+        "CPE_ADDF2" : 28,
+        "CPE_BRIDGE" : 164,
+        "CPE_CPLINES" : 383,
+        "CPE_FF" : 603,
+        "CPE_LT" : 812
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 76.3,
+      "resources" : {
+        "ALU" : 54,
+        "DFF" : 615,
+        "LUT4" : 672,
+        "MUX2_LUT5" : 9,
+        "MUX2_LUT6" : 2,
+        "MUX2_LUT7" : 1,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 55.2,
+      "resources" : {
+        "ICESTORM_LC" : 722,
+        "SB_GB" : 4
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 230.2,
+      "resources" : {
+        "CARRY4" : 4,
+        "SLICE_FFX" : 615,
+        "SLICE_LUTX" : 398
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_arp",
+  "keywords" : [
+    "ethernet",
+    "arp",
+    "ipv4",
+    "network",
+    "address"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "ARP-Antwort (RFC 826, Ethernet/IPv4): beobachtet die empfangenen Rahmen von eth_mac und beantwortet eine Anfrage nach `ip` — Broadcast oder an `mac` — mit einer 42-Byte-Antwort als valid/ready/last-Strom (eth_mac füllt auf). Beim Eintreffen geprüft, in die Warteschlange gestellt, wenn der Rahmen gut ist; eine Antwort wartet zugleich. `mac` und `ip` sind Eingänge: Konstanten, Schalter oder ein Register.",
+      "name" : "Ethernet-ARP"
+    }
+  },
+  "name" : "Ethernet ARP",
+  "ports" : [
+    {
+      "description" : "Clock (eth_mac's)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "From eth_mac's rx_data",
+      "dir" : "in",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "From eth_mac's rx_valid",
+      "dir" : "in",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "From eth_mac's rx_last",
+      "dir" : "in",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "From eth_mac's rx_good",
+      "dir" : "in",
+      "name" : "rx_good"
+    },
+    {
+      "description" : "The reply's byte (to eth_mac's tx_data)",
+      "dir" : "out",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A reply is waiting",
+      "dir" : "out",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "With the reply's last byte",
+      "dir" : "out",
+      "name" : "tx_last"
+    },
+    {
+      "description" : "From eth_mac's tx_ready",
+      "dir" : "in",
+      "name" : "tx_ready"
+    },
+    {
+      "description" : "Pulses when a reply is queued",
+      "dir" : "out",
+      "name" : "replied"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_arp",
+  "version" : "1.0.0"
+}

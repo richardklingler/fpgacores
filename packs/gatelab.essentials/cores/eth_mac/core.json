@@ -1,0 +1,182 @@
+{
+  "dependencies" : [
+    "eth_rmii_phy"
+  ],
+  "description" : "Ethernet MAC for eth_rmii_phy (100 Mbit/s): receives frames with the FCS checked and removed (`rx_good` with the last byte: CRC-32 right, no RX_ER, 64 to 1522 bytes) and sends them with preamble, padding to 60 bytes, FCS and the 96-bit inter-frame gap added. Bytes move one every fourth clock; a sender that falls behind gets its frame sent with an inverted FCS (every receiver drops it) and `tx_underrun`.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 155.6,
+      "resources" : {
+        "TRELLIS_COMB" : 323,
+        "TRELLIS_FF" : 151
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 55.9,
+      "resources" : {
+        "CPE_ADDF" : 5,
+        "CPE_ADDF2" : 23,
+        "CPE_BRIDGE" : 92,
+        "CPE_CPLINES" : 206,
+        "CPE_FF" : 170,
+        "CPE_LT" : 492,
+        "CPE_MX4" : 8
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 70.5,
+      "resources" : {
+        "ALU" : 64,
+        "DFF" : 151,
+        "LUT4" : 449,
+        "MUX2_LUT5" : 105,
+        "MUX2_LUT6" : 30,
+        "MUX2_LUT7" : 10,
+        "MUX2_LUT8" : 2
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 55,
+      "resources" : {
+        "ICESTORM_LC" : 349,
+        "SB_GB" : 1
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 269.8,
+      "resources" : {
+        "CARRY4" : 10,
+        "SLICE_FFX" : 119,
+        "SLICE_LUTX" : 283
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_mac",
+  "keywords" : [
+    "ethernet",
+    "mac",
+    "crc32",
+    "fcs",
+    "network",
+    "frame"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ethernet-MAC für eth_rmii_phy (100 Mbit/s): empfängt Rahmen mit geprüfter und entfernter FCS (`rx_good` mit dem letzten Byte: CRC-32 richtig, kein RX_ER, 64 bis 1522 Bytes) und sendet sie mit Präambel, Auffüllung auf 60 Bytes, FCS und der 96-Bit-Pause zwischen Rahmen. Bytes laufen eines je vierten Takt; kommt der Sender nicht nach, geht sein Rahmen mit invertierter FCS hinaus (jeder Empfänger verwirft ihn) und `tx_underrun` wird gesetzt.",
+      "name" : "Ethernet-MAC"
+    }
+  },
+  "name" : "Ethernet MAC",
+  "parameters" : [
+    {
+      "default" : 52,
+      "description" : "Clocks of quiet after a frame's last byte is taken (48 = 96 bit times at 50 MHz, plus the PHY's last byte)",
+      "name" : "GAP_CLOCKS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "The PHY's 50 MHz reference clock (as eth_rmii_phy)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "From eth_rmii_phy's rx_data",
+      "dir" : "in",
+      "name" : "phy_rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "From eth_rmii_phy's rx_valid",
+      "dir" : "in",
+      "name" : "phy_rx_valid"
+    },
+    {
+      "description" : "From eth_rmii_phy's rx_end",
+      "dir" : "in",
+      "name" : "phy_rx_end"
+    },
+    {
+      "description" : "From eth_rmii_phy's rx_error",
+      "dir" : "in",
+      "name" : "phy_rx_error"
+    },
+    {
+      "description" : "To eth_rmii_phy's tx_data",
+      "dir" : "out",
+      "name" : "phy_tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "To eth_rmii_phy's tx_valid",
+      "dir" : "out",
+      "name" : "phy_tx_valid"
+    },
+    {
+      "description" : "From eth_rmii_phy's tx_ready",
+      "dir" : "in",
+      "name" : "phy_tx_ready"
+    },
+    {
+      "description" : "Received byte: destination MAC to the payload's end, the FCS removed",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "Pulses with each received byte",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "With the frame's last byte",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "With rx_last: the frame is good (FCS, no RX_ER, length) — drop it otherwise",
+      "dir" : "out",
+      "name" : "rx_good"
+    },
+    {
+      "description" : "Byte to send: destination MAC to the payload's end",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte is offered (keep it ready: the MAC doesn't wait)",
+      "dir" : "in",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "With the frame's last byte",
+      "dir" : "in",
+      "name" : "tx_last"
+    },
+    {
+      "description" : "High when tx_data is taken (with tx_valid)",
+      "dir" : "out",
+      "name" : "tx_ready"
+    },
+    {
+      "description" : "The frame being sent had an underrun (it goes out with a bad FCS)",
+      "dir" : "out",
+      "name" : "tx_underrun"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_mac",
+  "version" : "1.0.0"
+}

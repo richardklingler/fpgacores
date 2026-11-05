@@ -1,0 +1,144 @@
+{
+  "description" : "RMII interface to a 10/100 Ethernet PHY at 100 Mbit/s (RTL8201F, LAN8720, DP83848): bytes to and from di-bits on the PHY's 50 MHz reference clock. Received bytes come after the SFD with their FCS (eth_mac checks it); CRS_DV toggling at a frame's end is handled; `rx_end` pulses when a frame is over, `rx_error` says RX_ER was seen or it ended inside a byte. Bytes to send go out with valid/ready, one every fourth clock; TX_EN falls when valid is low at a byte's end.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 257.1,
+      "resources" : {
+        "TRELLIS_COMB" : 33,
+        "TRELLIS_FF" : 38
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 142.6,
+      "resources" : {
+        "CPE_BRIDGE" : 7,
+        "CPE_FF" : 31,
+        "CPE_LT" : 54
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 137.8,
+      "resources" : {
+        "DFF" : 38,
+        "LUT4" : 52,
+        "MUX2_LUT5" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 93,
+      "resources" : {
+        "ICESTORM_LC" : 55
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 435.7,
+      "resources" : {
+        "SLICE_FFX" : 38,
+        "SLICE_LUTX" : 27
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_rmii_phy",
+  "keywords" : [
+    "ethernet",
+    "rmii",
+    "phy",
+    "rtl8201",
+    "lan8720",
+    "dp83848",
+    "network",
+    "100base-tx"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "RMII-Schnittstelle zu einem 10/100-Ethernet-PHY bei 100 Mbit/s (RTL8201F, LAN8720, DP83848): Bytes zu und von Di-Bits am 50-MHz-Referenztakt des PHY. Empfangene Bytes kommen nach dem SFD mit ihrer FCS (eth_mac prüft sie); CRS_DV, das am Rahmenende wechselt, wird berücksichtigt; `rx_end` pulst am Rahmenende, `rx_error` meldet RX_ER oder ein Ende mitten im Byte. Zu sendende Bytes gehen mit valid/ready hinaus, eines je vierten Takt; TX_EN fällt, wenn valid am Ende eines Bytes low ist.",
+      "name" : "Ethernet RMII-PHY"
+    }
+  },
+  "name" : "Ethernet RMII PHY",
+  "ports" : [
+    {
+      "description" : "The PHY's 50 MHz reference clock (RMII REF_CLK)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "RMII RXD from the PHY (the pins)",
+      "dir" : "in",
+      "name" : "rmii_rxd",
+      "width" : 2
+    },
+    {
+      "description" : "RMII CRS_DV from the PHY",
+      "dir" : "in",
+      "name" : "rmii_crs_dv"
+    },
+    {
+      "description" : "RMII RX_ER from the PHY (tie low if the board doesn't have it)",
+      "dir" : "in",
+      "name" : "rmii_rx_er"
+    },
+    {
+      "description" : "RMII TXD to the PHY",
+      "dir" : "out",
+      "name" : "rmii_txd",
+      "width" : 2
+    },
+    {
+      "description" : "RMII TX_EN to the PHY",
+      "dir" : "out",
+      "name" : "rmii_tx_en"
+    },
+    {
+      "description" : "Received byte (after the SFD, the FCS included)",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "Pulses with each received byte",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "Pulses when a frame is over",
+      "dir" : "out",
+      "name" : "rx_end"
+    },
+    {
+      "description" : "With rx_end: RX_ER was seen, or the frame ended inside a byte",
+      "dir" : "out",
+      "name" : "rx_error"
+    },
+    {
+      "description" : "Byte to send (preamble, SFD and FCS included)",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "High for every byte of a frame; low at a byte's end ends it",
+      "dir" : "in",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "High when tx_data is taken (with tx_valid)",
+      "dir" : "out",
+      "name" : "tx_ready"
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_rmii_phy",
+  "version" : "1.0.0"
+}
