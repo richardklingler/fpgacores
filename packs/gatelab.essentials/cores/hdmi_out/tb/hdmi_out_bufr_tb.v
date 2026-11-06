@@ -45,8 +45,8 @@ module hdmi_out_bufr_check #(
     realtime lane_edge = -1.0;
     integer collisions = 0;
     always @(posedge lane_clk) lane_edge = $realtime;
-    always @(dut.words) begin
-        if (!reset && !dut.lane_reset && $realtime != lane_edge) begin
+    always @(dut.u_out.words) begin
+        if (!reset && !dut.u_out.lane_reset && $realtime != lane_edge) begin
             if (collisions == 0) $display("FAIL (phase %0.1f ns): the entry being read was written at %0t", PHASE, $time);
             collisions = collisions + 1;
             errors = errors + 1;

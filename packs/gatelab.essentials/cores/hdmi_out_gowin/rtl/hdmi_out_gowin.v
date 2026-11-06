@@ -12,7 +12,15 @@
 // on its own IO_LOC line (nextpnr reads no "P,N" form). Bits go out from bit 0 (D0). Simulation
 // (no SYNTHESIS) sends the same bits from a behavioural model on both edges of `serial_clk`.
 
-module hdmi_out (
+// hdmi_out without sound: hdmi_out_audio with silence, the ports of the cores before HDMI audio (a design that
+// sends sound instantiates hdmi_out_audio, which has audio_l, audio_r and audio_ready). HDMI = 1 still sends the
+// InfoFrames, data islands and all.
+module hdmi_out #(
+    parameter HDMI = 0,                     // 1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI as before
+    parameter integer PIXEL_HZ = 74250000,  // the pixel clock, for HDMI's audio clock (CTS = PIXEL_HZ / 1000)
+    parameter [6:0] VIC = 7'd4,             // CEA-861 video code in the AVI InfoFrame: 1 = 640x480, 4 = 720p60, 16 = 1080p60
+    parameter [1:0] ASPECT = 2'b10          // picture aspect: 01 = 4:3, 10 = 16:9
+) (
     input  wire       pixel_clk,
     input  wire       serial_clk,
     input  wire       reset,
@@ -27,10 +35,41 @@ module hdmi_out (
     output wire [2:0] tmds_d_p,
     output wire [2:0] tmds_d_n
 );
+    hdmi_out_audio #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_out (
+        .pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .red(red), .green(green), .blue(blue),
+        .de(de), .hsync(hsync), .vsync(vsync), .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n), .tmds_d_p(tmds_d_p),
+        .tmds_d_n(tmds_d_n),
+        .audio_l(16'd0), .audio_r(16'd0), .audio_ready());
+endmodule
+
+module hdmi_out_audio #(
+    parameter HDMI = 0,                     // 1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI as before
+    parameter integer PIXEL_HZ = 74250000,  // the pixel clock, for HDMI's audio clock (CTS = PIXEL_HZ / 1000)
+    parameter [6:0] VIC = 7'd4,             // CEA-861 video code in the AVI InfoFrame: 1 = 640x480, 4 = 720p60, 16 = 1080p60
+    parameter [1:0] ASPECT = 2'b10          // picture aspect: 01 = 4:3, 10 = 16:9
+) (
+    input  wire       pixel_clk,
+    input  wire       serial_clk,
+    input  wire       reset,
+    input  wire [7:0] red,
+    input  wire [7:0] green,
+    input  wire [7:0] blue,
+    input  wire       de,
+    input  wire       hsync,
+    input  wire       vsync,
+    input  wire [15:0] audio_l,             // HDMI = 1: signed samples, taken while audio_ready is high (48 kHz)
+    input  wire [15:0] audio_r,
+    output wire       audio_ready,
+    output wire       tmds_clk_p,
+    output wire       tmds_clk_n,
+    output wire [2:0] tmds_d_p,
+    output wire [2:0] tmds_d_n
+);
     wire [9:0] word_blue, word_green, word_red;
-    tmds_encoder u_blue  (.clk(pixel_clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(word_blue));
-    tmds_encoder u_green (.clk(pixel_clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(word_green));
-    tmds_encoder u_red   (.clk(pixel_clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(word_red));
+    hdmi_encoder #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_encoder (
+        .clk(pixel_clk), .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
+        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready),
+        .word_blue(word_blue), .word_green(word_green), .word_red(word_red));
 
     hdmi_out_lane u_lane_blue  (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_blue),  .out_p(tmds_d_p[0]), .out_n(tmds_d_n[0]));
     hdmi_out_lane u_lane_green (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_green), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));

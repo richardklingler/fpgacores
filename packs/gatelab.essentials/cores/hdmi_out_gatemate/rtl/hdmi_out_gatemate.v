@@ -20,7 +20,15 @@
 // Pins: P and N are two single-ended outputs, N driven with the inverted bits by its own CC_ODDR, so
 // any two pins of a bank serve (the EVB's Pmod pairs sit on pins 1 and 7, not side by side).
 
-module hdmi_out (
+// hdmi_out without sound: hdmi_out_audio with silence, the ports of the cores before HDMI audio (a design that
+// sends sound instantiates hdmi_out_audio, which has audio_l, audio_r and audio_ready). HDMI = 1 still sends the
+// InfoFrames, data islands and all.
+module hdmi_out #(
+    parameter HDMI = 0,                     // 1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI as before
+    parameter integer PIXEL_HZ = 74250000,  // the pixel clock, for HDMI's audio clock (CTS = PIXEL_HZ / 1000)
+    parameter [6:0] VIC = 7'd4,             // CEA-861 video code in the AVI InfoFrame: 1 = 640x480, 4 = 720p60, 16 = 1080p60
+    parameter [1:0] ASPECT = 2'b10          // picture aspect: 01 = 4:3, 10 = 16:9
+) (
     input  wire       pixel_clk,
     input  wire       serial_clk,
     input  wire       reset,
@@ -35,39 +43,72 @@ module hdmi_out (
     output wire [2:0] tmds_d_p,
     output wire [2:0] tmds_d_n
 );
+    hdmi_out_audio #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_out (
+        .pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .red(red), .green(green), .blue(blue),
+        .de(de), .hsync(hsync), .vsync(vsync), .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n), .tmds_d_p(tmds_d_p),
+        .tmds_d_n(tmds_d_n),
+        .audio_l(16'd0), .audio_r(16'd0), .audio_ready());
+endmodule
+
+module hdmi_out_audio #(
+    parameter HDMI = 0,                     // 1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI as before
+    parameter integer PIXEL_HZ = 74250000,  // the pixel clock, for HDMI's audio clock (CTS = PIXEL_HZ / 1000)
+    parameter [6:0] VIC = 7'd4,             // CEA-861 video code in the AVI InfoFrame: 1 = 640x480, 4 = 720p60, 16 = 1080p60
+    parameter [1:0] ASPECT = 2'b10          // picture aspect: 01 = 4:3, 10 = 16:9
+) (
+    input  wire       pixel_clk,
+    input  wire       serial_clk,
+    input  wire       reset,
+    input  wire [7:0] red,
+    input  wire [7:0] green,
+    input  wire [7:0] blue,
+    input  wire       de,
+    input  wire       hsync,
+    input  wire       vsync,
+    input  wire [15:0] audio_l,             // HDMI = 1: signed samples, taken while audio_ready is high (48 kHz)
+    input  wire [15:0] audio_r,
+    output wire       audio_ready,
+    output wire       tmds_clk_p,
+    output wire       tmds_clk_n,
+    output wire [2:0] tmds_d_p,
+    output wire [2:0] tmds_d_n
+);
     wire [9:0] word_blue, word_green, word_red;
-    tmds_encoder u_blue  (.clk(pixel_clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(word_blue));
-    tmds_encoder u_green (.clk(pixel_clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(word_green));
-    tmds_encoder u_red   (.clk(pixel_clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(word_red));
+    hdmi_encoder #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_encoder (
+        .clk(pixel_clk), .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
+        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready),
+        .word_blue(word_blue), .word_green(word_green), .word_red(word_red));
 
-    // One pixel-clock toggle, seen on the serial clock: `load` is high for the serial clock before
-    // the third serial edge after the pixel edge. It comes from a flip-flop per lane, worked out one
-    // stage early (seen[1] ^ seen[0] now is seen[2] ^ seen[1] a clock later): the serial clock's
-    // worst path was the XOR and its fan-out to all 40 shift flip-flops (107–140 MHz depending on
-    // placement, 126 needed; GateMate primitives step 7).
-    reg pixel_toggle = 1'b0;
-    always @(posedge pixel_clk) pixel_toggle <= ~pixel_toggle;
-    reg [2:0] seen = 3'b000;
-    (* keep *) reg [3:0] load = 4'b0000;
-    always @(posedge serial_clk) begin
-        seen <= {seen[1:0], pixel_toggle};
-        load <= {4{seen[1] ^ seen[0]}};
-    end
-
-    hdmi_out_lane u_lane_blue  (.serial_clk(serial_clk), .load(load[0]), .word(word_blue),  .out_p(tmds_d_p[0]), .out_n(tmds_d_n[0]));
-    hdmi_out_lane u_lane_green (.serial_clk(serial_clk), .load(load[1]), .word(word_green), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));
-    hdmi_out_lane u_lane_red   (.serial_clk(serial_clk), .load(load[2]), .word(word_red),   .out_p(tmds_d_p[2]), .out_n(tmds_d_n[2]));
-    hdmi_out_lane u_lane_clock (.serial_clk(serial_clk), .load(load[3]), .word(10'b0000011111), .out_p(tmds_clk_p), .out_n(tmds_clk_n));
+    // The lanes, each with its own load timing (below): no signal runs between them, so each sits next to its pins.
+    hdmi_out_lane u_lane_blue  (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .word(word_blue),  .out_p(tmds_d_p[0]), .out_n(tmds_d_n[0]));
+    hdmi_out_lane u_lane_green (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .word(word_green), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));
+    hdmi_out_lane u_lane_red   (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .word(word_red),   .out_p(tmds_d_p[2]), .out_n(tmds_d_n[2]));
+    hdmi_out_lane u_lane_clock (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .word(10'b0000011111), .out_p(tmds_clk_p), .out_n(tmds_clk_n));
 endmodule
 
 // One lane: a 10-bit word per pixel, bit 0 first, out of two pins.
 module hdmi_out_lane (
+    input  wire       pixel_clk,
     input  wire       serial_clk,
-    input  wire       load,
     input  wire [9:0] word,
     output wire       out_p,
     output wire       out_n
 );
+    // A pixel-clock toggle, seen on the serial clock: `load` is high for the serial clock before the third serial edge
+    // after the pixel edge, worked out one stage early (seen[1] ^ seen[0] now is seen[2] ^ seen[1] a clock later). Each
+    // lane has its own: the four start together from the configuration and run on the same clocks, so they stay in
+    // step, and the load reaches the lane's ten shift flip-flops without crossing the chip. (One shared load had to
+    // reach lanes on pins far apart: 107–140 MHz depending on placement, 126 needed; GateMate primitives step 7, and
+    // again with HDMI audio's step 4, where a renamed instance moved it to 111.)
+    reg pixel_toggle = 1'b0;
+    always @(posedge pixel_clk) pixel_toggle <= ~pixel_toggle;
+    (* keep *) reg [1:0] seen = 2'b00;
+    (* keep *) reg load = 1'b0;
+    always @(posedge serial_clk) begin
+        seen <= {seen[0], pixel_toggle};
+        load <= seen[1] ^ seen[0];
+    end
+
     reg [9:0] shift = 10'd0;
     // The bits for P and for N (inverted) in registers of their own next to the pins: CC_ODDR takes
     // D1 on the falling edge, so only half a serial clock is left for that hop (GateMate primitives

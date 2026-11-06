@@ -1,7 +1,7 @@
 # HDMI/DVI output (ECP5)
 
 Pixels and syncs to an HDMI or DVI monitor from a Lattice ECP5: three TMDS encoders
-(`tmds_encoder`) and four lanes, plus the clock lane. DVI signalling — no audio or info frames —
+(`tmds_encoder`) and four lanes, plus the clock lane. DVI signalling by default,
 which every HDMI monitor shows. The same module (`hdmi_out`) and ports as the 7-series core, so a
 design moves between them.
 
@@ -9,6 +9,19 @@ design moves between them.
 hdmi_out u_hdmi (
     .pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset),
     .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
+    .tmds_clk_p(hdmi_clk_p), .tmds_clk_n(hdmi_clk_n), .tmds_d_p(hdmi_d_p), .tmds_d_n(hdmi_d_n)
+);
+```
+
+**Sound.** `HDMI = 1` sends HDMI instead (`hdmi_encoder`): the AVI and Audio InfoFrames, and 48 kHz stereo when you
+instantiate `hdmi_out_audio` — the same ports plus `audio_l`, `audio_r` (signed 16-bit) and `audio_ready`, which
+pulses when the core takes the next pair. `PIXEL_HZ` must be the pixel clock the PLL makes (it sets HDMI's audio clock).
+
+```verilog
+hdmi_out_audio #(.HDMI(1), .PIXEL_HZ(74250000), .VIC(7'd4), .ASPECT(2'b10)) u_hdmi (
+    .pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset),
+    .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
+    .audio_l(left), .audio_r(right), .audio_ready(audio_ready),
     .tmds_clk_p(hdmi_clk_p), .tmds_clk_n(hdmi_clk_n), .tmds_d_p(hdmi_d_p), .tmds_d_n(hdmi_d_n)
 );
 ```

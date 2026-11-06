@@ -1,29 +1,54 @@
 {
   "dependencies" : [
+    "hdmi_encoder",
     "tmds_encoder"
   ],
-  "description" : "Pixels and syncs out of an HDMI or DVI connector on Gowin GW1N/GW2A: three TMDS encoders, 10:1 OSER10 serialisers and true-LVDS outputs, plus the clock lane. Needs a five-times serial clock from an rPLL and the pixel clock from a CLKDIV dividing it by 5 (720p60: 371.25 and 74.25 MHz from 27 MHz). DVI signalling, no audio. The same module and ports as hdmi_out for 7-series.",
+  "description" : "Pixels and syncs out of an HDMI or DVI connector on Gowin GW1N/GW2A: three TMDS encoders, 10:1 OSER10 serialisers and true-LVDS outputs, plus the clock lane. Needs a five-times serial clock from an rPLL and the pixel clock from a CLKDIV dividing it by 5 (720p60: 371.25 and 74.25 MHz from 27 MHz). DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio, the same with audio_l, audio_r and audio_ready. The same module and ports as hdmi_out for 7-series.",
   "id" : "hdmi_out_gowin",
   "keywords" : [
-    "hdmi",
-    "dvi",
-    "tmds",
-    "video",
+    "1080p30",
+    "720p",
+    "audio",
     "display",
+    "dvi",
+    "gowin",
+    "hdmi",
+    "hdmi-audio",
     "oser10",
     "tlvds",
-    "720p",
-    "1080p30",
-    "gowin"
+    "tmds",
+    "video"
   ],
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei Gowin GW1N/GW2A: drei TMDS-Encoder, 10:1-OSER10-Serialisierer und echte LVDS-Ausgänge, dazu der Takt-Kanal. Braucht einen fünffachen seriellen Takt aus einem rPLL und den Pixeltakt aus einem CLKDIV, der ihn durch 5 teilt (720p60: 371,25 und 74,25 MHz aus 27 MHz). DVI-Signalisierung, ohne Ton. Dasselbe Modul und dieselben Anschlüsse wie hdmi_out für die 7-Serie.",
+      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei Gowin GW1N/GW2A: drei TMDS-Encoder, 10:1-OSER10-Serialisierer und echte LVDS-Ausgänge, dazu der Takt-Kanal. Braucht einen fünffachen seriellen Takt aus einem rPLL und den Pixeltakt aus einem CLKDIV, der ihn durch 5 teilt (720p60: 371,25 und 74,25 MHz aus 27 MHz). Standardmässig DVI; mit HDMI = 1 HDMI mit den AVI- und Audio-InfoFrames (hdmi_encoder); für 48-kHz-Stereoton hdmi_out_audio instanziieren, dasselbe mit audio_l, audio_r und audio_ready. Dasselbe Modul und dieselben Anschlüsse wie hdmi_out für die 7-Serie.",
       "name" : "HDMI/DVI-Ausgang (Gowin)"
     }
   },
   "name" : "HDMI/DVI output (Gowin)",
+  "parameters" : [
+    {
+      "default" : 0,
+      "description" : "1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI, as before",
+      "name" : "HDMI"
+    },
+    {
+      "default" : 74250000,
+      "description" : "The pixel clock in Hz (HDMI's audio clock: CTS = PIXEL_HZ / 1000)",
+      "name" : "PIXEL_HZ"
+    },
+    {
+      "default" : 4,
+      "description" : "CEA-861 video code for the AVI InfoFrame (1 = 640x480, 4 = 720p60, 16 = 1080p60)",
+      "name" : "VIC"
+    },
+    {
+      "default" : 2,
+      "description" : "Picture aspect for the AVI InfoFrame (1 = 4:3, 2 = 16:9)",
+      "name" : "ASPECT"
+    }
+  ],
   "ports" : [
     {
       "description" : "Pixel clock (74.25 MHz for 720p60 and 1080p30): the CLKDIV's output, serial_clk / 5",
@@ -102,5 +127,5 @@
   "schema" : 1,
   "top" : "hdmi_out",
   "variantOf" : "hdmi_out",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

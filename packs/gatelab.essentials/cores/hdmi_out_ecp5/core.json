@@ -1,29 +1,54 @@
 {
   "dependencies" : [
+    "hdmi_encoder",
     "tmds_encoder"
   ],
-  "description" : "Pixels and syncs out of an HDMI or DVI connector on Lattice ECP5: three TMDS encoders, per lane a shift register at five times the pixel clock into ODDRX1F outputs, P and N as two LVCMOS33 pins (N inverted), plus the clock lane. Needs a pixel clock and a five-times serial clock from one EHXPLLL (720p60 from 25 MHz: 74 and 370 MHz, 0.34 % under 74.25). DVI signalling, no audio. The same module and ports as hdmi_out for 7-series.",
+  "description" : "Pixels and syncs out of an HDMI or DVI connector on Lattice ECP5: three TMDS encoders, per lane a shift register at five times the pixel clock into ODDRX1F outputs, P and N as two LVCMOS33 pins (N inverted), plus the clock lane. Needs a pixel clock and a five-times serial clock from one EHXPLLL (720p60 from 25 MHz: 74 and 370 MHz, 0.34 % under 74.25). DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio, the same with audio_l, audio_r and audio_ready. The same module and ports as hdmi_out for 7-series.",
   "id" : "hdmi_out_ecp5",
   "keywords" : [
-    "hdmi",
-    "dvi",
-    "tmds",
-    "video",
-    "display",
-    "oddrx1f",
-    "720p",
     "1080p30",
+    "720p",
+    "audio",
+    "display",
+    "dvi",
     "ecp5",
-    "gpdi"
+    "gpdi",
+    "hdmi",
+    "hdmi-audio",
+    "oddrx1f",
+    "tmds",
+    "video"
   ],
   "licence" : "CC0-1.0",
   "localized" : {
     "de" : {
-      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei Lattice ECP5: drei TMDS-Encoder, pro Kanal ein Schieberegister mit dem fünffachen Pixeltakt vor ODDRX1F-Ausgängen, P und N als zwei LVCMOS33-Pins (N invertiert), dazu der Takt-Kanal. Braucht einen Pixeltakt und einen fünffachen seriellen Takt aus einem EHXPLLL (720p60 aus 25 MHz: 74 und 370 MHz, 0,34 % unter 74,25). DVI-Signalisierung, ohne Ton. Dasselbe Modul und dieselben Anschlüsse wie hdmi_out für die 7-Serie.",
+      "description" : "Pixel und Synchronsignale an einen HDMI- oder DVI-Anschluss bei Lattice ECP5: drei TMDS-Encoder, pro Kanal ein Schieberegister mit dem fünffachen Pixeltakt vor ODDRX1F-Ausgängen, P und N als zwei LVCMOS33-Pins (N invertiert), dazu der Takt-Kanal. Braucht einen Pixeltakt und einen fünffachen seriellen Takt aus einem EHXPLLL (720p60 aus 25 MHz: 74 und 370 MHz, 0,34 % unter 74,25). Standardmässig DVI; mit HDMI = 1 HDMI mit den AVI- und Audio-InfoFrames (hdmi_encoder); für 48-kHz-Stereoton hdmi_out_audio instanziieren, dasselbe mit audio_l, audio_r und audio_ready. Dasselbe Modul und dieselben Anschlüsse wie hdmi_out für die 7-Serie.",
       "name" : "HDMI/DVI-Ausgang (ECP5)"
     }
   },
   "name" : "HDMI/DVI output (ECP5)",
+  "parameters" : [
+    {
+      "default" : 0,
+      "description" : "1: HDMI with audio and InfoFrames (hdmi_encoder); 0: DVI, as before",
+      "name" : "HDMI"
+    },
+    {
+      "default" : 74250000,
+      "description" : "The pixel clock in Hz (HDMI's audio clock: CTS = PIXEL_HZ / 1000)",
+      "name" : "PIXEL_HZ"
+    },
+    {
+      "default" : 4,
+      "description" : "CEA-861 video code for the AVI InfoFrame (1 = 640x480, 4 = 720p60, 16 = 1080p60)",
+      "name" : "VIC"
+    },
+    {
+      "default" : 2,
+      "description" : "Picture aspect for the AVI InfoFrame (1 = 4:3, 2 = 16:9)",
+      "name" : "ASPECT"
+    }
+  ],
   "ports" : [
     {
       "description" : "Pixel clock (74 MHz for 720p60 from 25 MHz)",
@@ -102,5 +127,5 @@
   "schema" : 1,
   "top" : "hdmi_out",
   "variantOf" : "hdmi_out",
-  "version" : "1.0.2"
+  "version" : "1.1.0"
 }

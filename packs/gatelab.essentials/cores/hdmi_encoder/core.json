@@ -1,0 +1,185 @@
+{
+  "dependencies" : [
+    "tmds_encoder"
+  ],
+  "description" : "The three 10-bit TMDS lane words per pixel clock for HDMI or DVI, which the hdmi_out cores serialise. HDMI = 0: DVI (three tmds_encoders). HDMI = 1: HDMI 1.4 with the video preamble and guard band, a data island in each line's blanking (TERC4, BCH error correction) with Audio Clock Regeneration, 48 kHz stereo 16-bit audio samples (audio_ready asks for each pair), and the AVI and Audio InfoFrames.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 115.9,
+      "resources" : {
+        "TRELLIS_COMB" : 1590,
+        "TRELLIS_FF" : 872,
+        "TRELLIS_RAMW" : 32
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 37.1,
+      "resources" : {
+        "CPE_ADDF" : 23,
+        "CPE_ADDF2" : 181,
+        "CPE_BRIDGE" : 653,
+        "CPE_CPLINES" : 1313,
+        "CPE_FF" : 1158,
+        "CPE_LT" : 2250,
+        "CPE_MX4" : 499
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 66.6,
+      "resources" : {
+        "ALU" : 376,
+        "DFF" : 872,
+        "LUT4" : 1610,
+        "MUX2_LUT5" : 155,
+        "MUX2_LUT6" : 27,
+        "MUX2_LUT7" : 11,
+        "MUX2_LUT8" : 4,
+        "RAM16SDP4" : 32
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 33,
+      "resources" : {
+        "ICESTORM_LC" : 2638,
+        "SB_GB" : 3
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 165.2,
+      "resources" : {
+        "CARRY4" : 98,
+        "SLICE_FFX" : 581,
+        "SLICE_LUTX" : 1691
+      },
+      "tested" : true
+    }
+  },
+  "id" : "hdmi_encoder",
+  "keywords" : [
+    "hdmi",
+    "dvi",
+    "tmds",
+    "terc4",
+    "audio",
+    "hdmi-audio",
+    "infoframe",
+    "video"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Die drei 10-Bit-TMDS-Wörter je Pixeltakt für HDMI oder DVI, die die hdmi_out-Kerne serialisieren. HDMI = 0: DVI (drei tmds_encoder). HDMI = 1: HDMI 1.4 mit Video-Präambel und Guard Band, einer Data Island in der Austastlücke jeder Zeile (TERC4, BCH-Fehlerkorrektur) mit Audio Clock Regeneration, 48-kHz-Stereo-Samples zu 16 Bit (audio_ready fordert jedes Paar an) und den AVI- und Audio-InfoFrames.",
+      "name" : "HDMI/DVI-Encoder"
+    }
+  },
+  "name" : "HDMI/DVI encoder",
+  "parameters" : [
+    {
+      "default" : 1,
+      "description" : "1: HDMI with audio and InfoFrames; 0: DVI",
+      "name" : "HDMI"
+    },
+    {
+      "default" : 74250000,
+      "description" : "The pixel clock in Hz (HDMI's audio clock: CTS = PIXEL_HZ / 1000)",
+      "name" : "PIXEL_HZ"
+    },
+    {
+      "default" : 4,
+      "description" : "CEA-861 video code for the AVI InfoFrame (1 = 640x480, 4 = 720p60, 16 = 1080p60)",
+      "name" : "VIC"
+    },
+    {
+      "default" : 2,
+      "description" : "Picture aspect for the AVI InfoFrame (1 = 4:3, 2 = 16:9)",
+      "name" : "ASPECT"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "The pixel clock",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Red",
+      "dir" : "in",
+      "name" : "red",
+      "width" : 8
+    },
+    {
+      "description" : "Green",
+      "dir" : "in",
+      "name" : "green",
+      "width" : 8
+    },
+    {
+      "description" : "Blue",
+      "dir" : "in",
+      "name" : "blue",
+      "width" : 8
+    },
+    {
+      "description" : "High in the active picture",
+      "dir" : "in",
+      "name" : "de"
+    },
+    {
+      "description" : "Horizontal sync",
+      "dir" : "in",
+      "name" : "hsync"
+    },
+    {
+      "description" : "Vertical sync",
+      "dir" : "in",
+      "name" : "vsync"
+    },
+    {
+      "description" : "HDMI = 1: the left sample (signed), taken while audio_ready is high",
+      "dir" : "in",
+      "name" : "audio_l",
+      "width" : 16
+    },
+    {
+      "description" : "HDMI = 1: the right sample (signed)",
+      "dir" : "in",
+      "name" : "audio_r",
+      "width" : 16
+    },
+    {
+      "description" : "Pulses at 48 kHz once islands run; the pair on audio_l/audio_r is taken in that clock",
+      "dir" : "out",
+      "name" : "audio_ready"
+    },
+    {
+      "description" : "Lane 0's word (bit 0 first)",
+      "dir" : "out",
+      "name" : "word_blue",
+      "width" : 10
+    },
+    {
+      "description" : "Lane 1's word",
+      "dir" : "out",
+      "name" : "word_green",
+      "width" : 10
+    },
+    {
+      "description" : "Lane 2's word",
+      "dir" : "out",
+      "name" : "word_red",
+      "width" : 10
+    }
+  ],
+  "schema" : 1,
+  "top" : "hdmi_encoder",
+  "version" : "1.0.0"
+}
