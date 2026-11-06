@@ -7,25 +7,25 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 91,
+      "fmaxMHz" : 94.1,
       "resources" : {
         "DP16KD" : 2,
-        "TRELLIS_COMB" : 3331,
-        "TRELLIS_FF" : 2030
+        "TRELLIS_COMB" : 3295,
+        "TRELLIS_FF" : 2048
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 43.1,
+      "fmaxMHz" : 44.4,
       "resources" : {
-        "CPE_ADDF" : 40,
-        "CPE_ADDF2" : 545,
-        "CPE_BRIDGE" : 811,
-        "CPE_CPLINES" : 1905,
-        "CPE_FF" : 1952,
-        "CPE_LT" : 3992,
-        "CPE_MX4" : 101,
+        "CPE_ADDF" : 39,
+        "CPE_ADDF2" : 546,
+        "CPE_BRIDGE" : 712,
+        "CPE_CPLINES" : 1814,
+        "CPE_FF" : 1962,
+        "CPE_LT" : 3781,
+        "CPE_MX4" : 39,
         "CPE_RAMIO" : 106,
         "RAM_HALF" : 2
       },
@@ -33,24 +33,24 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 63.3,
+      "fmaxMHz" : 53.5,
       "resources" : {
-        "ALU" : 1116,
+        "ALU" : 1170,
         "BSRAM" : 2,
-        "DFF" : 2030,
-        "LUT4" : 3100,
-        "MUX2_LUT5" : 298,
-        "MUX2_LUT6" : 72,
-        "MUX2_LUT7" : 20,
-        "MUX2_LUT8" : 3
+        "DFF" : 2048,
+        "LUT4" : 2836,
+        "MUX2_LUT5" : 138,
+        "MUX2_LUT6" : 21,
+        "MUX2_LUT7" : 4,
+        "MUX2_LUT8" : 1
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 30.9,
+      "fmaxMHz" : 28.3,
       "resources" : {
-        "ICESTORM_LC" : 3846,
+        "ICESTORM_LC" : 3862,
         "ICESTORM_RAM" : 8,
         "SB_GB" : 7
       },
@@ -58,12 +58,12 @@
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 139.4,
+      "fmaxMHz" : 159.2,
       "resources" : {
-        "CARRY4" : 177,
+        "CARRY4" : 179,
         "RAMB18E1" : 2,
-        "SLICE_FFX" : 1943,
-        "SLICE_LUTX" : 2872
+        "SLICE_FFX" : 1961,
+        "SLICE_LUTX" : 2915
       },
       "tested" : true
     }
@@ -309,5 +309,5 @@
   ],
   "schema" : 1,
   "top" : "eth_udp_stack",
-  "version" : "1.1.0"
+  "version" : "1.2.0"
 }

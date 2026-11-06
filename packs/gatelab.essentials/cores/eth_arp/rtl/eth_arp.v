@@ -7,8 +7,9 @@
 // queued. One reply waits at a time: a request that arrives while one is waiting or going out isn't answered (the
 // requester asks again).
 //
-// For speed every comparison is against a byte shifted out of a register, and each reply byte is registered:
-// `tx_valid` drops for one clock after each byte while the next one is put together (eth_mac asks every fourth).
+// For speed every comparison is against a byte shifted out of a register, and the reply is a register shifting out a
+// byte for each one taken: `tx_valid` stays high from the clock after the reply is queued to its last byte, so a byte
+// can go on every clock (eth_mac at 1000 Mbit/s) or every fourth (100 Mbit/s).
 
 module eth_arp (
     input  wire        clk,
@@ -20,7 +21,7 @@ module eth_arp (
     input  wire        rx_last,
     input  wire        rx_good,
     // The reply, to eth_mac (or a multiplexer in front of it)
-    output reg  [7:0]  tx_data = 8'd0,
+    output wire [7:0]  tx_data,
     output wire        tx_valid,
     output wire        tx_last,
     input  wire        tx_ready,
@@ -83,23 +84,20 @@ module eth_arp (
     // The 42 bytes as a register that shifts a byte out for each one taken, loaded when the reply is queued.
     reg [335:0] reply = 336'd0;
     reg [5:0]   out = 6'd0;
-    reg         settled = 1'b0;   // tx_data holds byte `out`
-    assign tx_valid = pending && settled;
+    reg         loaded = 1'b0;    // `reply` holds this request's bytes
+    assign tx_data = reply[335:328];
+    assign tx_valid = pending && loaded;
     assign tx_last = out == 6'd41;
 
     always @(posedge clk) begin
-        settled <= 1'b0;
         if (replied) begin
             reply <= {reply_mac, mac, 80'h0806_0001_0800_0604_0002, mac, ip, reply_mac, reply_ip};
             out <= 6'd0;
-        end else if (pending) begin
-            if (tx_valid && tx_ready) begin
-                out <= out + 6'd1;
-                reply <= {reply[327:0], 8'd0};
-            end else begin
-                tx_data <= reply[335:328];
-                settled <= 1'b1;
-            end
+            loaded <= 1'b1;
+        end else if (tx_valid && tx_ready) begin
+            out <= out + 6'd1;
+            reply <= {reply[327:0], 8'd0};
+            if (tx_last) loaded <= 1'b0;
         end
     end
 endmodule

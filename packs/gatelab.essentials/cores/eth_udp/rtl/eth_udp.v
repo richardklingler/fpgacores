@@ -5,17 +5,18 @@
 // PORT, a UDP length that matches the IP length and fits the frame, and the UDP checksum unless it is 0 — and the
 // payload is kept in a buffer of 2^ADDR_BITS bytes. When the frame's last byte comes with `rx_good`, the datagram is
 // handed to the design (`rx_new` pulses, also for an empty one): `rx_length` bytes on rx_data/rx_valid/rx_last with `rx_ready`, and the sender in peer_mac,
-// peer_ip and peer_port (they stay until the next datagram is handed over). `rx_valid` drops for two clocks after
-// each byte while the next one is read. A datagram whose frame starts arriving before the design has taken the last
-// byte of the one before is dropped (`rx_dropped` pulses).
+// peer_ip and peer_port (they stay until the next datagram is handed over). Reads run ahead into a two-byte queue, so
+// the design can take a byte on every clock. A datagram whose frame starts arriving before the design has taken the
+// last byte of the one before is dropped (`rx_dropped` pulses).
 //
 // Send: with `send_ready` high, `send` starts a datagram of `send_length` bytes (0 … 1472) to dst_mac, dst_ip and
 // dst_port from port PORT (latched then). The core puts out the Ethernet, IP (identification counting, don't
 // fragment, TTL 64, the header checksum) and UDP headers (checksum 0: none), then asks for the payload with
 // `payload_ready`, one byte a request (a byte is taken when `payload_valid` and `payload_ready` are both high). The
-// MAC asks every fourth clock and doesn't wait: the next byte must be valid within three clocks of the last one taken
-// (eth_udp's own rx side qualifies, so an echo can send straight from it). tx_data/tx_valid/tx_last/tx_ready go to
-// eth_mac or a multiplexer.
+// header goes out a byte a clock if asked; the MAC doesn't wait for the payload: at 100 Mbit/s it asks every fourth
+// clock, at 1000 Mbit/s on every clock, and the byte must be valid when it's asked for (eth_udp's own rx side
+// qualifies at both speeds, so an echo can send straight from it). tx_data/tx_valid/tx_last/tx_ready go to eth_mac or
+// a multiplexer.
 
 module eth_udp #(
     parameter [15:0] PORT = 16'd1234,
@@ -30,7 +31,7 @@ module eth_udp #(
     input  wire        frame_last,
     input  wire        frame_good,
     // Received datagrams
-    output reg  [7:0]  rx_data = 8'd0,
+    output wire [7:0]  rx_data,
     output wire        rx_valid,
     output wire        rx_last,
     input  wire        rx_ready,
@@ -60,9 +61,9 @@ module eth_udp #(
 
     // ---- Receive: checks and the buffer ---------------------------------------------------------------------
     // For speed, addresses are compared against bytes shifted out of registers, the checksums are summed without
-    // folding, and a frame is judged over three clocks after its last byte (the next can't start for over 48).
+    // folding, and a frame is judged over three clocks after its last byte (the next can't start for at least 20 at
+    // 1000 Mbit/s: the gap and the preamble).
     reg [7:0]  buffer [0:SIZE-1];
-    reg [ADDR_BITS-1:0] rd_addr = 0;
     reg [7:0]  rd_data = 8'd0;
 
     reg [11:0] index = 12'd0;
@@ -188,35 +189,52 @@ module eth_udp #(
     end
 
     // ---- Receive: handing the datagram over -----------------------------------------------------------------
-    reg [10:0] out = 11'd0;
-    reg [1:0]  fetch = 2'd0;
-    reg        started = 1'b0;
-    assign rx_valid = holding && started && fetch == 2'd0 && rx_length != 11'd0;
-    assign rx_last = out == rx_length - 11'd1;
+    // Reads run ahead into a two-byte queue in front of rx_*: one is issued whenever the queue will hold at most one
+    // byte as its data arrives (a read takes a clock), so a byte can be taken on every clock.
+    reg [10:0] next = 11'd0;           // the payload byte to read next
+    reg [10:0] reading = 11'd0;        // the one whose data arrives on this clock
+    reg        arriving = 1'b0;
+    reg [7:0]  q0 = 8'd0, q1 = 8'd0;
+    reg        l0 = 1'b0, l1 = 1'b0;
+    reg [1:0]  queued = 2'd0;
+    assign rx_data = q0;
+    assign rx_valid = holding && queued != 2'd0;
+    assign rx_last = l0;
+
+    wire       taken = rx_valid && rx_ready;
+    wire [1:0] after = queued + {1'b0, arriving} - {1'b0, taken};
+    wire       issue = holding && next < rx_length && after <= 2'd1;
+    wire       arrived_last = reading == rx_length - 11'd1;
 
     always @(posedge clk) begin
-        rd_data <= buffer[rd_addr];
+        rd_data <= buffer[next[ADDR_BITS-1:0]];
         if (!holding) begin
-            started <= 1'b0;
-            out <= 11'd0;
-            fetch <= 2'd0;
-        end else if (rx_length == 11'd0) begin
-            // An empty datagram: nothing to hand over but rx_new and the sender.
-        end else if (!started || (rx_valid && rx_ready)) begin
-            if (started) out <= out + 11'd1;
-            rd_addr <= started ? out + 11'd1 : 11'd0;
-            started <= 1'b1;
-            fetch <= 2'd2;
-            if (rx_taken_last) started <= 1'b0;
-        end else if (fetch != 2'd0) begin
-            fetch <= fetch - 2'd1;
-            if (fetch == 2'd1) rx_data <= rd_data;
+            next <= 11'd0;
+            arriving <= 1'b0;
+            queued <= 2'd0;
+        end else begin
+            arriving <= issue;
+            if (issue) begin
+                reading <= next;
+                next <= next + 11'd1;
+            end
+            queued <= after;
+            // Taking and arriving together find exactly one queued (see `issue`).
+            if (taken && arriving) begin
+                q0 <= rd_data; l0 <= arrived_last;
+            end else if (taken) begin
+                q0 <= q1; l0 <= l1;
+            end else if (arriving) begin
+                if (queued == 2'd0) begin q0 <= rd_data; l0 <= arrived_last; end
+                else begin q1 <= rd_data; l1 <= arrived_last; end
+            end
         end
     end
 
     // ---- Send -----------------------------------------------------------------------------------------------
-    // The IP header checksum is summed a term a clock after `send` (it's needed at byte 24, over 100 clocks later),
-    // and each header byte is registered: `tx_valid` drops for one clock after each while the next is looked up.
+    // The IP header checksum is summed a term a clock after `send` (done after 11 clocks; it's needed at byte 24).
+    // Each header byte is looked up a clock ahead for the position that comes next, so the header can go out a byte a
+    // clock.
     reg        sending = 1'b0;
     reg [10:0] length = 11'd0;
     reg [47:0] to_mac = 48'd0;
@@ -228,12 +246,11 @@ module eth_udp #(
     reg [3:0]  term = 4'd0;
     reg [19:0] check_sum = 20'd0;
     reg [15:0] ip_check = 16'd0;
-    reg [7:0]  header_byte = 8'd0;
-    reg        settled = 1'b0;     // header_byte is byte `o`
+    reg [7:0]  header_byte = 8'd0;   // byte `o` of the header
     wire       header = o < 12'd42;
 
     assign send_ready = !sending;
-    assign tx_valid = sending && (header ? settled : payload_valid);
+    assign tx_valid = sending && (header ? 1'b1 : payload_valid);
     assign tx_last = o == last_o;
     assign payload_ready = sending && !header && tx_ready;
     always @(*) tx_data = header ? header_byte : payload_data;
@@ -253,8 +270,40 @@ module eth_udp #(
         endcase
     end
 
+    wire        sent = tx_valid && tx_ready;
+    wire [11:0] o_next = sent ? o + 12'd1 : o;
+
+    // Byte `ahead` (= o + 1, up to 63) of the header, from registers alone: no arithmetic in front of the
+    // multiplexer (timing, 2026-11-05).
+    reg  [5:0]  ahead = 6'd1;
+    reg  [7:0]  ahead_byte;
+    always @(*) begin
+        case (ahead)
+            6'd0: ahead_byte = to_mac[47:40];       6'd1: ahead_byte = to_mac[39:32];
+            6'd2: ahead_byte = to_mac[31:24];       6'd3: ahead_byte = to_mac[23:16];
+            6'd4: ahead_byte = to_mac[15:8];        6'd5: ahead_byte = to_mac[7:0];
+            6'd6: ahead_byte = mac[47:40];          6'd7: ahead_byte = mac[39:32];
+            6'd8: ahead_byte = mac[31:24];          6'd9: ahead_byte = mac[23:16];
+            6'd10: ahead_byte = mac[15:8];          6'd11: ahead_byte = mac[7:0];
+            6'd12: ahead_byte = 8'h08;              6'd13: ahead_byte = 8'h00;
+            6'd14: ahead_byte = 8'h45;              6'd15: ahead_byte = 8'h00;
+            6'd16: ahead_byte = ip_total[15:8];     6'd17: ahead_byte = ip_total[7:0];
+            6'd18: ahead_byte = ident[15:8];        6'd19: ahead_byte = ident[7:0];
+            6'd20: ahead_byte = 8'h40;              6'd21: ahead_byte = 8'h00;
+            6'd22: ahead_byte = 8'd64;              6'd23: ahead_byte = 8'd17;
+            6'd24: ahead_byte = ip_check[15:8];     6'd25: ahead_byte = ip_check[7:0];
+            6'd26: ahead_byte = ip[31:24];          6'd27: ahead_byte = ip[23:16];
+            6'd28: ahead_byte = ip[15:8];           6'd29: ahead_byte = ip[7:0];
+            6'd30: ahead_byte = to_ip[31:24];       6'd31: ahead_byte = to_ip[23:16];
+            6'd32: ahead_byte = to_ip[15:8];        6'd33: ahead_byte = to_ip[7:0];
+            6'd34: ahead_byte = PORT[15:8];         6'd35: ahead_byte = PORT[7:0];
+            6'd36: ahead_byte = to_port[15:8];      6'd37: ahead_byte = to_port[7:0];
+            6'd38: ahead_byte = udp_length[15:8];   6'd39: ahead_byte = udp_length[7:0];
+            default: ahead_byte = 8'h00;                // 40, 41: no UDP checksum
+        endcase
+    end
+
     always @(posedge clk) begin
-        settled <= 1'b0;
         if (!sending) begin
             if (send) begin
                 sending <= 1'b1;
@@ -266,8 +315,10 @@ module eth_udp #(
                 udp_length <= {5'd0, send_length} + 16'd8;
                 last_o <= {1'b0, send_length} + 12'd41;
                 o <= 12'd0;
+                ahead <= 6'd1;
                 term <= 4'd0;
                 check_sum <= 20'd0;
+                header_byte <= dst_mac[47:40];
             end
         end else begin
             // The checksum: nine terms, then two folds.
@@ -275,32 +326,15 @@ module eth_udp #(
             else if (term == 4'd9) check_sum <= {3'd0, {1'b0, check_sum[15:0]} + {13'd0, check_sum[19:16]}};
             else if (term == 4'd10) ip_check <= ~(check_sum[15:0] + {15'd0, check_sum[16]});
             if (term != 4'd11) term <= term + 4'd1;
-            if (tx_valid && tx_ready) begin
-                o <= o + 12'd1;
-                if (tx_last) begin
-                    sending <= 1'b0;
-                    ident <= ident + 16'd1;
-                end
-            end else if (header) begin
-                case (o)
-                    12'd0, 12'd1, 12'd2, 12'd3, 12'd4, 12'd5: header_byte <= to_mac[47 - 8 * o -: 8];
-                    12'd6, 12'd7, 12'd8, 12'd9, 12'd10, 12'd11: header_byte <= mac[47 - 8 * (o - 12'd6) -: 8];
-                    12'd12: header_byte <= 8'h08;              12'd13: header_byte <= 8'h00;
-                    12'd14: header_byte <= 8'h45;              12'd15: header_byte <= 8'h00;
-                    12'd16: header_byte <= ip_total[15:8];     12'd17: header_byte <= ip_total[7:0];
-                    12'd18: header_byte <= ident[15:8];        12'd19: header_byte <= ident[7:0];
-                    12'd20: header_byte <= 8'h40;              12'd21: header_byte <= 8'h00;
-                    12'd22: header_byte <= 8'd64;              12'd23: header_byte <= 8'd17;
-                    12'd24: header_byte <= ip_check[15:8];     12'd25: header_byte <= ip_check[7:0];
-                    12'd26, 12'd27, 12'd28, 12'd29: header_byte <= ip[31 - 8 * (o - 12'd26) -: 8];
-                    12'd30, 12'd31, 12'd32, 12'd33: header_byte <= to_ip[31 - 8 * (o - 12'd30) -: 8];
-                    12'd34: header_byte <= PORT[15:8];         12'd35: header_byte <= PORT[7:0];
-                    12'd36: header_byte <= to_port[15:8];      12'd37: header_byte <= to_port[7:0];
-                    12'd38: header_byte <= udp_length[15:8];   12'd39: header_byte <= udp_length[7:0];
-                    default: header_byte <= 8'h00;             // 40, 41: no UDP checksum
-                endcase
-                settled <= 1'b1;
+            o <= o_next;
+            if (sent && tx_last) begin
+                sending <= 1'b0;
+                ident <= ident + 16'd1;
             end
+            // The next byte is looked up from `o` alone, `sent` only loads it (timing: the multiplexer's ready
+            // mustn't reach the lookup). Its sources are settled by then: ip_check from term 10, read at o = 24.
+            if (sent) header_byte <= ahead_byte;
+            if (sent && ahead != 6'd63) ahead <= ahead + 6'd1;
         end
     end
 endmodule

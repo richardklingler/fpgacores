@@ -1,0 +1,116 @@
+{
+  "dependencies" : [
+    "async_fifo"
+  ],
+  "description" : "RGMII interface to a Gigabit Ethernet PHY at 1000 Mbit/s (Realtek RTL8211E on the Kintex-7 Eco R5 …) with the same byte interface as eth_rmii_phy and eth_mii_phy, a byte a clock on a 125 MHz system clock: IDDR on a BUFG from the RX clock pin for receiving, crossed to clk through async_fifo; ODDR for sending, TX_CLK forwarded from clk. AMD Xilinx 7-series only. The PHY adds both RGMII delays (RXDLY/TXDLY). RX_LATE picks which clock edge starts a received byte.",
+  "id" : "eth_rgmii_phy",
+  "keywords" : [
+    "ethernet",
+    "rgmii",
+    "phy",
+    "gigabit",
+    "1000base-t",
+    "rtl8211e",
+    "kintex",
+    "network",
+    "iddr",
+    "oddr"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "RGMII-Schnittstelle zu einem Gigabit-Ethernet-PHY bei 1000 Mbit/s (Realtek RTL8211E auf dem Kintex-7 Eco R5 …) mit derselben Byte-Schnittstelle wie eth_rmii_phy und eth_mii_phy, ein Byte je Takt an einem 125-MHz-Systemtakt: IDDR an einem BUFG vom RX-Taktpin für den Empfang, über async_fifo zu clk überquert; ODDR zum Senden, TX_CLK von clk weitergegeben. Nur AMD Xilinx 7-Serie. Beide RGMII-Verzögerungen fügt der PHY ein (RXDLY/TXDLY). RX_LATE wählt, mit welcher Taktflanke ein empfangenes Byte beginnt.",
+      "name" : "Ethernet RGMII-PHY"
+    }
+  },
+  "name" : "Ethernet RGMII PHY",
+  "parameters" : [
+    {
+      "default" : 1,
+      "description" : "1: a received byte starts on a falling edge (the nibbles arrive half a clock late); 0: on a rising edge",
+      "name" : "RX_LATE"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "System clock, 125 MHz (from an MMCM or PLL)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "RGMII RX_CLK from the PHY (125 MHz; a clock-capable pin)",
+      "dir" : "in",
+      "name" : "rgmii_rx_clk"
+    },
+    {
+      "description" : "RGMII RXD from the PHY",
+      "dir" : "in",
+      "name" : "rgmii_rxd",
+      "width" : 4
+    },
+    {
+      "description" : "RGMII RX_CTL from the PHY",
+      "dir" : "in",
+      "name" : "rgmii_rx_ctl"
+    },
+    {
+      "description" : "RGMII TX_CLK to the PHY",
+      "dir" : "out",
+      "name" : "rgmii_tx_clk"
+    },
+    {
+      "description" : "RGMII TXD to the PHY",
+      "dir" : "out",
+      "name" : "rgmii_txd",
+      "width" : 4
+    },
+    {
+      "description" : "RGMII TX_CTL to the PHY",
+      "dir" : "out",
+      "name" : "rgmii_tx_ctl"
+    },
+    {
+      "description" : "Received byte (after the SFD, the FCS included), on clk",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "Pulses with each received byte",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "Pulses when a frame is over",
+      "dir" : "out",
+      "name" : "rx_end"
+    },
+    {
+      "description" : "With rx_end: the PHY flagged an error in the frame",
+      "dir" : "out",
+      "name" : "rx_error"
+    },
+    {
+      "description" : "Byte to send (preamble, SFD and FCS included)",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 8
+    },
+    {
+      "description" : "High for every byte of a frame; falling ends it",
+      "dir" : "in",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "Always high: a byte a clock",
+      "dir" : "out",
+      "name" : "tx_ready"
+    }
+  ],
+  "requiresFamilies" : [
+    "xilinx7"
+  ],
+  "schema" : 1,
+  "top" : "eth_rgmii_phy",
+  "version" : "1.0.0"
+}

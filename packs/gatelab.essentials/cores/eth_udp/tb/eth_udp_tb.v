@@ -9,6 +9,9 @@
 // Send: 0, 5, 1472 and 9 bytes (the last to an address whose header sum carries), and 12 to a consumer that's ready on
 // every clock — the headers field by field (a new identification each time), a valid IP checksum, the payload as offered by a source
 // that answers three clocks after each byte. And an echo: the received stream wired straight into the send side.
+// Then at 1000 Mbit/s: frames a byte on every clock, a consumer ready on every clock that must find a byte on every
+// clock (no underrun), a payload source that answers on every clock, the handover to a design taking a byte every
+// clock without a pause, and the echo at that pace.
 // Prints PASS or every failed check.
 
 `timescale 1ns / 1ps
@@ -75,6 +78,11 @@ module eth_udp_tb;
     end
 
     reg greedy = 1'b0;   // a consumer that takes a byte on every clock it's offered one
+    reg dense = 1'b0;    // frames a byte on every clock
+    reg fast = 1'b0;     // a payload source that answers on every clock
+    // Pauses in the handover: the design ready, the datagram not all taken, no byte offered.
+    integer rx_gaps = 0;
+    always @(posedge clk) if (fast && dut.holding && got_n > 0 && rx_ready_w && !rx_valid && lasts == 0) rx_gaps = rx_gaps + 1;
 
     // ---- The MAC's send side ---------------------------------------------------------------------------------
     reg [7:0] wire_bytes [0:2047];
@@ -82,7 +90,9 @@ module eth_udp_tb;
     reg [1:0] slot = 2'd0;
     always @(posedge clk) begin
         slot <= slot + 2'd1;
-        if (slot == 2'd0 && !greedy && dut.sending && !tx_valid) underruns = underruns + 1;
+        // The MAC doesn't wait: whenever it asks during a datagram, a byte must be there.
+        // (A consumer always ready with the slow source finds no byte between them: that pairing checks only the bytes.)
+        if (tx_ready && dut.sending && !tx_valid && (!greedy || fast)) underruns = underruns + 1;
         if (tx_valid && tx_ready) begin
             wire_bytes[wire_n] = tx_data;
             wire_n = wire_n + 1;
@@ -95,7 +105,10 @@ module eth_udp_tb;
     reg [7:0] payload [0:2047];
     integer next_byte = 0, wait_clocks = 0;
     always @(posedge clk) if (!echo) begin
-        if (src_valid && payload_ready) begin
+        if (src_valid && payload_ready && fast) begin
+            next_byte = next_byte + 1;
+            src_data <= payload[next_byte];
+        end else if (src_valid && payload_ready) begin
             src_valid <= 1'b0;
             next_byte = next_byte + 1;
             wait_clocks = 2;
@@ -156,16 +169,20 @@ module eth_udp_tb;
     task deliver(input good);
         integer i;
         begin
+            @(posedge clk); #1;
             for (i = 0; i < frame_n; i = i + 1) begin
-                @(posedge clk); #1;
                 frame_data = frame[i];
                 frame_valid = 1'b1;
                 frame_last = (i == frame_n - 1);
                 frame_good = (i == frame_n - 1) && good;
                 @(posedge clk); #1;
-                frame_valid = 1'b0; frame_last = 1'b0; frame_good = 1'b0;
-                repeat (2) @(posedge clk);
+                if (!dense) begin
+                    frame_valid = 1'b0; frame_last = 1'b0; frame_good = 1'b0;
+                    repeat (3) @(posedge clk);
+                    #1;
+                end
             end
+            frame_valid = 1'b0; frame_last = 1'b0; frame_good = 1'b0;
             repeat (40) @(posedge clk);
         end
     endtask
@@ -323,6 +340,31 @@ module eth_udp_tb;
             end
         join
         check_sent(64, HOST, HOST_IP, HOST_PORT, "the echo");
+        echo = 1'b0;
+
+        // 1000 Mbit/s: a byte a clock everywhere.
+        greedy = 1'b1; dense = 1'b1; fast = 1'b1;
+        news = 0; got_n = 0; lasts = 0; drops = 0;
+        make_udp(MAC, IP, 16'd1234, 300, 1, 16'h4000);  deliver(1'b1); expect_datagram(300, "300 bytes, dense");
+        make_udp(MAC, IP, 16'd1234, 1472, 0, 16'h4000); deliver(1'b1); expect_datagram(1472, "1472 bytes, dense");
+        make_udp(MAC, IP, 16'd1235, 5, 1, 16'h4000);    deliver(1'b1); expect_none("another port, dense");
+        if (rx_gaps != 0) begin $display("FAIL: %0d pauses handing datagrams over", rx_gaps); errors = errors + 1; end
+        send_datagram(1472, "sending 1472 bytes a byte a clock");
+        send_datagram(1, "sending 1 byte a byte a clock");
+        echo = 1'b1;
+        make_udp(MAC, IP, 16'd1234, 1000, 1, 16'h4000);
+        for (k = 0; k < 1000; k = k + 1) kept[k] = frame[42 + k];
+        fork
+            deliver(1'b1);
+            begin
+                @(posedge rx_new);
+                @(negedge clk);
+                send = 1'b1; send_length = rx_length; dst_mac = peer_mac; dst_ip = peer_ip; dst_port = peer_port;
+                @(posedge clk); #1; send = 1'b0;
+            end
+        join
+        check_sent(1000, HOST, HOST_IP, HOST_PORT, "the echo a byte a clock");
+        echo = 1'b0; greedy = 1'b0; dense = 1'b0; fast = 1'b0;
 
         if (errors == 0) $display("PASS");
         else $display("FAILED: %0d", errors);

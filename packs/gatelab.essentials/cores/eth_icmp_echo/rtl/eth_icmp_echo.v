@@ -20,7 +20,7 @@ module eth_icmp_echo #(
     input  wire        rx_valid,
     input  wire        rx_last,
     input  wire        rx_good,
-    output reg  [7:0]  tx_data = 8'd0,
+    output wire [7:0]  tx_data,
     output wire        tx_valid,
     output wire        tx_last,
     input  wire        tx_ready,
@@ -29,7 +29,6 @@ module eth_icmp_echo #(
     localparam integer SIZE = 1 << ADDR_BITS;
 
     reg [7:0]  buffer [0:SIZE-1];
-    reg [ADDR_BITS-1:0] rd_addr = 0;
     reg [7:0]  rd_data = 8'd0;
 
     // ---- The request ----------------------------------------------------------------------------------------
@@ -119,11 +118,15 @@ module eth_icmp_echo #(
     end
 
     // ---- The reply ------------------------------------------------------------------------------------------
-    // Byte d of the reply comes from the buffer at source(d), then is rewritten. `fetch` counts the clocks of a read:
-    // the address at 2, the data at 1, ready at 0.
-    reg [11:0] out = 12'd0;
-    reg [1:0]  fetch = 2'd0;
-    reg        started = 1'b0;
+    // Byte d of the reply comes from the buffer at source(d), then is rewritten. A read is issued whenever the
+    // two-byte queue in front of tx_* will have room for it when it arrives (the read takes a clock), so with
+    // `tx_ready` on every clock a byte goes on every clock.
+    reg [11:0] next = 12'd0;          // the reply byte to read next
+    reg [11:0] reading = 12'd0;       // the one whose data arrives on this clock
+    reg        arriving = 1'b0;
+    reg [7:0]  q0 = 8'd0, q1 = 8'd0;
+    reg        l0 = 1'b0, l1 = 1'b0;
+    reg [1:0]  queued = 2'd0;
 
     function [11:0] source(input [11:0] d);
         if (d < 12'd6) source = d + 12'd6;
@@ -132,30 +135,43 @@ module eth_icmp_echo #(
         else source = d;
     endfunction
 
-    assign tx_valid = busy && started && fetch == 2'd0;
-    assign tx_last = out == reply_last;
+    assign tx_data = q0;
+    assign tx_valid = busy && queued != 2'd0;
+    assign tx_last = l0;
+
+    wire       take = tx_valid && tx_ready;
+    wire [7:0] arrived = reading >= 12'd6 && reading < 12'd12 ? mac[47 - 8 * (reading - 12'd6) -: 8]
+                       : reading == 12'd34 ? 8'h00
+                       : reading == 12'd36 ? reply_sum[15:8]
+                       : reading == 12'd37 ? reply_sum[7:0]
+                       : rd_data;
+    wire       arrived_last = reading == reply_last;
+    wire [1:0] after = queued + {1'b0, arriving} - {1'b0, take};
+    wire       issue = busy && next <= reply_last && after <= 2'd1;
+    wire [11:0] read_at = source(next);
 
     always @(posedge clk) begin
-        rd_data <= buffer[rd_addr];
+        rd_data <= buffer[read_at[ADDR_BITS-1:0]];
         if (!busy) begin
-            started <= 1'b0;
-            out <= 12'd0;
-            fetch <= 2'd0;
-        end else if (!started || (tx_valid && tx_ready)) begin
-            // Fetch the first byte, or the next after one was taken.
-            if (started) out <= out + 12'd1;
-            rd_addr <= source(started ? out + 12'd1 : 12'd0);
-            started <= 1'b1;
-            fetch <= 2'd2;
-            if (sending_last) started <= 1'b0;
-        end else if (fetch != 2'd0) begin
-            fetch <= fetch - 2'd1;
-            if (fetch == 2'd1) begin
-                if (out >= 12'd6 && out < 12'd12) tx_data <= mac[47 - 8 * (out - 12'd6) -: 8];
-                else if (out == 12'd34) tx_data <= 8'h00;
-                else if (out == 12'd36) tx_data <= reply_sum[15:8];
-                else if (out == 12'd37) tx_data <= reply_sum[7:0];
-                else tx_data <= rd_data;
+            next <= 12'd0;
+            arriving <= 1'b0;
+            queued <= 2'd0;
+        end else begin
+            arriving <= issue;
+            if (issue) begin
+                reading <= next;
+                next <= next + 12'd1;
+            end
+            queued <= after;
+            // A read is issued only when the queue will hold at most one byte as its data arrives: taking and
+            // arriving together find exactly one queued.
+            if (take && arriving) begin
+                q0 <= arrived; l0 <= arrived_last;
+            end else if (take) begin
+                q0 <= q1; l0 <= l1;
+            end else if (arriving) begin
+                if (queued == 2'd0) begin q0 <= arrived; l0 <= arrived_last; end
+                else begin q1 <= arrived; l1 <= arrived_last; end
             end
         end
     end

@@ -6,6 +6,8 @@
 // when it's adjusted (F800 or more); none of these are: a fragment
 // (MF set), a later fragment (an offset), a broadcast, another IP, a wrong header checksum, rx_good low, an echo
 // reply (type 0), code 3, a UDP packet, a frame shorter than its IP length. A reply that waits keeps its contents while another request arrives (not answered).
+// Then at 1000 Mbit/s: requests a byte on every clock and a consumer ready on every clock, which must get a byte on
+// every clock of the reply (eth_mac doesn't wait).
 // Prints PASS or every failed check.
 
 `timescale 1ns / 1ps
@@ -39,6 +41,8 @@ module eth_icmp_echo_tb;
     integer reply_n = 0, replies = 0, replied_pulses = 0, asked_unready = 0;
     reg [1:0] slot = 2'd0;
     reg hold = 1'b0;
+    reg greedy = 1'b0;   // ready on every clock
+    reg dense = 1'b0;    // requests a byte on every clock
     always @(posedge clk) begin
         slot <= slot + 2'd1;
         if (replied) replied_pulses = replied_pulses + 1;
@@ -47,10 +51,10 @@ module eth_icmp_echo_tb;
             reply_n = reply_n + 1;
             if (tx_last) replies = replies + 1;
         end
-        // eth_mac doesn't wait: once a reply has started, every fourth clock must find a byte.
-        if (slot == 2'd0 && !hold && reply_n > 0 && reply_n < reply_expected && !tx_valid) asked_unready = asked_unready + 1;
+        // eth_mac doesn't wait: once a reply has started, every clock it asks must find a byte.
+        if (tx_ready && reply_n > 0 && reply_n < reply_expected && !tx_valid) asked_unready = asked_unready + 1;
     end
-    always @(negedge clk) tx_ready = (slot == 2'd0) && !hold;
+    always @(negedge clk) tx_ready = (greedy || slot == 2'd0) && !hold;
 
     // ---- Requests ---------------------------------------------------------------------------------------------
     reg [7:0] frame [0:2047];
@@ -91,16 +95,20 @@ module eth_icmp_echo_tb;
     task deliver(input good);
         integer i;
         begin
+            @(posedge clk); #1;
             for (i = 0; i < frame_n; i = i + 1) begin
-                @(posedge clk); #1;
                 rx_data = frame[i];
                 rx_valid = 1'b1;
                 rx_last = (i == frame_n - 1);
                 rx_good = (i == frame_n - 1) && good;
                 @(posedge clk); #1;
-                rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
-                repeat (2) @(posedge clk);
+                if (!dense) begin
+                    rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
+                    repeat (3) @(posedge clk);
+                    #1;
+                end
             end
+            rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
             repeat (60) @(posedge clk);
         end
     endtask
@@ -211,6 +219,14 @@ module eth_icmp_echo_tb;
         replied_pulses = 1;
         hold = 1'b0;
         expect_reply(40, "a reply that waited");
+
+        // 1000 Mbit/s: a byte a clock in and out.
+        greedy = 1'b1; dense = 1'b1;
+        ping(56, 16'd21);
+        ping(1472, 16'd22);
+        ping(1, 16'd23);
+        make_ping(MAC, {8'd10, 8'd0, 8'd100, 8'd99}, 56, 16'd24, 16'h4000, 8'd8); deliver(1'b1); expect_none("another IP, dense");
+        greedy = 1'b0; dense = 1'b0;
 
         if (errors == 0) $display("PASS");
         else $display("FAILED: %0d", errors);

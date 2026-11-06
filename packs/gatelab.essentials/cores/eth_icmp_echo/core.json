@@ -6,24 +6,24 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 110.4,
+      "fmaxMHz" : 100,
       "resources" : {
         "DP16KD" : 1,
-        "TRELLIS_COMB" : 648,
-        "TRELLIS_FF" : 288
+        "TRELLIS_COMB" : 749,
+        "TRELLIS_FF" : 299
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 54.1,
+      "fmaxMHz" : 48.9,
       "resources" : {
         "CPE_ADDF" : 13,
-        "CPE_ADDF2" : 169,
-        "CPE_BRIDGE" : 144,
-        "CPE_CPLINES" : 391,
-        "CPE_FF" : 365,
-        "CPE_LT" : 705,
+        "CPE_ADDF2" : 175,
+        "CPE_BRIDGE" : 127,
+        "CPE_CPLINES" : 380,
+        "CPE_FF" : 368,
+        "CPE_LT" : 741,
         "CPE_RAMIO" : 50,
         "RAM_HALF" : 1
       },
@@ -31,35 +31,36 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 76,
+      "fmaxMHz" : 67.8,
       "resources" : {
-        "ALU" : 346,
+        "ALU" : 330,
         "BSRAM" : 1,
-        "DFF" : 288,
-        "LUT4" : 427,
-        "MUX2_LUT5" : 42,
-        "MUX2_LUT6" : 17,
-        "MUX2_LUT7" : 7
+        "DFF" : 299,
+        "LUT4" : 500,
+        "MUX2_LUT5" : 74,
+        "MUX2_LUT6" : 29,
+        "MUX2_LUT7" : 12,
+        "MUX2_LUT8" : 1
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 38.8,
+      "fmaxMHz" : 44.5,
       "resources" : {
-        "ICESTORM_LC" : 706,
+        "ICESTORM_LC" : 746,
         "ICESTORM_RAM" : 4
       },
       "tested" : true
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 229,
+      "fmaxMHz" : 202.1,
       "resources" : {
-        "CARRY4" : 34,
+        "CARRY4" : 36,
         "RAMB18E1" : 1,
-        "SLICE_FFX" : 259,
-        "SLICE_LUTX" : 501
+        "SLICE_FFX" : 270,
+        "SLICE_LUTX" : 513
       },
       "tested" : true
     }
@@ -156,5 +157,5 @@
   ],
   "schema" : 1,
   "top" : "eth_icmp_echo",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

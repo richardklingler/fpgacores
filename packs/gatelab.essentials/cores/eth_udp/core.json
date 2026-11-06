@@ -6,25 +6,24 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 115.8,
+      "fmaxMHz" : 125.3,
       "resources" : {
         "DP16KD" : 1,
-        "TRELLIS_COMB" : 1531,
-        "TRELLIS_FF" : 815
+        "TRELLIS_COMB" : 1606,
+        "TRELLIS_FF" : 830
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 52.2,
+      "fmaxMHz" : 52.9,
       "resources" : {
-        "CPE_ADDF" : 17,
-        "CPE_ADDF2" : 271,
-        "CPE_BRIDGE" : 342,
-        "CPE_CPLINES" : 882,
-        "CPE_FF" : 798,
-        "CPE_LT" : 1737,
-        "CPE_MX4" : 62,
+        "CPE_ADDF" : 16,
+        "CPE_ADDF2" : 266,
+        "CPE_BRIDGE" : 272,
+        "CPE_CPLINES" : 782,
+        "CPE_FF" : 805,
+        "CPE_LT" : 1555,
         "CPE_RAMIO" : 49,
         "RAM_HALF" : 1
       },
@@ -32,24 +31,24 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 62.9,
+      "fmaxMHz" : 67.7,
       "resources" : {
-        "ALU" : 554,
+        "ALU" : 576,
         "BSRAM" : 1,
-        "DFF" : 815,
-        "LUT4" : 1434,
-        "MUX2_LUT5" : 190,
-        "MUX2_LUT6" : 60,
-        "MUX2_LUT7" : 21,
-        "MUX2_LUT8" : 3
+        "DFF" : 830,
+        "LUT4" : 1666,
+        "MUX2_LUT5" : 324,
+        "MUX2_LUT6" : 127,
+        "MUX2_LUT7" : 52,
+        "MUX2_LUT8" : 17
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 30.2,
+      "fmaxMHz" : 32.2,
       "resources" : {
-        "ICESTORM_LC" : 1752,
+        "ICESTORM_LC" : 1761,
         "ICESTORM_RAM" : 4,
         "SB_GB" : 5
       },
@@ -57,12 +56,12 @@
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 151.2,
+      "fmaxMHz" : 161.7,
       "resources" : {
         "CARRY4" : 111,
         "RAMB18E1" : 1,
-        "SLICE_FFX" : 786,
-        "SLICE_LUTX" : 1419
+        "SLICE_FFX" : 801,
+        "SLICE_LUTX" : 1436
       },
       "tested" : true
     }
@@ -264,5 +263,5 @@
   ],
   "schema" : 1,
   "top" : "eth_udp",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

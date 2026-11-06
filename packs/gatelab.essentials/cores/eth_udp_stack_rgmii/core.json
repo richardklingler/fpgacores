@@ -1,0 +1,264 @@
+{
+  "dependencies" : [
+    "eth_rgmii_phy",
+    "eth_udp_core"
+  ],
+  "description" : "A small IPv4 stack for a Gigabit Ethernet PHY on RGMII at 1000 Mbit/s (the Kintex-7 Eco R5's RTL8211E), in one core (eth_rgmii_phy and eth_udp_core): MAC, MDIO setup (1000 only) and link watch, ARP and ping answered on their own, and UDP on one port for the design, every part a byte a clock. The byte side on a 125 MHz system clock. AMD Xilinx 7-series only. The same design-side ports as eth_udp_stack.",
+  "id" : "eth_udp_stack_rgmii",
+  "keywords" : [
+    "ethernet",
+    "udp",
+    "ipv4",
+    "arp",
+    "ping",
+    "icmp",
+    "rgmii",
+    "gigabit",
+    "network",
+    "stack",
+    "rtl8211e",
+    "kintex"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein kleiner IPv4-Stack für einen Gigabit-Ethernet-PHY an RGMII bei 1000 Mbit/s (der RTL8211E des Kintex-7 Eco R5), in einem Kern (eth_rgmii_phy und eth_udp_core): MAC, MDIO-Einrichtung (nur 1000) und Link-Überwachung, ARP und Ping beantwortet er selbst, und UDP auf einem Port für das Design, jeder Teil ein Byte je Takt. Die Byte-Seite an einem 125-MHz-Systemtakt. Nur AMD Xilinx 7-Serie. Dieselben Ports auf der Design-Seite wie eth_udp_stack.",
+      "name" : "Ethernet-UDP-Stack (RGMII)"
+    }
+  },
+  "name" : "Ethernet UDP stack (RGMII)",
+  "parameters" : [
+    {
+      "default" : 1234,
+      "description" : "The UDP port received on and sent from",
+      "name" : "PORT"
+    },
+    {
+      "default" : 125000000,
+      "description" : "The system clock in Hz (125 MHz)",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 1,
+      "description" : "The PHY's MDIO address (from its straps)",
+      "name" : "PHY_ADDR"
+    },
+    {
+      "default" : 200,
+      "description" : "Milliseconds before the first MDIO transaction",
+      "name" : "SETTLE_MS"
+    },
+    {
+      "default" : 1,
+      "description" : "eth_rgmii_phy's: which clock edge starts a received byte",
+      "name" : "RX_LATE"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "The system clock (125 MHz)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "Our MAC address",
+      "dir" : "in",
+      "name" : "mac",
+      "width" : 48
+    },
+    {
+      "description" : "Our IPv4 address",
+      "dir" : "in",
+      "name" : "ip",
+      "width" : 32
+    },
+    {
+      "description" : "RGMII RX_CLK from the PHY (125 MHz)",
+      "dir" : "in",
+      "name" : "rgmii_rx_clk"
+    },
+    {
+      "description" : "RGMII RXD (the pins)",
+      "dir" : "in",
+      "name" : "rgmii_rxd",
+      "width" : 4
+    },
+    {
+      "description" : "RGMII RX_CTL",
+      "dir" : "in",
+      "name" : "rgmii_rx_ctl"
+    },
+    {
+      "description" : "RGMII TX_CLK",
+      "dir" : "out",
+      "name" : "rgmii_tx_clk"
+    },
+    {
+      "description" : "RGMII TXD",
+      "dir" : "out",
+      "name" : "rgmii_txd",
+      "width" : 4
+    },
+    {
+      "description" : "RGMII TX_CTL",
+      "dir" : "out",
+      "name" : "rgmii_tx_ctl"
+    },
+    {
+      "description" : "MDC (the pin)",
+      "dir" : "out",
+      "name" : "mdc"
+    },
+    {
+      "description" : "MDIO's value while mdio_oe is high",
+      "dir" : "out",
+      "name" : "mdio_out"
+    },
+    {
+      "description" : "Drive MDIO (assign mdio = mdio_oe ? mdio_out : 1'bz)",
+      "dir" : "out",
+      "name" : "mdio_oe"
+    },
+    {
+      "description" : "MDIO as it is (the pin, with a pull-up)",
+      "dir" : "in",
+      "name" : "mdio_in"
+    },
+    {
+      "description" : "The PHY reports a link",
+      "dir" : "out",
+      "name" : "link_up"
+    },
+    {
+      "description" : "Pulses for each frame with a good FCS (to anyone)",
+      "dir" : "out",
+      "name" : "frame_good"
+    },
+    {
+      "description" : "Pulses for each frame with a bad FCS or an error from the PHY",
+      "dir" : "out",
+      "name" : "frame_bad"
+    },
+    {
+      "description" : "Pulses when an ARP reply is queued",
+      "dir" : "out",
+      "name" : "arp_replied"
+    },
+    {
+      "description" : "Pulses when an echo reply is queued",
+      "dir" : "out",
+      "name" : "ping_replied"
+    },
+    {
+      "description" : "A received datagram's byte",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 8
+    },
+    {
+      "description" : "A byte is there",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "With the datagram's last byte",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "The design takes the byte",
+      "dir" : "in",
+      "name" : "rx_ready"
+    },
+    {
+      "description" : "Bytes in the datagram handed over",
+      "dir" : "out",
+      "name" : "rx_length",
+      "width" : 11
+    },
+    {
+      "description" : "The sender's MAC",
+      "dir" : "out",
+      "name" : "peer_mac",
+      "width" : 48
+    },
+    {
+      "description" : "The sender's IP",
+      "dir" : "out",
+      "name" : "peer_ip",
+      "width" : 32
+    },
+    {
+      "description" : "The sender's port",
+      "dir" : "out",
+      "name" : "peer_port",
+      "width" : 16
+    },
+    {
+      "description" : "Pulses when a datagram is handed over",
+      "dir" : "out",
+      "name" : "rx_new"
+    },
+    {
+      "description" : "Pulses when a datagram was dropped (the one before wasn't taken yet)",
+      "dir" : "out",
+      "name" : "rx_dropped"
+    },
+    {
+      "description" : "Starts a datagram (with send_ready)",
+      "dir" : "in",
+      "name" : "send"
+    },
+    {
+      "description" : "With send: payload bytes (0 … 1472)",
+      "dir" : "in",
+      "name" : "send_length",
+      "width" : 11
+    },
+    {
+      "description" : "With send: the receiver's MAC",
+      "dir" : "in",
+      "name" : "dst_mac",
+      "width" : 48
+    },
+    {
+      "description" : "With send: the receiver's IP",
+      "dir" : "in",
+      "name" : "dst_ip",
+      "width" : 32
+    },
+    {
+      "description" : "With send: the receiver's port",
+      "dir" : "in",
+      "name" : "dst_port",
+      "width" : 16
+    },
+    {
+      "description" : "A datagram can be started",
+      "dir" : "out",
+      "name" : "send_ready"
+    },
+    {
+      "description" : "The payload's byte",
+      "dir" : "in",
+      "name" : "payload_data",
+      "width" : 8
+    },
+    {
+      "description" : "The payload's byte is there when payload_ready asks for it (every clock at 1000 Mbit/s)",
+      "dir" : "in",
+      "name" : "payload_valid"
+    },
+    {
+      "description" : "The payload's byte is taken",
+      "dir" : "out",
+      "name" : "payload_ready"
+    }
+  ],
+  "requiresFamilies" : [
+    "xilinx7"
+  ],
+  "schema" : 1,
+  "top" : "eth_udp_stack_rgmii",
+  "version" : "1.0.0"
+}

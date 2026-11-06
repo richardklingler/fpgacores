@@ -10,25 +10,25 @@
   "families" : {
     "ecp5" : {
       "device" : "45k",
-      "fmaxMHz" : 108.4,
+      "fmaxMHz" : 100.8,
       "resources" : {
         "DP16KD" : 2,
-        "TRELLIS_COMB" : 3304,
-        "TRELLIS_FF" : 1992
+        "TRELLIS_COMB" : 3221,
+        "TRELLIS_FF" : 2010
       },
       "tested" : true
     },
     "gatemate" : {
       "device" : "CCGM1A1",
-      "fmaxMHz" : 44.4,
+      "fmaxMHz" : 43.2,
       "resources" : {
         "CPE_ADDF" : 37,
         "CPE_ADDF2" : 539,
-        "CPE_BRIDGE" : 878,
-        "CPE_CPLINES" : 1945,
-        "CPE_FF" : 1925,
-        "CPE_LT" : 4013,
-        "CPE_MX4" : 100,
+        "CPE_BRIDGE" : 791,
+        "CPE_CPLINES" : 1785,
+        "CPE_FF" : 1935,
+        "CPE_LT" : 3770,
+        "CPE_MX4" : 35,
         "CPE_RAMIO" : 106,
         "RAM_HALF" : 2
       },
@@ -36,24 +36,24 @@
     },
     "gowin" : {
       "device" : "GW1NR-LV9QN88PC6/I5",
-      "fmaxMHz" : 56.5,
+      "fmaxMHz" : 54.7,
       "resources" : {
-        "ALU" : 1160,
+        "ALU" : 1180,
         "BSRAM" : 2,
-        "DFF" : 1992,
-        "LUT4" : 3212,
-        "MUX2_LUT5" : 387,
-        "MUX2_LUT6" : 121,
-        "MUX2_LUT7" : 46,
-        "MUX2_LUT8" : 14
+        "DFF" : 2010,
+        "LUT4" : 3347,
+        "MUX2_LUT5" : 448,
+        "MUX2_LUT6" : 152,
+        "MUX2_LUT7" : 60,
+        "MUX2_LUT8" : 21
       },
       "tested" : true
     },
     "ice40" : {
       "device" : "up5k",
-      "fmaxMHz" : 30.4,
+      "fmaxMHz" : 27.6,
       "resources" : {
-        "ICESTORM_LC" : 3766,
+        "ICESTORM_LC" : 3784,
         "ICESTORM_RAM" : 8,
         "SB_GB" : 7
       },
@@ -61,12 +61,12 @@
     },
     "xilinx7" : {
       "device" : "xc7a35t",
-      "fmaxMHz" : 143.9,
+      "fmaxMHz" : 153.3,
       "resources" : {
         "CARRY4" : 181,
         "RAMB18E1" : 2,
-        "SLICE_FFX" : 1913,
-        "SLICE_LUTX" : 2906
+        "SLICE_FFX" : 1931,
+        "SLICE_LUTX" : 2897
       },
       "tested" : true
     }
@@ -111,6 +111,16 @@
       "default" : 200,
       "description" : "Milliseconds before the first MDIO transaction",
       "name" : "SETTLE_MS"
+    },
+    {
+      "default" : 257,
+      "description" : "MDIO register 4 (16'h0101: 100 full duplex only; 16'h0001: no 10/100 mode, for a Gigabit link)",
+      "name" : "ADVERTISE"
+    },
+    {
+      "default" : 52,
+      "description" : "eth_mac's gap between frames, in clocks (52 at 100 Mbit/s, 12 at 1000)",
+      "name" : "GAP_CLOCKS"
     }
   ],
   "ports" : [
@@ -321,5 +331,5 @@
   ],
   "schema" : 1,
   "top" : "eth_udp_core",
-  "version" : "1.0.0"
+  "version" : "1.1.0"
 }

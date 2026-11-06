@@ -6,7 +6,8 @@
 //   - no reply to: another IP, a frame with rx_good low, an ARP reply (operation 2), a request to another host's
 //     MAC, an IPv4 frame, a request whose hardware type isn't 1;
 //   - a reply that waits keeps its requester while another request arrives (which isn't answered);
-//   - a consumer that's ready on every clock gets the same reply;
+//   - a consumer that's ready on every clock gets the same reply, a byte on every clock with no pause (Gigabit:
+//     eth_mac takes a byte a clock and doesn't wait), also for requests that arrive a byte every clock;
 //   - a changed `ip` input is answered at once.
 // Prints PASS or every failed check.
 
@@ -32,25 +33,29 @@ module eth_arp_tb;
     wire [7:0] tx_data;
     wire       tx_valid, tx_last, replied;
     reg        tx_ready = 1'b0;
+    reg hold = 1'b0;     // the MAC busy with another frame: the reply waits
+    reg greedy = 1'b0;   // a consumer ready on every clock: every byte offered must be right, with no pause
+    reg dense = 1'b0;    // requests a byte on every clock, as eth_mac delivers them at 1000 Mbit/s
     eth_arp dut (.clk(clk), .mac(MAC), .ip(ip), .rx_data(rx_data), .rx_valid(rx_valid), .rx_last(rx_last),
         .rx_good(rx_good), .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready),
         .replied(replied));
 
     // ---- The MAC's send side: a byte every fourth clock while tx_valid ----------------------------------------
     reg [7:0] reply [0:63];
-    integer reply_n = 0, replies = 0, replied_pulses = 0;
+    integer reply_n = 0, replies = 0, replied_pulses = 0, stalls = 0;
+    reg in_reply = 1'b0;
     reg [1:0] slot = 2'd0;
     always @(posedge clk) begin
         slot <= slot + 2'd1;
         if (replied) replied_pulses = replied_pulses + 1;
+        if (greedy && in_reply && !tx_valid) stalls = stalls + 1;   // a pause inside the reply
         if (tx_valid && tx_ready) begin
             reply[reply_n] = tx_data;
             reply_n = reply_n + 1;
+            in_reply = !tx_last;
             if (tx_last) replies = replies + 1;
         end
     end
-    reg hold = 1'b0;   // the MAC busy with another frame: the reply waits
-    reg greedy = 1'b0;   // a consumer ready on every clock: every byte offered must be right
     always @(negedge clk) tx_ready = (greedy || slot == 2'd0) && !hold;
 
     // ---- Frames in -----------------------------------------------------------------------------------------
@@ -72,16 +77,20 @@ module eth_arp_tb;
     task deliver(input good);
         integer i;
         begin
+            @(posedge clk); #1;
             for (i = 0; i < 60; i = i + 1) begin
-                @(posedge clk); #1;
                 rx_data = frame[i];
                 rx_valid = 1'b1;
                 rx_last = (i == 59);
                 rx_good = (i == 59) && good;
                 @(posedge clk); #1;
-                rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
-                repeat (2) @(posedge clk);
+                if (!dense) begin
+                    rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
+                    repeat (3) @(posedge clk);
+                    #1;
+                end
             end
+            rx_valid = 1'b0; rx_last = 1'b0; rx_good = 1'b0;
             repeat (400) @(posedge clk);
         end
     endtask
@@ -139,6 +148,11 @@ module eth_arp_tb;
         expect_reply("a reply that waited");
         greedy = 1'b1;
         make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, ip); deliver(1'b1); expect_reply("to a consumer always ready");
+        dense = 1'b1;
+        make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, ip); deliver(1'b1); expect_reply("dense, always ready");
+        make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, {8'd10, 8'd0, 8'd100, 8'd99}); deliver(1'b1); expect_none("dense, another IP");
+        if (stalls != 0) begin $display("FAIL: %0d pauses inside replies to a consumer always ready", stalls); errors = errors + 1; end
+        dense = 1'b0;
         greedy = 1'b0;
         ip = {8'd192, 8'd168, 8'd1, 8'd50};
         make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, ip); deliver(1'b1); expect_reply("a changed IP");

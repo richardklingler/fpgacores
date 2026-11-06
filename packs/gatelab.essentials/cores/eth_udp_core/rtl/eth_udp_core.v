@@ -6,13 +6,17 @@
 //
 // The design's side is eth_udp's (see there): received datagrams on rx_*/peer_*, datagrams to send on send_*/
 // payload_*. Pulses for LEDs and counters: `frame_good` (a frame with a good FCS, to anyone), `frame_bad` (a bad FCS
-// or RX_ER), `arp_replied`, `ping_replied`. MDIO advertises 100 full duplex and reports `link_up`.
+// or RX_ER), `arp_replied`, `ping_replied`. MDIO advertises ADVERTISE (register 4: 100 full duplex by default) and
+// reports `link_up`. For 1000 Mbit/s (eth_udp_stack_rgmii): ADVERTISE 0001 (no 10/100 mode, the PHY's own 1000 in
+// register 9), GAP_CLOCKS 12, and every sender goes a byte a clock.
 
 module eth_udp_core #(
     parameter [15:0]  PORT = 16'd1234,
     parameter integer CLK_HZ = 50_000_000,
     parameter [4:0]   PHY_ADDR = 5'd1,
-    parameter integer SETTLE_MS = 200
+    parameter integer SETTLE_MS = 200,
+    parameter [15:0]  ADVERTISE = 16'h0101,    // eth_mdio's register 4
+    parameter integer GAP_CLOCKS = 52          // eth_mac's inter-frame gap: 96 bit times in clocks of `clk`
 ) (
     input  wire        clk,          // the RMII reference or the MII system clock
     input  wire [47:0] mac,
@@ -61,7 +65,7 @@ module eth_udp_core #(
     // ---- MAC and MDIO ---------------------------------------------------------------------------------------------
     wire [7:0] frame_data, tx_data;
     wire       frame_valid, frame_last, frame_ok, tx_valid, tx_last, tx_ready;
-    eth_mac u_mac (
+    eth_mac #(.GAP_CLOCKS(GAP_CLOCKS)) u_mac (
         .clk(clk), .phy_rx_data(phy_rx_data), .phy_rx_valid(phy_rx_valid), .phy_rx_end(phy_rx_end),
         .phy_rx_error(phy_rx_error), .phy_tx_data(phy_tx_data), .phy_tx_valid(phy_tx_valid), .phy_tx_ready(phy_tx_ready),
         .rx_data(frame_data), .rx_valid(frame_valid), .rx_last(frame_last), .rx_good(frame_ok),
@@ -69,7 +73,7 @@ module eth_udp_core #(
     assign frame_good = frame_valid && frame_last && frame_ok;
     assign frame_bad = frame_valid && frame_last && !frame_ok;
 
-    eth_mdio #(.CLK_HZ(CLK_HZ), .PHY_ADDR(PHY_ADDR), .ADVERTISE(16'h0101), .SETTLE_MS(SETTLE_MS)) u_mdio (
+    eth_mdio #(.CLK_HZ(CLK_HZ), .PHY_ADDR(PHY_ADDR), .ADVERTISE(ADVERTISE), .SETTLE_MS(SETTLE_MS)) u_mdio (
         .clk(clk), .mdc(mdc), .mdio_out(mdio_out), .mdio_oe(mdio_oe), .mdio_in(mdio_in), .link_up(link_up),
         .setup_done(), .go(1'b0), .write(1'b0), .reg_addr(5'd0), .wdata(16'd0), .ready(), .done(), .rdata());
 
