@@ -152,6 +152,8 @@ CORE = {
     "simulationOnly": (False, "true or false", None),
     # Built on a vendor's primitives: the only families the core works on (hdmi_out: xilinx7).
     "requiresFamilies": (False, "a list", lambda v: None if v and all(f in FAMILIES for f in v) else "needs known families like xilinx7"),
+    # Built for particular devices within those families (gtx_10g: the Kintex-7's GTX transceivers, xc7k325t).
+    "requiresDevices": (False, "a list", lambda v: None if v and all(isinstance(d, str) and d and d == d.lower() for d in v) else "needs lowercase device names like xc7k325t"),
     # Stands in for another core on its own families (hdmi_out_gowin: hdmi_out), same top and ports.
     "variantOf": (False, "a string", matches(NAME, "core id")),
 }
@@ -235,6 +237,8 @@ def check_core(core_path, core_id, pack_has_licence, core_owners, pack_id):
                         report("error", manifest_path, f"schematic.{key}: '{port}' isn't a port")
             if "oneShot" in schematic:
                 fields(manifest_path, schematic["oneShot"], ONE_SHOT, "schematic.oneShot")
+    if manifest.get("requiresDevices") and not manifest.get("requiresFamilies"):
+        report("error", manifest_path, "requiresDevices needs requiresFamilies (the devices' families)")
     if manifest.get("simulationOnly") is True:
         pass  # nothing to measure
     elif manifest.get("requiresFamilies"):

@@ -1,0 +1,245 @@
+{
+  "description" : "The 10GBASE-R PCS (IEEE 802.3 clause 49) between 64-bit XGMII blocks and a transceiver's 64B/66B gearbox (gtx_10g), a block a cycle at 161.13 MHz: encoding into the 66-bit block formats (data, idle/error, start in lane 0 or 4, terminate in any lane, ordered sets on receive), the x^58 + x^39 + 1 scrambler, block lock through the gearbox's slip, the BER monitor, error-block counts, and a receiver restart request when block lock stays lost. Checked on the Kintex-7 over a fibre between two SFP+ cages.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 163.6,
+      "resources" : {
+        "TRELLIS_COMB" : 861,
+        "TRELLIS_FF" : 784
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 67.7,
+      "resources" : {
+        "CPE_ADDF" : 4,
+        "CPE_ADDF2" : 53,
+        "CPE_BRIDGE" : 265,
+        "CPE_CPLINES" : 541,
+        "CPE_FF" : 842,
+        "CPE_LT" : 1537,
+        "CPE_MX4" : 16
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "fmaxMHz" : 78.3,
+      "resources" : {
+        "ALU" : 118,
+        "DFF" : 784,
+        "LUT4" : 1149,
+        "MUX2_LUT5" : 102,
+        "MUX2_LUT6" : 4,
+        "MUX2_LUT7" : 2,
+        "MUX2_LUT8" : 1
+      },
+      "tested" : true
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "fmaxMHz" : 53.9,
+      "resources" : {
+        "ICESTORM_LC" : 1336,
+        "SB_GB" : 5
+      },
+      "tested" : true
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "fmaxMHz" : 97.8,
+      "resources" : {
+        "TRELLIS_COMB" : 909,
+        "TRELLIS_FF" : 784
+      },
+      "tested" : true
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 252.1,
+      "resources" : {
+        "CARRY4" : 30,
+        "SLICE_FFX" : 784,
+        "SLICE_LUTX" : 767
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_10gbase_r_pcs",
+  "keywords" : [
+    "10g",
+    "10gbase-r",
+    "pcs",
+    "64b66b",
+    "xgmii",
+    "scrambler",
+    "block lock",
+    "sfp",
+    "sfp+",
+    "ethernet",
+    "fibre",
+    "fiber"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Die 10GBASE-R-PCS (IEEE 802.3 Abschnitt 49) zwischen 64-Bit-XGMII-Blöcken und der 64B/66B-Gearbox eines Transceivers (gtx_10g), ein Block je Takt bei 161,13 MHz: Kodierung in die 66-Bit-Blockformate (Daten, Idle/Fehler, Start in Lane 0 oder 4, Ende in jeder Lane, Ordered Sets beim Empfang), der Scrambler x^58 + x^39 + 1, Block-Lock über den Slip der Gearbox, die BER-Überwachung, Fehlerblock-Zähler und eine Neustart-Anforderung für den Empfänger, wenn der Block-Lock ausbleibt. Auf dem Kintex-7 über eine Glasfaser zwischen zwei SFP+-Käfigen geprüft.",
+      "name" : "10GBASE-R-PCS"
+    }
+  },
+  "name" : "10GBASE-R PCS",
+  "parameters" : [
+    {
+      "default" : 1,
+      "description" : "1: the transceiver sends a port's most significant bit first (gtx_10g); 0: the least significant",
+      "name" : "BIT_REVERSE"
+    },
+    {
+      "default" : 1,
+      "description" : "0 leaves the payload unscrambled (tests only)",
+      "name" : "SCRAMBLER"
+    },
+    {
+      "default" : 19531,
+      "description" : "Blocks in the BER window (125 µs at 10.3125 Gb/s)",
+      "name" : "BER_WINDOW"
+    },
+    {
+      "default" : 64,
+      "description" : "rx_clk cycles after a slip before headers count again",
+      "name" : "SLIP_WAIT"
+    },
+    {
+      "default" : 2097152,
+      "description" : "Blocks without block lock before rx_restart (2^21: 13 ms); 0: never",
+      "name" : "RESTART_BLOCKS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Transmit block clock (gtx_10g's tx_clk)",
+      "dir" : "in",
+      "name" : "tx_clk"
+    },
+    {
+      "description" : "On tx_clk: the gearbox's sequence counter (gtx_10g's tx_sequence)",
+      "dir" : "in",
+      "name" : "tx_sequence",
+      "width" : 6
+    },
+    {
+      "description" : "On tx_clk: an XGMII block, lane n at bits 8n+7:8n",
+      "dir" : "in",
+      "name" : "xgmii_txd",
+      "width" : 64
+    },
+    {
+      "description" : "On tx_clk: control flags per lane",
+      "dir" : "in",
+      "name" : "xgmii_txc",
+      "width" : 8
+    },
+    {
+      "description" : "On tx_clk: the PCS takes the block this cycle (not in the gearbox's pause)",
+      "dir" : "out",
+      "name" : "xgmii_tx_ready"
+    },
+    {
+      "description" : "On tx_clk: the same a cycle ahead",
+      "dir" : "out",
+      "name" : "xgmii_tx_ready_next"
+    },
+    {
+      "description" : "On tx_clk: the scrambled block for the gearbox",
+      "dir" : "out",
+      "name" : "tx_data",
+      "width" : 64
+    },
+    {
+      "description" : "On tx_clk: its sync header",
+      "dir" : "out",
+      "name" : "tx_header",
+      "width" : 2
+    },
+    {
+      "description" : "Receive block clock (gtx_10g's rx_clk[n])",
+      "dir" : "in",
+      "name" : "rx_clk"
+    },
+    {
+      "description" : "On rx_clk: the receiver isn't ready (drop block lock)",
+      "dir" : "in",
+      "name" : "rx_reset"
+    },
+    {
+      "description" : "On rx_clk: a received block (gtx_10g's rx_data)",
+      "dir" : "in",
+      "name" : "rx_data",
+      "width" : 64
+    },
+    {
+      "description" : "On rx_clk: its sync header",
+      "dir" : "in",
+      "name" : "rx_header",
+      "width" : 2
+    },
+    {
+      "description" : "On rx_clk: rx_data carries a block",
+      "dir" : "in",
+      "name" : "rx_data_valid"
+    },
+    {
+      "description" : "On rx_clk: rx_header is valid",
+      "dir" : "in",
+      "name" : "rx_header_valid"
+    },
+    {
+      "description" : "On rx_clk: a pulse moves the block boundary by one bit (to gtx_10g's rx_slip)",
+      "dir" : "out",
+      "name" : "rx_slip"
+    },
+    {
+      "description" : "On rx_clk: a pulse asks for a receiver reset (to gtx_10g's rx_restart)",
+      "dir" : "out",
+      "name" : "rx_restart"
+    },
+    {
+      "description" : "On rx_clk: a decoded XGMII block",
+      "dir" : "out",
+      "name" : "xgmii_rxd",
+      "width" : 64
+    },
+    {
+      "description" : "On rx_clk: its control flags",
+      "dir" : "out",
+      "name" : "xgmii_rxc",
+      "width" : 8
+    },
+    {
+      "description" : "On rx_clk: xgmii_rxd / xgmii_rxc carry a block",
+      "dir" : "out",
+      "name" : "xgmii_rx_valid"
+    },
+    {
+      "description" : "On rx_clk: block lock",
+      "dir" : "out",
+      "name" : "block_lock"
+    },
+    {
+      "description" : "On rx_clk: 16 invalid headers within the BER window",
+      "dir" : "out",
+      "name" : "high_ber"
+    },
+    {
+      "description" : "On rx_clk: error blocks received while locked",
+      "dir" : "out",
+      "name" : "rx_error_blocks",
+      "width" : 32
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_10gbase_r_pcs",
+  "version" : "1.0.0"
+}

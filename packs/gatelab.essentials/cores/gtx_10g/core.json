@@ -1,0 +1,232 @@
+{
+  "description" : "AMD Kintex-7 GTX transceivers at 10.3125 Gb/s (the 10GBASE-R line rate) from a 156.25 MHz reference: the quad's QPLL and one to four channels with the GT wizard's 10GBASE-R settings, GateLab's reset sequence with retries, the GTX's own PRBS31 generator and checker with error counts, near-end loopback, and the 64B/66B gearbox's 64-bit interface for a PCS — a block a cycle at 161.13 MHz, the user clocks from an MMCM per direction. Kintex-7 only. A simulation stand-in takes the transceivers' place in Icarus.",
+  "id" : "gtx_10g",
+  "keywords" : [
+    "transceiver",
+    "gtx",
+    "sfp",
+    "sfp+",
+    "10g",
+    "10gbase-r",
+    "serdes",
+    "prbs",
+    "kintex",
+    "fibre",
+    "fiber",
+    "gearbox",
+    "64b66b"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "GTX-Transceiver des AMD Kintex-7 mit 10,3125 Gb/s (die Leitungsrate von 10GBASE-R) aus einem 156,25-MHz-Referenztakt: die QPLL des Quads und ein bis vier Kanäle mit den 10GBASE-R-Einstellungen des GT-Wizards, GateLabs Reset-Ablauf mit Wiederholungen, der eigene PRBS31-Generator und -Prüfer des GTX mit Fehlerzählern, Near-End-Loopback und die 64-Bit-Schnittstelle der 64B/66B-Gearbox für eine PCS — ein Block je Takt bei 161,13 MHz, die Benutzertakte aus einem MMCM je Richtung. Nur Kintex-7. In Icarus vertritt ein Simulationsmodell die Transceiver.",
+      "name" : "GTX-10G-Transceiver"
+    }
+  },
+  "name" : "GTX 10G Transceivers",
+  "parameters" : [
+    {
+      "default" : 50000000,
+      "description" : "Frequency of clk in Hz",
+      "name" : "CLK_HZ"
+    },
+    {
+      "default" : 2,
+      "description" : "Transceivers in the quad, 1 to 4 (the port widths here are for 2)",
+      "name" : "CHANNELS"
+    },
+    {
+      "default" : 8,
+      "description" : "TX swing (TXDIFFCTRL, 4 bits); 8 (4'b1000) is about 810 mV differential",
+      "name" : "TX_DIFF_CTRL"
+    },
+    {
+      "default" : 100,
+      "description" : "Milliseconds of PRBS errors in a row before a receiver is reset again",
+      "name" : "RETRY_MS"
+    },
+    {
+      "description" : "Cycles of clk per millisecond, CLK_HZ / 1000 (a testbench shortens it)",
+      "name" : "MS_CYCLES"
+    },
+    {
+      "default" : 1,
+      "description" : "Simulation only: 1 = channel 0 and 1 receive each other's words (a fibre between two cages)",
+      "name" : "SIM_CROSS"
+    }
+  ],
+  "ports" : [
+    {
+      "description" : "Free-running clock for the reset sequence and the status (CLK_HZ)",
+      "dir" : "in",
+      "name" : "clk"
+    },
+    {
+      "description" : "On clk: start the whole reset sequence again",
+      "dir" : "in",
+      "name" : "reset"
+    },
+    {
+      "description" : "156.25 MHz reference + (the quad's MGTREFCLK0P ball)",
+      "dir" : "in",
+      "name" : "refclk_p"
+    },
+    {
+      "description" : "156.25 MHz reference − (MGTREFCLK0N)",
+      "dir" : "in",
+      "name" : "refclk_n"
+    },
+    {
+      "description" : "Transmit + per channel (MGTXTXP)",
+      "dir" : "out",
+      "name" : "txp",
+      "width" : 2
+    },
+    {
+      "description" : "Transmit − per channel (MGTXTXN)",
+      "dir" : "out",
+      "name" : "txn",
+      "width" : 2
+    },
+    {
+      "description" : "Receive + per channel (MGTXRXP)",
+      "dir" : "in",
+      "name" : "rxp",
+      "width" : 2
+    },
+    {
+      "description" : "Receive − per channel (MGTXRXN)",
+      "dir" : "in",
+      "name" : "rxn",
+      "width" : 2
+    },
+    {
+      "description" : "On clk: the QPLL is locked",
+      "dir" : "out",
+      "name" : "qpll_lock"
+    },
+    {
+      "description" : "On clk: the transmitters are out of reset",
+      "dir" : "out",
+      "name" : "tx_ready"
+    },
+    {
+      "description" : "On clk: each receiver is out of reset and monitored",
+      "dir" : "out",
+      "name" : "rx_ready",
+      "width" : 2
+    },
+    {
+      "description" : "On clk: receiver resets per channel, 16 bits each",
+      "dir" : "out",
+      "name" : "rx_retries",
+      "width" : 32
+    },
+    {
+      "description" : "A rising edge resets that channel's receiver (a PCS that lost block lock; from any clock, held 3 clk cycles)",
+      "dir" : "in",
+      "name" : "rx_restart",
+      "width" : 2
+    },
+    {
+      "description" : "PRBS31 on the transmitters and the checkers; counts errors and retries after 100 bad milliseconds",
+      "dir" : "in",
+      "name" : "prbs"
+    },
+    {
+      "description" : "Each transmitter feeds its own receiver inside the chip (near-end PMA loopback)",
+      "dir" : "in",
+      "name" : "near_loopback"
+    },
+    {
+      "description" : "0: DFE equaliser (held after adapting), 1: LPM",
+      "dir" : "in",
+      "name" : "lpm"
+    },
+    {
+      "description" : "Invert a receiver's polarity",
+      "dir" : "in",
+      "name" : "rx_invert",
+      "width" : 2
+    },
+    {
+      "description" : "On clk: PRBS error words per channel since prbs_clear, 32 bits each",
+      "dir" : "out",
+      "name" : "prbs_errors",
+      "width" : 64
+    },
+    {
+      "description" : "On clk: a pulse starts prbs_errors from 0",
+      "dir" : "in",
+      "name" : "prbs_clear"
+    },
+    {
+      "description" : "Transmit block clock, 161.13 MHz (TXUSRCLK2, from an MMCM)",
+      "dir" : "out",
+      "name" : "tx_clk"
+    },
+    {
+      "description" : "On tx_clk: the gearbox's sequence counter, 0 to 32, a block a cycle (no data at 32)",
+      "dir" : "out",
+      "name" : "tx_sequence",
+      "width" : 6
+    },
+    {
+      "description" : "On tx_clk: a 64B/66B block's 64 data bits per channel",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 128
+    },
+    {
+      "description" : "On tx_clk: each block's 2-bit sync header per channel",
+      "dir" : "in",
+      "name" : "tx_header",
+      "width" : 4
+    },
+    {
+      "description" : "Each channel's receive block clock, 161.13 MHz (from its recovered clock through an MMCM)",
+      "dir" : "out",
+      "name" : "rx_clk",
+      "width" : 2
+    },
+    {
+      "description" : "On rx_clk[n]: a received block's 64 data bits per channel",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 128
+    },
+    {
+      "description" : "On rx_clk[n]: each block's sync header per channel",
+      "dir" : "out",
+      "name" : "rx_header",
+      "width" : 4
+    },
+    {
+      "description" : "On rx_clk[n]: rx_data carries a block (low one cycle in 33)",
+      "dir" : "out",
+      "name" : "rx_data_valid",
+      "width" : 2
+    },
+    {
+      "description" : "On rx_clk[n]: rx_header is valid (with each block)",
+      "dir" : "out",
+      "name" : "rx_header_valid",
+      "width" : 2
+    },
+    {
+      "description" : "On rx_clk[n]: a pulse moves the block boundary by one bit",
+      "dir" : "in",
+      "name" : "rx_slip",
+      "width" : 2
+    }
+  ],
+  "requiresDevices" : [
+    "xc7k325t"
+  ],
+  "requiresFamilies" : [
+    "xilinx7"
+  ],
+  "schema" : 1,
+  "top" : "gtx_10g",
+  "version" : "1.0.0"
+}

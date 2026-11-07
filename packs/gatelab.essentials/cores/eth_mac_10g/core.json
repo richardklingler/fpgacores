@@ -1,0 +1,186 @@
+{
+  "description" : "A 10 Gigabit Ethernet MAC on 64-bit XGMII blocks (for eth_10gbase_r_pcs), a block a cycle at 161.13 MHz: start and preamble, padding to 60 bytes, the FCS (CRC-32 over 1 to 8 bytes as flat XORs), terminate and the 12-byte gap on transmit, an error block on an underrun; on receive starts in lane 0 or 4 after gaps down to IEEE's 5 bytes, the FCS checked and taken off, runts and error characters flagged, good and bad frames counted. Checked on the Kintex-7 at 1.54 million frames a second each way over a fibre.",
+  "families" : {
+    "ecp5" : {
+      "device" : "45k",
+      "fmaxMHz" : 94.4,
+      "resources" : {
+        "TRELLIS_COMB" : 6654,
+        "TRELLIS_FF" : 1636
+      },
+      "tested" : true
+    },
+    "gatemate" : {
+      "device" : "CCGM1A1",
+      "fmaxMHz" : 29.6,
+      "resources" : {
+        "CPE_ADDF" : 4,
+        "CPE_ADDF2" : 46,
+        "CPE_BRIDGE" : 2088,
+        "CPE_CPLINES" : 2981,
+        "CPE_FF" : 1708,
+        "CPE_LT" : 5805,
+        "CPE_MX4" : 146
+      },
+      "tested" : true
+    },
+    "gowin" : {
+      "device" : "GW1NR-LV9QN88PC6/I5",
+      "tested" : false
+    },
+    "ice40" : {
+      "device" : "up5k",
+      "tested" : false
+    },
+    "machxo2" : {
+      "device" : "4000HC",
+      "tested" : false
+    },
+    "xilinx7" : {
+      "device" : "xc7a35t",
+      "fmaxMHz" : 148.5,
+      "resources" : {
+        "CARRY4" : 28,
+        "SLICE_FFX" : 1636,
+        "SLICE_LUTX" : 4002
+      },
+      "tested" : true
+    }
+  },
+  "id" : "eth_mac_10g",
+  "keywords" : [
+    "10g",
+    "ethernet",
+    "mac",
+    "xgmii",
+    "crc",
+    "fcs",
+    "sfp",
+    "sfp+",
+    "10gbase-r"
+  ],
+  "licence" : "CC0-1.0",
+  "localized" : {
+    "de" : {
+      "description" : "Ein 10-Gigabit-Ethernet-MAC auf 64-Bit-XGMII-Blöcken (für eth_10gbase_r_pcs), ein Block je Takt bei 161,13 MHz: Start und Präambel, Auffüllen auf 60 Bytes, die FCS (CRC-32 über 1 bis 8 Bytes als flache XORs), Ende und die 12-Byte-Lücke beim Senden, ein Fehlerblock bei einem Unterlauf; beim Empfang Start in Lane 0 oder 4 nach Lücken bis hinunter zu den 5 Bytes von IEEE, die FCS geprüft und entfernt, zu kurze Frames und Fehlerzeichen gemeldet, gute und schlechte Frames gezählt. Auf dem Kintex-7 mit 1,54 Millionen Frames je Sekunde in jeder Richtung über eine Glasfaser geprüft.",
+      "name" : "10-Gigabit-Ethernet-MAC"
+    }
+  },
+  "name" : "10 Gigabit Ethernet MAC",
+  "parameters" : [],
+  "ports" : [
+    {
+      "description" : "Transmit clock (the PCS's tx_clk)",
+      "dir" : "in",
+      "name" : "tx_clk"
+    },
+    {
+      "description" : "On tx_clk: a frame word, destination MAC first, lane 0 = bits 7:0 first",
+      "dir" : "in",
+      "name" : "tx_data",
+      "width" : 64
+    },
+    {
+      "description" : "On tx_clk: the last word's bytes (1, 3, 7 … FF)",
+      "dir" : "in",
+      "name" : "tx_keep",
+      "width" : 8
+    },
+    {
+      "description" : "On tx_clk: a word, high from the first to tx_last without a gap",
+      "dir" : "in",
+      "name" : "tx_valid"
+    },
+    {
+      "description" : "On tx_clk: the frame's last word",
+      "dir" : "in",
+      "name" : "tx_last"
+    },
+    {
+      "description" : "On tx_clk: the word is taken (follows the PCS's pauses, not tx_valid)",
+      "dir" : "out",
+      "name" : "tx_ready"
+    },
+    {
+      "description" : "On tx_clk: the PCS's xgmii_tx_ready",
+      "dir" : "in",
+      "name" : "xgmii_tx_ready"
+    },
+    {
+      "description" : "On tx_clk: the XGMII block to the PCS",
+      "dir" : "out",
+      "name" : "xgmii_txd",
+      "width" : 64
+    },
+    {
+      "description" : "On tx_clk: its control flags",
+      "dir" : "out",
+      "name" : "xgmii_txc",
+      "width" : 8
+    },
+    {
+      "description" : "Receive clock (the PCS's rx_clk)",
+      "dir" : "in",
+      "name" : "rx_clk"
+    },
+    {
+      "description" : "On rx_clk: the PCS's xgmii_rxd",
+      "dir" : "in",
+      "name" : "xgmii_rxd",
+      "width" : 64
+    },
+    {
+      "description" : "On rx_clk: the PCS's xgmii_rxc",
+      "dir" : "in",
+      "name" : "xgmii_rxc",
+      "width" : 8
+    },
+    {
+      "description" : "On rx_clk: the PCS's xgmii_rx_valid",
+      "dir" : "in",
+      "name" : "xgmii_rx_valid"
+    },
+    {
+      "description" : "On rx_clk: a received word, FCS taken off",
+      "dir" : "out",
+      "name" : "rx_data",
+      "width" : 64
+    },
+    {
+      "description" : "On rx_clk: its bytes (all but on the last word)",
+      "dir" : "out",
+      "name" : "rx_keep",
+      "width" : 8
+    },
+    {
+      "description" : "On rx_clk: rx_data carries a word",
+      "dir" : "out",
+      "name" : "rx_valid"
+    },
+    {
+      "description" : "On rx_clk: the frame's last word",
+      "dir" : "out",
+      "name" : "rx_last"
+    },
+    {
+      "description" : "On rx_clk, with rx_last: wrong FCS, shorter than 64 bytes, or an error character",
+      "dir" : "out",
+      "name" : "rx_error"
+    },
+    {
+      "description" : "On rx_clk: good frames received",
+      "dir" : "out",
+      "name" : "rx_frames",
+      "width" : 32
+    },
+    {
+      "description" : "On rx_clk: bad frames received",
+      "dir" : "out",
+      "name" : "rx_bad_frames",
+      "width" : 32
+    }
+  ],
+  "schema" : 1,
+  "top" : "eth_mac_10g",
+  "version" : "1.0.0"
+}
