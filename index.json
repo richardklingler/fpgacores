@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-11-07T18:21:22Z",
+  "generated" : "2026-11-07T18:40:22Z",
   "name" : "GateLab cores",
   "packages" : [
     {
@@ -32,6 +32,61 @@
       "name" : "GateLab Essentials",
       "type" : "library",
       "versions" : [
+        {
+          "cores" : [
+            "analog_clock",
+            "async_fifo",
+            "bar_graph",
+            "clock_divider",
+            "debouncer",
+            "edge_detect",
+            "eth_10gbase_r_pcs",
+            "eth_arp",
+            "eth_icmp_echo",
+            "eth_mac",
+            "eth_mac_10g",
+            "eth_mdio",
+            "eth_mii_phy",
+            "eth_rgmii_phy",
+            "eth_rmii_phy",
+            "eth_udp",
+            "eth_udp_core",
+            "eth_udp_stack",
+            "eth_udp_stack_mii",
+            "eth_udp_stack_rgmii",
+            "gtx_10g",
+            "hdmi_encoder",
+            "hdmi_out",
+            "hdmi_out_ecp5",
+            "hdmi_out_gatemate",
+            "hdmi_out_gowin",
+            "hid_serial",
+            "i2c_master",
+            "i2s_clocks",
+            "i2s_receiver",
+            "i2s_transmitter",
+            "pwm",
+            "seg7",
+            "spi_master",
+            "spi_registers",
+            "spi_slave",
+            "sprite_layer",
+            "sync_fifo",
+            "text_layer",
+            "tmds_encoder",
+            "tone_generator",
+            "uart_rx",
+            "uart_tx",
+            "video_timing",
+            "ws2812"
+          ],
+          "download" : {
+            "sha256" : "ffd60564f72ee9b0c34721007e6a91d8b910d6f07a71045f6778427cff64aaf8",
+            "size" : 979479,
+            "url" : "https://richardklingler.github.io/fpgacores/packs/gatelab.essentials-1.14.1.fpgapack"
+          },
+          "version" : "1.14.1"
+        },
         {
           "cores" : [
             "analog_clock",
