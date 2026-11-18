@@ -5,6 +5,13 @@
   ],
   "description" : "A small IPv4 stack for a 10/100 Ethernet PHY on MII (the Arty A7's DP83848J), in one core (eth_mii_phy and eth_udp_core): MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, and UDP on one port for the design. The byte side on a system clock of at least four times the PHY's 25 MHz (100 MHz); the PHY's own reference is the design's to make. The same design-side ports as eth_udp_stack.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 182525
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 83.7,
@@ -318,9 +325,14 @@
       "description" : "The payload's byte is taken",
       "dir" : "out",
       "name" : "payload_ready"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset. Hold it for at least three cycles of the PHY's clocks: it reaches their domains through two flip-flops",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_udp_stack_mii",
-  "version" : "1.1.0"
+  "version" : "2.0.0"
 }

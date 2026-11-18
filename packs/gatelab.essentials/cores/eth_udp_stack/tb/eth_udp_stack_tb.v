@@ -46,6 +46,13 @@ endmodule
 
 module eth_udp_stack_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;
     integer errors = 0;
     task fail(input [8*72-1:0] what);
@@ -89,7 +96,7 @@ module eth_udp_stack_tb;
         .rx_dropped(), .send(send), .send_length(own ? 11'd10 : udp_length),
         .dst_mac(own ? 48'hFFFF_FFFF_FFFF : peer_mac), .dst_ip(own ? 32'h0A00_FFFF : peer_ip),
         .dst_port(own ? 16'd4321 : peer_port), .send_ready(send_ready), .payload_data(payload),
-        .payload_valid(payload_valid), .payload_ready(payload_ready));
+        .payload_valid(payload_valid), .payload_ready(payload_ready), .rst_n(rst_n));
 
     integer goods = 0, bads = 0;
     always @(posedge clk) begin
@@ -289,7 +296,11 @@ module eth_udp_stack_tb;
             begin
                 // Once the echo reply is going out (its tx_valid drops between bytes), the design sends: the datagram
                 // must wait for the reply's last byte.
+`ifdef GATELAB_GATE_LEVEL
+                wait (tx_en);     // the netlist has no internal names: the frame's first byte on the line
+`else
                 wait (dut.u_core.sel == 2'd2 && dut.u_core.u_mac.state == 3'd2);
+`endif
                 repeat (40) @(posedge clk);
                 @(negedge clk); own_send = 1'b1; @(posedge clk); #1; own_send = 1'b0;
             end

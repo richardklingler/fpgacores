@@ -4,6 +4,7 @@
     "tmds_encoder"
   ],
   "description" : "Pixels and syncs out of an HDMI or DVI connector on Gowin GW1N/GW2A: three TMDS encoders, 10:1 OSER10 serialisers and true-LVDS outputs, plus the clock lane. Needs a five-times serial clock from an rPLL and the pixel clock from a CLKDIV dividing it by 5 (720p60: 371.25 and 74.25 MHz from 27 MHz). DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio, the same with audio_l, audio_r and audio_ready. The same module and ports as hdmi_out for 7-series.",
+  "families" : {},
   "id" : "hdmi_out_gowin",
   "keywords" : [
     "1080p30",
@@ -127,5 +128,5 @@
   "schema" : 1,
   "top" : "hdmi_out",
   "variantOf" : "hdmi_out",
-  "version" : "1.1.0"
+  "version" : "1.1.1"
 }

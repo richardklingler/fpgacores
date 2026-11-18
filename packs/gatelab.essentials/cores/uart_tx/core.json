@@ -1,6 +1,13 @@
 {
   "description" : "Sends bytes over a serial line, 8N1, at any baud rate the clock allows. Valid/ready handshake.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 110
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 264.6,
@@ -109,9 +116,14 @@
       "description" : "Serial output, idles high",
       "dir" : "out",
       "name" : "tx"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "uart_tx",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

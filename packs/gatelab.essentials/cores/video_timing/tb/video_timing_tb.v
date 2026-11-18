@@ -6,6 +6,13 @@
 
 module video_timing_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
 
     wire hsync, vsync, active, frame_start;
@@ -16,7 +23,7 @@ module video_timing_tb;
         .H_ACTIVE(8), .H_FRONT(2), .H_SYNC(3), .H_BACK(2),
         .V_ACTIVE(4), .V_FRONT(1), .V_SYNC(2), .V_BACK(2),
         .H_SYNC_POSITIVE(1), .V_SYNC_POSITIVE(0)
-    ) dut (.clk(clk), .hsync(hsync), .vsync(vsync), .active(active), .frame_start(frame_start), .x(x), .y(y));
+    ) dut (.clk(clk), .hsync(hsync), .vsync(vsync), .active(active), .frame_start(frame_start), .x(x), .y(y), .rst_n(rst_n));
 
     integer errors = 0;
     integer hx = 0, vy = 0, frames = 0, cycle;
@@ -24,6 +31,7 @@ module video_timing_tb;
     initial begin
         $dumpfile("video_timing_tb.vcd");
         $dumpvars(0, video_timing_tb);
+        wait (rst_n);
         @(posedge frame_start);
         for (cycle = 0; cycle < 15 * 9 * 3; cycle = cycle + 1) begin
             #1;

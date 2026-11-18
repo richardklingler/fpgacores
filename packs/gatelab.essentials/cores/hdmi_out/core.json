@@ -4,6 +4,7 @@
     "tmds_encoder"
   ],
   "description" : "Pixels and syncs out of an HDMI or DVI connector on AMD Xilinx 7-series: three TMDS encoders, 10:1 OSERDESE2 serialisers and TMDS_33 differential outputs, plus the clock lane. Needs a pixel clock and a five-times serial clock from one MMCM or PLL (720p60: 74.25 and 371.25 MHz). For 1080p60 the module hdmi_out_bufr keeps the design on a global clock and only the serialisers on a BUFR. DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio (or hdmi_out_bufr_audio), the same with audio_l, audio_r and audio_ready.",
+  "families" : {},
   "id" : "hdmi_out",
   "keywords" : [
     "1080p",
@@ -126,5 +127,5 @@
   ],
   "schema" : 1,
   "top" : "hdmi_out",
-  "version" : "1.2.0"
+  "version" : "1.2.1"
 }

@@ -4,6 +4,13 @@
   ],
   "description" : "MII interface to a 10/100 Ethernet PHY at 100 Mbit/s (DP83848 on the Arty A7, KSZ8081 …) with the same byte interface as eth_rmii_phy, on a system clock of its own (at least four times the 25 MHz nibble clock, e.g. 100 MHz): the PHY's rx_clk and tx_clk are crossed through async_fifo. Received bytes after the SFD with rx_end/rx_error; bytes to send paced one every fourth clock, the frame's end queued when tx_valid falls, the 96-bit gap kept on tx_clk.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 2001
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 139.2,
@@ -161,9 +168,14 @@
       "description" : "High when tx_data is taken (with tx_valid), at most every fourth clock",
       "dir" : "out",
       "name" : "tx_ready"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset. Hold it for at least three cycles of the PHY's clocks: it reaches their domains through two flip-flops",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_mii_phy",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

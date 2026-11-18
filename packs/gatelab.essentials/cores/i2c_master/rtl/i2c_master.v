@@ -28,7 +28,10 @@ module i2c_master #(
     output reg        scl_oe = 1'b0,
     input  wire       scl_in,
     output reg        sda_oe = 1'b0,
-    input  wire       sda_in
+    input  wire       sda_in,
+    // Reset, active low, synchronous: a command stops, both lines let go. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire       rst_n
 );
     localparam START = 2'd0, WRITE = 2'd1, READ = 2'd2, STOP = 2'd3;
     // Each bit is four quarter periods: SCL low (set SDA), release SCL, SCL high (sample), SCL low.
@@ -37,8 +40,8 @@ module i2c_master #(
 
     reg [1:0] scl_s = 2'b11, sda_s = 2'b11;
     always @(posedge clk) begin
-        scl_s <= {scl_s[0], scl_in};
-        sda_s <= {sda_s[0], sda_in};
+        scl_s <= rst_n ? {scl_s[0], scl_in} : 2'b11;
+        sda_s <= rst_n ? {sda_s[0], sda_in} : 2'b11;
     end
     wire scl_high = scl_s[1];
     wire sda_high = sda_s[1];
@@ -56,7 +59,20 @@ module i2c_master #(
 
     always @(posedge clk) begin
         done <= 1'b0;
-        if (!busy) begin
+        if (!rst_n) begin
+            busy <= 1'b0;
+            op <= START;
+            phase <= 2'd0;
+            bit_index <= 4'd0;
+            tx_shift <= 8'd0;
+            rx_shift <= 8'd0;
+            answer_ack <= 1'b0;
+            clocks <= 0;
+            rx_data <= 8'd0;
+            ack <= 1'b0;
+            scl_oe <= 1'b0;
+            sda_oe <= 1'b0;
+        end else if (!busy) begin
             if (go) begin
                 busy <= 1'b1;
                 op <= cmd;

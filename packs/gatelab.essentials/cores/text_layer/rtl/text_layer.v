@@ -61,7 +61,11 @@ module text_layer #(
     output reg  [7:0] red_out = 8'd0,
     output reg  [7:0] green_out = 8'd0,
     output reg  [7:0] blue_out = 8'd0,
-    output reg  ink = 1'b0
+    output reg  ink = 1'b0,
+    // Reset, active low, synchronous: the pipeline cleared. The cells are a RAM and have no reset: on a chip they start
+    // undefined, so write every cell after the reset (INIT_FILE applies on an FPGA only). On an FPGA tie it to 1'b1 or
+    // the board's reset.
+    input  wire rst_n
 );
     localparam CELLS = COLUMNS * ROWS;
     localparam AB = $clog2(CELLS);
@@ -109,6 +113,13 @@ module text_layer #(
         font_row <= v[CH-1:0];
         font_column <= u[CW-1:0];
         inside_1 <= in_grid;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            cell_word <= 12'd0;
+            font_row <= 0;
+            font_column <= 0;
+            inside_1 <= 1'b0;
+        end
     end
     assign font_code = cell_word[CODE_BITS-1:0];
 
@@ -122,6 +133,11 @@ module text_layer #(
     always @(posedge clk) begin
         pass <= pass_next[PW*STAGES-1:0];
         cell_pipe <= cell_next[5*FONT_LATENCY-1:0];
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            pass <= 0;
+            cell_pipe <= 0;
+        end
     end
     wire [PW-1:0] below = pass[PW*STAGES-1 -: PW];
     wire hit = cell_pipe[5*FONT_LATENCY-1];
@@ -135,5 +151,9 @@ module text_layer #(
         else if (hit && BACKGROUND != 0) {red_out, green_out, blue_out} <= BACKGROUND_COLOUR;
         else {red_out, green_out, blue_out} <= below[23:0];
         ink <= hit && font_pixel;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            ink <= 1'b0;
+        end
     end
 endmodule

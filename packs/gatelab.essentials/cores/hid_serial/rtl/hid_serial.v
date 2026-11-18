@@ -34,11 +34,15 @@ module hid_serial #(
     output reg  signed [7:0] wheel_dz = 8'sd0,
 
     output reg        [2:0]  buttons = 3'd0,
-    output reg               all_up = 1'b0
+    output reg               all_up = 1'b0,
+
+    // Reset, active low, synchronous: no packet open, every value and `buttons` cleared. A chip needs it (its registers
+    // power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire              rst_n
 );
     wire [7:0] data;
     wire       valid;
-    uart_rx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) u_rx (.clk(clk), .rx(rx), .data(data), .valid(valid), .frame_error());
+    uart_rx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) u_rx (.clk(clk), .rx(rx), .data(data), .valid(valid), .frame_error(), .rst_n(rst_n));
 
     reg [7:0] command = 8'd0;       // 0: no packet open
     reg [2:0] count = 3'd0;         // data bytes taken
@@ -55,7 +59,16 @@ module hid_serial #(
         position_valid <= 1'b0;
         wheel_valid <= 1'b0;
         all_up <= 1'b0;
-        if (valid) begin
+        if (!rst_n) begin
+            command <= 8'd0;
+            count <= 3'd0;
+            b0 <= 7'd0; b1 <= 7'd0; b2 <= 7'd0;
+            key_usage <= 8'd0; key_up <= 1'b0;
+            move_dx <= 8'sd0; move_dy <= 8'sd0;
+            position_x <= 14'd0; position_y <= 14'd0;
+            wheel_dz <= 8'sd0;
+            buttons <= 3'd0;
+        end else if (valid) begin
             if (data[7]) begin
                 count <= 3'd0;
                 if (data == 8'hBF) begin

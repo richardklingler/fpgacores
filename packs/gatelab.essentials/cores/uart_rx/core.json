@@ -1,6 +1,13 @@
 {
   "description" : "Receives bytes from a serial line, 8N1: input synchroniser, glitch filter on the start bit, framing errors reported.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 132
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 223.2,
@@ -108,9 +115,14 @@
       "description" : "One-cycle pulse: a byte with a low stop bit was dropped",
       "dir" : "out",
       "name" : "frame_error"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "uart_rx",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

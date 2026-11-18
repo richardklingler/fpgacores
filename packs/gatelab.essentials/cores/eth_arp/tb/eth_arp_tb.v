@@ -15,6 +15,13 @@
 
 module eth_arp_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;
     integer errors = 0;
     task fail(input [8*72-1:0] what);
@@ -38,7 +45,7 @@ module eth_arp_tb;
     reg dense = 1'b0;    // requests a byte on every clock, as eth_mac delivers them at 1000 Mbit/s
     eth_arp dut (.clk(clk), .mac(MAC), .ip(ip), .rx_data(rx_data), .rx_valid(rx_valid), .rx_last(rx_last),
         .rx_good(rx_good), .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready),
-        .replied(replied));
+        .replied(replied), .rst_n(rst_n));
 
     // ---- The MAC's send side: a byte every fourth clock while tx_valid ----------------------------------------
     reg [7:0] reply [0:63];
@@ -127,6 +134,8 @@ module eth_arp_tb;
     endtask
 
     initial begin
+        wait (rst_n);
+        @(posedge clk);
         make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, ip); deliver(1'b1); expect_reply("a broadcast request");
         make_arp(MAC, 16'h0001, 16'h0001, ip);                deliver(1'b1); expect_reply("a unicast request");
         make_arp(48'hFFFF_FFFF_FFFF, 16'h0001, 16'h0001, {8'd10, 8'd0, 8'd100, 8'd99}); deliver(1'b1); expect_none("another IP");

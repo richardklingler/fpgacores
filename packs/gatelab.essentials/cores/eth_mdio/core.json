@@ -1,6 +1,13 @@
 {
   "description" : "MDIO master for an Ethernet PHY (clause 22) with the setup built in: after SETTLE_MS it advertises ADVERTISE (default 100 full duplex only) in register 4 and restarts auto-negotiation, then reads the link status POLL_HZ times a second (`link_up`). Between polls the design reads and writes registers with go/ready/done. MDC at most MDC_HZ; read bits taken just before MDC rises. MDIO is push-pull through mdio_out/mdio_oe/mdio_in.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 1039
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 148.9,
@@ -177,9 +184,14 @@
       "dir" : "out",
       "name" : "rdata",
       "width" : 16
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_mdio",
-  "version" : "1.0.1"
+  "version" : "2.0.0"
 }

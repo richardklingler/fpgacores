@@ -19,7 +19,10 @@ module spi_master #(
     output reg        done = 1'b0,
     output reg        sclk = CPOL,
     output wire       mosi,
-    input  wire       miso
+    input  wire       miso,
+    // Reset, active low, synchronous: a transfer stops, the clock idles. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire       rst_n
 );
     localparam HALF = CLK_HZ / (2 * SPI_HZ) > 0 ? CLK_HZ / (2 * SPI_HZ) : 1;
     localparam COUNTER_BITS = HALF > 1 ? $clog2(HALF) : 1;
@@ -35,7 +38,15 @@ module spi_master #(
 
     always @(posedge clk) begin
         done <= 1'b0;
-        if (!busy) begin
+        if (!rst_n) begin
+            busy <= 1'b0;
+            sclk <= CPOL;
+            tx_shift <= 8'd0;
+            rx_shift <= 8'd0;
+            rx_data <= 8'd0;
+            edge_index <= 5'd0;
+            clocks <= 0;
+        end else if (!busy) begin
             sclk <= CPOL;
             if (start) begin
                 busy <= 1'b1;

@@ -7,13 +7,20 @@
 
 module ws2812_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #25 clk = ~clk;             // 20 MHz
 
     reg  [23:0] rgb = 24'd0;
     reg         valid = 1'b0;
     wire        ready, dout, idle;
 
-    ws2812 #(.CLK_HZ(20000000), .RESET_US(50)) dut (.clk(clk), .rgb(rgb), .valid(valid), .ready(ready), .dout(dout), .idle(idle));
+    ws2812 #(.CLK_HZ(20000000), .RESET_US(50)) dut (.clk(clk), .rgb(rgb), .valid(valid), .ready(ready), .dout(dout), .idle(idle), .rst_n(rst_n));
 
     integer errors = 0;
 

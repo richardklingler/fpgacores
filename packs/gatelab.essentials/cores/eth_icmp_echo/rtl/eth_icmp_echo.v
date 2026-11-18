@@ -24,7 +24,10 @@ module eth_icmp_echo #(
     output wire        tx_valid,
     output wire        tx_last,
     input  wire        tx_ready,
-    output reg         replied = 1'b0
+    output reg         replied = 1'b0,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     localparam integer SIZE = 1 << ADDR_BITS;
 
@@ -115,6 +118,28 @@ module eth_icmp_echo #(
                 replied <= 1'b1;
             end
         end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            replied <= 1'b0;
+            judge1 <= 1'b0;
+            judge2 <= 1'b0;
+            busy <= 1'b0;
+            index <= 12'd0;
+            ok <= 1'b1;
+            mac_left <= 48'd0;
+            ip_left <= 32'd0;
+            total <= 16'd0;
+            high <= 8'd0;
+            header_sum <= 20'd0;
+            icmp_sum <= 16'd0;
+            cand <= 1'b0;
+            count <= 12'd0;
+            fold1 <= 17'd0;
+            adjusted <= 17'd0;
+            lengths_ok <= 1'b0;
+            reply_last <= 12'd0;
+            reply_sum <= 16'd0;
+        end
     end
 
     // ---- The reply ------------------------------------------------------------------------------------------
@@ -173,6 +198,18 @@ module eth_icmp_echo #(
                 if (queued == 2'd0) begin q0 <= arrived; l0 <= arrived_last; end
                 else begin q1 <= arrived; l1 <= arrived_last; end
             end
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rd_data <= 8'd0;
+            next <= 12'd0;
+            arriving <= 1'b0;
+            queued <= 2'd0;
+            reading <= 12'd0;
+            q0 <= 8'd0;
+            l0 <= 1'b0;
+            q1 <= 8'd0;
+            l1 <= 1'b0;
         end
     end
 endmodule

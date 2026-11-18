@@ -1,6 +1,13 @@
 {
   "description" : "Cleans up a bouncing button or switch: synchronised input, output changes only after the input is stable for a set time.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 65
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 236.8,
@@ -93,9 +100,14 @@
       "description" : "Debounced level, starts low",
       "dir" : "out",
       "name" : "out"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "debouncer",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

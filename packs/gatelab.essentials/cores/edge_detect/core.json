@@ -1,6 +1,13 @@
 {
   "description" : "One-cycle pulses on the rising and falling edges of a synchronous signal.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 8
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 331.5,
@@ -84,5 +91,5 @@
   ],
   "schema" : 1,
   "top" : "edge_detect",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

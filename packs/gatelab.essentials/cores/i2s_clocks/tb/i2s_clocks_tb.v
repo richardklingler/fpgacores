@@ -8,6 +8,13 @@
 
 module i2s_clocks_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     integer errors = 0;
 
@@ -25,11 +32,11 @@ module i2s_clocks_tb;
     wire mclk_a, sclk_a, lrck_a, start_a, sample_a, frame_a;
     wire [5:0] next_a, slot_a;
     i2s_clocks #(.MCLK_DIV(2), .RATIO(384)) dut_a (.clk(clk), .mclk(mclk_a), .sclk(sclk_a), .lrck(lrck_a),
-        .bit_start(start_a), .slot_next(next_a), .bit_sample(sample_a), .slot(slot_a), .frame_start(frame_a));
+        .bit_start(start_a), .slot_next(next_a), .bit_sample(sample_a), .slot(slot_a), .frame_start(frame_a), .rst_n(rst_n));
     wire mclk_b, sclk_b, lrck_b, start_b, sample_b, frame_b;
     wire [5:0] next_b, slot_b;
     i2s_clocks #(.MCLK_DIV(4), .RATIO(256)) dut_b (.clk(clk), .mclk(mclk_b), .sclk(sclk_b), .lrck(lrck_b),
-        .bit_start(start_b), .slot_next(next_b), .bit_sample(sample_b), .slot(slot_b), .frame_start(frame_b));
+        .bit_start(start_b), .slot_next(next_b), .bit_sample(sample_b), .slot(slot_b), .frame_start(frame_b), .rst_n(rst_n));
 
     // One checker per instance, counting in system clocks.
     `define CHECKER(NAME, MCLK, SCLK, LRCK, START, NEXT, SAMPLE, SLOT, FRAME, MDIV, RAT) \

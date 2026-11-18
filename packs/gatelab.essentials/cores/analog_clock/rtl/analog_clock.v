@@ -64,7 +64,11 @@ module analog_clock #(
     output reg  [7:0] red_out = 8'd0,
     output reg  [7:0] green_out = 8'd0,
     output reg  [7:0] blue_out = 8'd0,
-    output reg  covered = 1'b0
+    output reg  covered = 1'b0,
+    // Reset, active low, synchronous: the picture's ring starts again (the stages refill from the inputs; the output is
+    // the picture LATENCY clocks after the reset). A chip needs it (its registers power up in no defined state); on an
+    // FPGA tie it to 1'b1 or the board's reset.
+    input  wire rst_n
 );
     localparam LATENCY = 20;
     localparam ITERATIONS = 13;
@@ -309,7 +313,7 @@ module analog_clock #(
     always @(posedge clk) begin
         delay[slot] <= {x, y, de, hsync, vsync, red, green, blue};
         last <= delay[slot];
-        slot <= (slot == DEPTH - 1) ? 0 : slot + 1'b1;
+        slot <= (!rst_n || slot == DEPTH - 1) ? 0 : slot + 1'b1;
         {x_out, y_out, de_out, hsync_out, vsync_out} <= last[PW-1:24];
         covered <= 1'b0;
         {red_out, green_out, blue_out} <= last[23:0];

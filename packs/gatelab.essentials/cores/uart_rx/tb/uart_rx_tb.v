@@ -10,12 +10,19 @@ module uart_rx_tb;
     localparam BIT_NS = 10200;         // the sender's bit: 2 % longer than 10 us
 
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     reg rx = 1'b1;
     wire [7:0] data;
     wire valid;
     wire frame_error;
 
-    uart_rx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) dut (.clk(clk), .rx(rx), .data(data), .valid(valid), .frame_error(frame_error));
+    uart_rx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) dut (.clk(clk), .rx(rx), .data(data), .valid(valid), .frame_error(frame_error), .rst_n(rst_n));
 
     always #312.5 clk = ~clk;          // 1.6 MHz
 

@@ -1,6 +1,13 @@
 {
   "description" : "SPI controller for flash, sensors, displays and ADCs: one byte per transfer in any of the four SPI modes, chip select under your control.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 189
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 228.3,
@@ -142,9 +149,14 @@
       "description" : "Data from the device",
       "dir" : "in",
       "name" : "miso"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "spi_master",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

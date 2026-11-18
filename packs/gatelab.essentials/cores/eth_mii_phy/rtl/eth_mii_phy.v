@@ -28,8 +28,19 @@ module eth_mii_phy (
     output reg        rx_error = 1'b0,
     input  wire [7:0] tx_data,
     input  wire       tx_valid,
-    output wire       tx_ready
+    output wire       tx_ready,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
+    // rst_n into mii_rx_clk's domain.
+    reg [1:0] rst_n_mii_rx_clk_s = 2'b11;
+    always @(posedge mii_rx_clk) rst_n_mii_rx_clk_s <= {rst_n_mii_rx_clk_s[0], rst_n};
+    wire rst_n_mii_rx_clk = rst_n_mii_rx_clk_s[1];
+    // rst_n into mii_tx_clk's domain.
+    reg [1:0] rst_n_mii_tx_clk_s = 2'b11;
+    always @(posedge mii_tx_clk) rst_n_mii_tx_clk_s <= {rst_n_mii_tx_clk_s[0], rst_n};
+    wire rst_n_mii_tx_clk = rst_n_mii_tx_clk_s[1];
     // ---- Receive, on rx_clk ---------------------------------------------------------------------------------
     reg [3:0] rxd = 4'd0;
     reg       dv = 1'b0, er = 1'b0;
@@ -75,14 +86,26 @@ module eth_mii_phy (
             r_high <= 1'b0;
             r_er_seen <= 1'b0;
         end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n_mii_rx_clk) begin
+            rxd <= 4'd0;
+            dv <= 1'b0;
+            er <= 1'b0;
+            r_write <= 1'b0;
+            r_state <= R_IDLE;
+            r_high <= 1'b0;
+            r_er_seen <= 1'b0;
+            r_word <= 10'd0;
+            r_low <= 4'd0;
+        end
     end
 
     wire [9:0] rx_word;
     wire       rx_empty;
     reg        rx_read = 1'b0, rx_pending = 1'b0;
     async_fifo #(.WIDTH(10), .DEPTH_LOG2(4)) u_rx_fifo (
-        .wr_clk(mii_rx_clk), .wr_rst(1'b0), .wr_data(r_word), .wr_en(r_write), .full(),
-        .rd_clk(clk), .rd_rst(1'b0), .rd_en(rx_read), .rd_data(rx_word), .empty(rx_empty));
+        .wr_clk(mii_rx_clk), .wr_rst(!rst_n_mii_rx_clk), .wr_data(r_word), .wr_en(r_write), .full(),
+        .rd_clk(clk), .rd_rst(!rst_n), .rd_en(rx_read), .rd_data(rx_word), .empty(rx_empty));
 
     always @(posedge clk) begin
         rx_valid <= 1'b0;
@@ -97,6 +120,15 @@ module eth_mii_phy (
                 rx_valid <= 1'b1;
                 rx_data <= rx_word[7:0];
             end
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rx_valid <= 1'b0;
+            rx_end <= 1'b0;
+            rx_read <= 1'b0;
+            rx_pending <= 1'b0;
+            rx_error <= 1'b0;
+            rx_data <= 8'd0;
         end
     end
 
@@ -119,14 +151,20 @@ module eth_mii_phy (
             in_frame <= 1'b0;
         end
         if (ending) end_pending <= 1'b0;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            pace <= 2'd0;
+            in_frame <= 1'b0;
+            end_pending <= 1'b0;
+        end
     end
 
     wire [8:0] tx_word;
     wire       tx_empty;
     reg        t_read = 1'b0;
     async_fifo #(.WIDTH(9), .DEPTH_LOG2(4)) u_tx_fifo (
-        .wr_clk(clk), .wr_rst(1'b0), .wr_data(ending ? 9'h100 : {1'b0, tx_data}), .wr_en(tx_ready || ending),
-        .full(tx_full), .rd_clk(mii_tx_clk), .rd_rst(1'b0), .rd_en(t_read), .rd_data(tx_word), .empty(tx_empty));
+        .wr_clk(clk), .wr_rst(!rst_n), .wr_data(ending ? 9'h100 : {1'b0, tx_data}), .wr_en(tx_ready || ending),
+        .full(tx_full), .rd_clk(mii_tx_clk), .rd_rst(!rst_n_mii_tx_clk), .rd_en(t_read), .rd_data(tx_word), .empty(tx_empty));
 
     // ---- Send: out of the FIFO, on tx_clk ---------------------------------------------------------------------
     // A word is read one clock ahead (rd_data follows rd_en a clock later): `t_have` says tx_word holds the next one.
@@ -171,6 +209,18 @@ module eth_mii_phy (
             end
         end else begin
             mii_txd <= t_high;
+            t_second <= 1'b0;
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n_mii_tx_clk) begin
+            t_read <= 1'b0;
+            t_have <= 1'b0;
+            mii_tx_en <= 1'b0;
+            mii_txd <= 4'd0;
+            t_gap <= 5'd24;
+            t_fill <= 4'd0;
+            t_sending <= 1'b0;
+            t_high <= 4'd0;
             t_second <= 1'b0;
         end
     end

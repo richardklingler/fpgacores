@@ -4,6 +4,13 @@
   ],
   "description" : "A microcontroller writes bytes anywhere in your design over SPI (mode 0): a write command with a 16-bit address and auto-increment drives one write port (wr, wr_addr, wr_data) for text cells, bar values or colours; a read command answers ID, VERSION and a status byte; every transaction's first reply is ID. done pulses after a write transaction. Built on spi_slave: SCLK below clk / 8.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 357
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 224,
@@ -157,5 +164,5 @@
   ],
   "schema" : 1,
   "top" : "spi_registers",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

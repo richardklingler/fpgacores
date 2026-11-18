@@ -8,6 +8,13 @@
   ],
   "description" : "The PHY-independent part of GateLab's IPv4 stack: MAC, MDIO setup (100 full duplex) and link watch, ARP and ping answered on their own, UDP on one port for the design, and the multiplexer sharing the MAC among them — on the byte interface of eth_rmii_phy or eth_mii_phy (eth_udp_stack and eth_udp_stack_mii put them together). About three block RAMs.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 182606
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 100.8,
@@ -327,9 +334,14 @@
       "description" : "The payload's byte is taken",
       "dir" : "out",
       "name" : "payload_ready"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_udp_core",
-  "version" : "1.1.0"
+  "version" : "2.0.0"
 }

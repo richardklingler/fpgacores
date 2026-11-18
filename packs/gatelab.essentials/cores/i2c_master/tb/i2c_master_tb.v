@@ -22,14 +22,19 @@ module i2c_target_model #(parameter [6:0] ADDRESS = 7'h50, parameter STRETCH_NS 
     reg addressed = 1'b0, reading = 1'b0, first_data = 1'b0, master_ack = 1'b0;
     integer starts = 0, stops = 0;
 
-    // START and STOP: SDA changes while SCL is high (not the lines settling at time 0).
-    always @(negedge sda) if (scl === 1'b1 && $time > 0) begin
-        starts = starts + 1;
-        state = RX; count = 0; addressed = 1'b0; sda_low = 1'b0;
-    end
-    always @(posedge sda) if (scl === 1'b1 && $time > 0) begin
-        stops = stops + 1;
-        state = IDLE; sda_low = 1'b0;
+    // START and STOP: SDA changes from 1 to 0 or 0 to 1 while SCL is high (not the lines settling: at time 0, or a
+    // chip's x before its reset).
+    reg sda_was = 1'b1;
+    always @(sda) begin
+        if (scl === 1'b1 && $time > 0 && sda_was === 1'b1 && sda === 1'b0) begin
+            starts = starts + 1;
+            state = RX; count = 0; addressed = 1'b0; sda_low = 1'b0;
+        end
+        if (scl === 1'b1 && $time > 0 && sda_was === 1'b0 && sda === 1'b1) begin
+            stops = stops + 1;
+            state = IDLE; sda_low = 1'b0;
+        end
+        sda_was = sda;
     end
 
     always @(posedge scl) begin
@@ -89,6 +94,13 @@ endmodule
 
 module i2c_master_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;              // 50 MHz
 
     reg  [1:0] cmd = 2'd0;
@@ -105,8 +117,7 @@ module i2c_master_tb;
     i2c_master #(.CLK_HZ(50000000), .I2C_HZ(400000)) dut (
         .clk(clk), .cmd(cmd), .tx_data(tx_data), .ack_read(ack_read), .go(go), .ready(ready),
         .done(done), .rx_data(rx_data), .ack(ack),
-        .scl_oe(scl_oe), .scl_in(scl), .sda_oe(sda_oe), .sda_in(sda)
-    );
+        .scl_oe(scl_oe), .scl_in(scl), .sda_oe(sda_oe), .sda_in(sda), .rst_n(rst_n));
     i2c_target_model target (.scl(scl), .sda(sda), .scl_low(target_scl_low), .sda_low(target_sda_low));
 
     integer errors = 0;

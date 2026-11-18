@@ -27,7 +27,10 @@ module i2s_clocks #(
     output wire [5:0] slot_next,
     output wire       bit_sample,
     output wire [5:0] slot,
-    output wire       frame_start
+    output wire       frame_start,
+    // Reset, active low, synchronous: all three clocks low, the frame starts again at slot 0. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire       rst_n
 );
     localparam S = MCLK_DIV * RATIO / 64;               // system clocks per SCLK
     localparam S_BITS = $clog2(S);
@@ -54,12 +57,21 @@ module i2s_clocks #(
     assign frame_start = bit_start && slot_next == 6'd0;
 
     always @(posedge clk) begin
-        phase <= phase_n;
-        slot_q <= slot_next;
-        m <= m_n;
-        // Low for the first half of each period: SCLK falls as a slot starts, MCLK as its count starts.
-        sclk <= phase_n >= S_HALF;
-        mclk <= m_n >= M_HALF;
-        lrck <= slot_next[5];
+        if (!rst_n) begin
+            phase <= 0;
+            slot_q <= 6'd0;
+            m <= 0;
+            sclk <= 1'b0;
+            mclk <= 1'b0;
+            lrck <= 1'b0;
+        end else begin
+            phase <= phase_n;
+            slot_q <= slot_next;
+            m <= m_n;
+            // Low for the first half of each period: SCLK falls as a slot starts, MCLK as its count starts.
+            sclk <= phase_n >= S_HALF;
+            mclk <= m_n >= M_HALF;
+            lrck <= slot_next[5];
+        end
     end
 endmodule

@@ -24,7 +24,10 @@ module video_timing #(
     output reg  active = 1'b0,
     output reg  frame_start = 1'b0,
     output reg  [$clog2(H_ACTIVE + H_FRONT + H_SYNC + H_BACK)-1:0] x = 0,
-    output reg  [$clog2(V_ACTIVE + V_FRONT + V_SYNC + V_BACK)-1:0] y = 0
+    output reg  [$clog2(V_ACTIVE + V_FRONT + V_SYNC + V_BACK)-1:0] y = 0,
+    // Reset, active low, synchronous: the frame starts again at the top left. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire rst_n
 );
     localparam H_TOTAL = H_ACTIVE + H_FRONT + H_SYNC + H_BACK;
     localparam V_TOTAL = V_ACTIVE + V_FRONT + V_SYNC + V_BACK;
@@ -34,7 +37,10 @@ module video_timing #(
     reg [$clog2(V_TOTAL)-1:0] v = 0;
 
     always @(posedge clk) begin
-        if (h == H_TOTAL - 1) begin
+        if (!rst_n) begin
+            h <= 0;
+            v <= 0;
+        end else if (h == H_TOTAL - 1) begin
             h <= 0;
             v <= (v == V_TOTAL - 1) ? 0 : v + 1'b1;
         end else begin
@@ -43,7 +49,7 @@ module video_timing #(
         x <= h;
         y <= v;
         active <= (h < H_ACTIVE) && (v < V_ACTIVE);
-        frame_start <= (h == 0) && (v == 0);
+        frame_start <= rst_n && (h == 0) && (v == 0);   // no frame starts while held in reset
         hsync <= ((h >= H_ACTIVE + H_FRONT) && (h < H_ACTIVE + H_FRONT + H_SYNC)) == (H_SYNC_POSITIVE != 0);
         vsync <= ((v >= V_ACTIVE + V_FRONT) && (v < V_ACTIVE + V_FRONT + V_SYNC)) == (V_SYNC_POSITIVE != 0);
     end

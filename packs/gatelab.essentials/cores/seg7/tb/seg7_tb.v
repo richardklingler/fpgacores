@@ -6,6 +6,13 @@
 
 module seg7_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     integer errors = 0;
 
@@ -15,16 +22,16 @@ module seg7_tb;
 
     // 4 digits × 100 Hz at 40 kHz "clock": 100 clocks per digit.
     seg7 #(.CLK_HZ(40000), .DIGITS(4), .REFRESH_HZ(100)) high_active (
-        .clk(clk), .value(16'h1A7F), .dots(4'b0010), .segments(seg_h), .dp(dp_h), .digit_enable(en_h));
+        .clk(clk), .value(16'h1A7F), .dots(4'b0010), .segments(seg_h), .dp(dp_h), .digit_enable(en_h), .rst_n(rst_n));
     seg7 #(.CLK_HZ(40000), .DIGITS(4), .REFRESH_HZ(100), .SEGMENTS_ACTIVE_LOW(1), .DIGITS_ACTIVE_LOW(1)) low_active (
-        .clk(clk), .value(16'h1A7F), .dots(4'b0010), .segments(seg_l), .dp(dp_l), .digit_enable(en_l));
+        .clk(clk), .value(16'h1A7F), .dots(4'b0010), .segments(seg_l), .dp(dp_l), .digit_enable(en_l), .rst_n(rst_n));
 
     // Three digits: the digit counter must wrap by itself, not at a power of two.
     wire [6:0] seg3;
     wire dp3;
     wire [2:0] en3;
     seg7 #(.CLK_HZ(30000), .DIGITS(3), .REFRESH_HZ(100)) three (
-        .clk(clk), .value(12'h1A7), .dots(3'b000), .segments(seg3), .dp(dp3), .digit_enable(en3));
+        .clk(clk), .value(12'h1A7), .dots(3'b000), .segments(seg3), .dp(dp3), .digit_enable(en3), .rst_n(rst_n));
     integer three_on [0:2];
 
     reg [6:0] expected [0:3];

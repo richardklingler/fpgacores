@@ -8,7 +8,7 @@ module sync_fifo_tb;
     localparam DEPTH = 4;
 
     reg clk = 1'b0;
-    reg rst = 1'b0;
+    reg rst = 1'b1;                     // a chip starts from its reset, not from initial values
     reg [7:0] wr_data = 8'd0;
     reg wr_en = 1'b0, rd_en = 1'b0;
     wire full, empty;
@@ -80,6 +80,8 @@ module sync_fifo_tb;
     initial begin
         $dumpfile("sync_fifo_tb.vcd");
         $dumpvars(0, sync_fifo_tb);
+        repeat (2) @(posedge clk);
+        #1 rst = 1'b0;
         step(0, 0, 0);
         for (i = 0; i < 6; i = i + 1) step(1, 8'h10 + i, 0);   // two too many
         step(0, 0, 0);

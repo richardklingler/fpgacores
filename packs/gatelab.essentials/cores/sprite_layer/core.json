@@ -1,6 +1,13 @@
 {
   "description" : "Draws a sprite from an image ROM (Add Image ROM) over a video picture: position, ×1–×8 scaling, mirroring, transparency by palette index 0 or mask, or alpha blending. Layers chain; LATENCY = ROM_LATENCY + 2 clocks.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 378
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 155.4,
@@ -293,5 +300,5 @@
   ],
   "schema" : 1,
   "top" : "sprite_layer",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

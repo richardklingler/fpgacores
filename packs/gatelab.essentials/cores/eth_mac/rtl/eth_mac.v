@@ -37,7 +37,10 @@ module eth_mac #(
     input  wire       tx_last,
     output wire       tx_ready,
     // An underrun happened in the frame being sent (cleared by the next frame)
-    output reg        tx_underrun = 1'b0
+    output reg        tx_underrun = 1'b0,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     function [31:0] crc_byte(input [31:0] c, input [7:0] d);
         integer i;
@@ -79,6 +82,17 @@ module eth_mac #(
             held_n <= 3'd0;
             rx_count <= 11'd0;
             rx_crc <= 32'hFFFF_FFFF;
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rx_valid <= 1'b0;
+            rx_last <= 1'b0;
+            rx_good <= 1'b0;
+            held <= 40'd0;
+            rx_crc <= 32'hFFFF_FFFF;
+            rx_count <= 11'd0;
+            rx_data <= 8'd0;
+            held_n <= 3'd0;
         end
     end
 
@@ -148,5 +162,15 @@ module eth_mac #(
                 if (gap == GAP_CLOCKS - 1) state <= IDLE;
             end
         endcase
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            state <= IDLE;
+            pre_n <= 3'd0;
+            count <= 6'd0;
+            tx_crc <= 32'hFFFF_FFFF;
+            tx_underrun <= 1'b0;
+            fcs_n <= 2'd0;
+            gap <= 7'd0;
+        end
     end
 endmodule

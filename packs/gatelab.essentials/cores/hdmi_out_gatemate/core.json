@@ -4,6 +4,7 @@
     "tmds_encoder"
   ],
   "description" : "Pixels and syncs out of an HDMI or DVI connector on Cologne Chip GateMate: three TMDS encoders, per lane a shift register at five times the pixel clock into CC_ODDR outputs, P and N as two pins (N inverted), plus the clock lane. The lanes take each word a fixed time after the pixel clock's edge, so the pixel clock may come from a divider in the logic: GateLab's Add Clock makes 125 and 25 MHz from the EVB's 10 MHz for 640×480 (0.7 % under 25.175, which monitors take). DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio, the same with audio_l, audio_r and audio_ready. The same module and ports as hdmi_out for 7-series.",
+  "families" : {},
   "id" : "hdmi_out_gatemate",
   "keywords" : [
     "640x480",
@@ -126,5 +127,5 @@
   "schema" : 1,
   "top" : "hdmi_out",
   "variantOf" : "hdmi_out",
-  "version" : "1.1.0"
+  "version" : "1.1.1"
 }

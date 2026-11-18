@@ -24,7 +24,10 @@ module eth_rmii_phy (
     output reg        rx_error = 1'b0,
     input  wire [7:0] tx_data,
     input  wire       tx_valid,
-    output wire       tx_ready
+    output wire       tx_ready,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     // ---- Receive --------------------------------------------------------------------------------------------
     reg [1:0] rxd = 2'b00;
@@ -68,6 +71,21 @@ module eth_rmii_phy (
                     end
                 end
         endcase
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rxd <= 2'b00;
+            crs <= 1'b0;
+            er <= 1'b0;
+            crs_last <= 1'b0;
+            rx_valid <= 1'b0;
+            rx_end <= 1'b0;
+            state <= IDLE;
+            dibit <= 2'd0;
+            er_seen <= 1'b0;
+            rx_error <= 1'b0;
+            shift <= 6'd0;
+            rx_data <= 8'd0;
+        end
     end
 
     // ---- Send -----------------------------------------------------------------------------------------------
@@ -88,6 +106,13 @@ module eth_rmii_phy (
             rmii_tx_en <= 1'b1;
         end else begin
             rmii_txd <= 2'b00;
+            rmii_tx_en <= 1'b0;
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rmii_txd <= 2'b00;
+            tx_shift <= 6'd0;
+            tx_dibit <= 2'd0;
             rmii_tx_en <= 1'b0;
         end
     end

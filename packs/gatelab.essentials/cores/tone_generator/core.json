@@ -1,6 +1,13 @@
 {
   "description" : "A sine tone at any frequency: a phase accumulator and a 256-point sine (16-bit signed, ±32767). Each `advance` (a sample period: i2s_transmitter's `taken`) adds `step`; frequency = step · rate / 2^PHASE_BITS (1 kHz at 48 kHz: step 349525 with 24 bits).",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 508
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 120.8,
@@ -113,9 +120,14 @@
       "dir" : "out",
       "name" : "sample",
       "width" : 16
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "tone_generator",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

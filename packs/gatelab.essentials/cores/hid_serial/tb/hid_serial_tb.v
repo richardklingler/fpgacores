@@ -7,6 +7,13 @@
 module hid_serial_tb;
     localparam CLK_HZ = 1_000_000, BAUD = 100_000;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #500 clk = ~clk;
 
     reg rx = 1'b1;
@@ -19,7 +26,7 @@ module hid_serial_tb;
         .clk(clk), .rx(rx), .key_valid(key_valid), .key_usage(key_usage), .key_up(key_up),
         .move_valid(move_valid), .move_dx(move_dx), .move_dy(move_dy),
         .position_valid(position_valid), .position_x(position_x), .position_y(position_y),
-        .wheel_valid(wheel_valid), .wheel_dz(wheel_dz), .buttons(buttons), .all_up(all_up));
+        .wheel_valid(wheel_valid), .wheel_dz(wheel_dz), .buttons(buttons), .all_up(all_up), .rst_n(rst_n));
 
     integer errors = 0;
     task fail(input [8*64-1:0] what);

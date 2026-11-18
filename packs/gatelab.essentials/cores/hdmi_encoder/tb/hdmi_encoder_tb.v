@@ -8,6 +8,13 @@ module hdmi_encoder_tb;
     localparam integer H_SYNC_AT = 680, H_SYNC_LEN = 40, V_SYNC_AT = 45, V_SYNC_LEN = 3;
     localparam integer FRAMES = 4;
     reg clk = 0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #41.667 clk = ~clk;
 
     // Timing and pixels.
@@ -15,7 +22,7 @@ module hdmi_encoder_tb;
     reg [7:0] red = 0, green = 0, blue = 0;
     reg de = 0, hsync = 0, vsync = 0;
     reg [15:0] lfsr = 16'hACE1;
-    always @(posedge clk) begin
+    always @(posedge clk) if (rst_n) begin            // the picture starts after the reset
         x <= (x == H_TOTAL - 1) ? 0 : x + 1;
         if (x == H_TOTAL - 1) y <= (y == V_TOTAL - 1) ? 0 : y + 1;
         de <= (x < H_ACTIVE) && (y < V_ACTIVE);
@@ -34,13 +41,13 @@ module hdmi_encoder_tb;
     wire audio_ready_dvi;
     hdmi_encoder #(.HDMI(1), .PIXEL_HZ(PIXEL_HZ), .VIC(7'd1), .ASPECT(2'b01)) dut (
         .clk(clk), .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
-        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready), .word_blue(wb), .word_green(wg), .word_red(wr));
+        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready), .word_blue(wb), .word_green(wg), .word_red(wr), .rst_n(rst_n));
     hdmi_encoder #(.HDMI(0)) dvi (
         .clk(clk), .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
-        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready_dvi), .word_blue(db), .word_green(dg), .word_red(dr));
-    tmds_encoder r_blue  (.clk(clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(rb));
-    tmds_encoder r_green (.clk(clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(rg));
-    tmds_encoder r_red   (.clk(clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(rr));
+        .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready_dvi), .word_blue(db), .word_green(dg), .word_red(dr), .rst_n(rst_n));
+    tmds_encoder r_blue  (.clk(clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(rb), .rst_n(rst_n));
+    tmds_encoder r_green (.clk(clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(rg), .rst_n(rst_n));
+    tmds_encoder r_red   (.clk(clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(rr), .rst_n(rst_n));
 
     // What went in, in order.
     reg [31:0] sent_audio [0:8191];

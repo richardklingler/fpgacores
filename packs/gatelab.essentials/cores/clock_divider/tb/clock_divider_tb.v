@@ -5,9 +5,16 @@
 
 module clock_divider_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     wire tick, square;
 
-    clock_divider #(.CLK_HZ(1000000), .HZ(1000)) dut (.clk(clk), .tick(tick), .square(square));
+    clock_divider #(.CLK_HZ(1000000), .HZ(1000)) dut (.clk(clk), .tick(tick), .square(square), .rst_n(rst_n));
 
     always #500 clk = ~clk;
 

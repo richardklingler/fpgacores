@@ -11,6 +11,13 @@
 
 module analog_clock_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
 
     localparam H_TOTAL = 206, H_ACTIVE = 192, V_TOTAL = 192, V_ACTIVE = 184;
@@ -47,8 +54,7 @@ module analog_clock_tb;
         .clk(clk), .x(x), .y(y), .de(de), .hsync(hsync), .vsync(vsync), .red(red), .green(green), .blue(blue),
         .enable(1'b1), .hour(hour), .minute(minute), .second(second),
         .x_out(x_out), .y_out(y_out), .de_out(de_out), .hsync_out(hsync_out), .vsync_out(vsync_out),
-        .red_out(red_out), .green_out(green_out), .blue_out(blue_out), .covered(covered)
-    );
+        .red_out(red_out), .green_out(green_out), .blue_out(blue_out), .covered(covered), .rst_n(rst_n));
 
     // ---- The reference: the RTL's documented quantities in real numbers --------------------
     // A radius in pixels as the RTL compares it (its constants are rounded).
@@ -185,7 +191,8 @@ module analog_clock_tb;
     reg checking = 1'b0;
     reg [23:0] want, below;
     always @(posedge clk) begin
-        if (warm < LATENCY + 2) warm <= warm + 1;
+        if (!rst_n) warm <= 0;                          // the stages fill after the reset
+        else if (warm < LATENCY + 2) warm <= warm + 1;
         else begin
             if (x_out !== x_d[LATENCY-1] || y_out !== y_d[LATENCY-1] || de_out !== de_d[LATENCY-1] ||
                 hsync_out !== hs_d[LATENCY-1] || vsync_out !== vs_d[LATENCY-1]) begin

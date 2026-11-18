@@ -4,6 +4,13 @@
   ],
   "description" : "Receives 24-bit stereo samples from an I2S ADC (CS5343, Pmod I2S2's line in) with i2s_clocks: the data pin through two flip-flops, each bit taken just before SCLK rises (the ADC changes it after the rising edge). `valid` pulses when a frame's left and right are in.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 302
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 188.3,
@@ -126,5 +133,5 @@
   ],
   "schema" : 1,
   "top" : "i2s_receiver",
-  "version" : "1.0.1"
+  "version" : "1.0.2"
 }

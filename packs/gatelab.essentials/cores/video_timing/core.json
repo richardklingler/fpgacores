@@ -1,6 +1,13 @@
 {
   "description" : "Sync, active-area and pixel-position signals for a VGA or DVI/HDMI display; 640×480 at 60 Hz by default, any mode by parameters.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 78
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 231.4,
@@ -159,9 +166,14 @@
       "dir" : "out",
       "name" : "y",
       "width" : 10
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "video_timing",
-  "version" : "1.0.1"
+  "version" : "2.0.0"
 }

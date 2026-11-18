@@ -16,7 +16,10 @@ module ws2812 #(
     input  wire        valid,
     output wire        ready,
     output reg         dout = 1'b0,
-    output wire        idle
+    output wire        idle,
+    // Reset, active low, synchronous: the line low, the pixel being sent dropped. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     // Clock cycles, rounded to the nearest cycle.
     localparam T0H   = (CLK_HZ * 2 + 2500000) / 5000000;     // 0.4 µs
@@ -35,7 +38,14 @@ module ws2812 #(
     assign idle = !sending && (low_clocks == TRESET);
 
     always @(posedge clk) begin
-        if (!sending) begin
+        if (!rst_n) begin
+            sending <= 1'b0;
+            dout <= 1'b0;
+            shift <= 24'd0;
+            bit_index <= 5'd0;
+            clocks <= 0;
+            low_clocks <= 0;
+        end else if (!sending) begin
             dout <= 1'b0;
             if (low_clocks != TRESET) low_clocks <= low_clocks + 1'b1;
             if (valid) begin

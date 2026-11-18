@@ -18,6 +18,13 @@
 
 module eth_udp_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;
     integer errors = 0;
     task fail(input [8*72-1:0] what);
@@ -62,7 +69,7 @@ module eth_udp_tb;
         .peer_mac(peer_mac), .peer_ip(peer_ip), .peer_port(peer_port), .rx_new(rx_new), .rx_dropped(rx_dropped),
         .send(send), .send_length(send_length), .dst_mac(dst_mac), .dst_ip(dst_ip), .dst_port(dst_port),
         .send_ready(send_ready), .payload_data(payload_data), .payload_valid(payload_valid), .payload_ready(payload_ready),
-        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready));
+        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready), .rst_n(rst_n));
 
     // ---- Received datagrams -----------------------------------------------------------------------------------
     reg [7:0] got [0:2047];
@@ -276,6 +283,8 @@ module eth_udp_tb;
     integer k;
     reg [31:0] carry_ip = 32'd0;
     initial begin
+        wait (rst_n);
+        @(posedge clk);
         make_udp(MAC, IP, 16'd1234, 5, 1, 16'h4000);    deliver(1'b1); expect_datagram(5, "5 bytes, checksummed");
         make_udp(MAC, IP, 16'd1234, 300, 0, 16'h4000);  deliver(1'b1); expect_datagram(300, "300 bytes, no checksum");
         make_udp(MAC, IP, 16'd1234, 33, 1, 16'h4000);   deliver(1'b1); expect_datagram(33, "33 bytes");

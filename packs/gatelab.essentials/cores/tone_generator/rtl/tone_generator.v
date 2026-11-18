@@ -9,7 +9,10 @@ module tone_generator #(
     input  wire                  clk,
     input  wire                  advance,
     input  wire [PHASE_BITS-1:0] step,
-    output reg  signed [15:0]    sample = 16'sd0
+    output reg  signed [15:0]    sample = 16'sd0,
+    // Reset, active low, synchronous: phase and sample back to 0. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire                  rst_n
 );
     reg [PHASE_BITS-1:0] phase = {PHASE_BITS{1'b0}};
     wire [7:0] index = phase[PHASE_BITS-1 -: 8];
@@ -87,7 +90,10 @@ module tone_generator #(
         endcase
     end
     always @(posedge clk)
-        if (advance) begin
+        if (!rst_n) begin
+            phase <= {PHASE_BITS{1'b0}};
+            sample <= 16'sd0;
+        end else if (advance) begin
             phase <= phase + step;
             sample <= index[7] ? -$signed({1'b0, quarter}) : $signed({1'b0, quarter});
         end

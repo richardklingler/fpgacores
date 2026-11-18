@@ -1,6 +1,13 @@
 {
   "description" : "Pulse-width modulation with a set resolution: dims LEDs, drives motors and servos (with the right period), makes analog levels with a filter.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 52
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 305.3,
@@ -91,9 +98,14 @@
       "description" : "PWM output",
       "dir" : "out",
       "name" : "out"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "pwm",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

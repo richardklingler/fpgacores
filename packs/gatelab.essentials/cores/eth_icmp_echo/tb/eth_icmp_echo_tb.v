@@ -14,6 +14,13 @@
 
 module eth_icmp_echo_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;
     integer errors = 0;
     task fail(input [8*72-1:0] what);
@@ -33,7 +40,7 @@ module eth_icmp_echo_tb;
     reg        tx_ready = 1'b0;
     eth_icmp_echo dut (.clk(clk), .mac(MAC), .ip(IP), .rx_data(rx_data), .rx_valid(rx_valid), .rx_last(rx_last),
         .rx_good(rx_good), .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready),
-        .replied(replied));
+        .replied(replied), .rst_n(rst_n));
 
     // ---- The MAC's send side --------------------------------------------------------------------------------
     reg [7:0] reply [0:2047];
@@ -180,6 +187,8 @@ module eth_icmp_echo_tb;
 
     reg [15:0] carry_seq;
     initial begin
+        wait (rst_n);
+        @(posedge clk);
         ping(56, 16'd1);
         ping(1472, 16'd2);
         ping(18, 16'd3);

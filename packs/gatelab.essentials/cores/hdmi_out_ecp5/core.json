@@ -4,6 +4,7 @@
     "tmds_encoder"
   ],
   "description" : "Pixels and syncs out of an HDMI or DVI connector on Lattice ECP5: three TMDS encoders, per lane a shift register at five times the pixel clock into ODDRX1F outputs, P and N as two LVCMOS33 pins (N inverted), plus the clock lane. Needs a pixel clock and a five-times serial clock from one EHXPLLL (720p60 from 25 MHz: 74 and 370 MHz, 0.34 % under 74.25). DVI by default; with HDMI = 1, HDMI with the AVI and Audio InfoFrames (hdmi_encoder); for 48 kHz stereo sound instantiate hdmi_out_audio, the same with audio_l, audio_r and audio_ready. The same module and ports as hdmi_out for 7-series.",
+  "families" : {},
   "id" : "hdmi_out_ecp5",
   "keywords" : [
     "1080p30",
@@ -127,5 +128,5 @@
   "schema" : 1,
   "top" : "hdmi_out",
   "variantOf" : "hdmi_out",
-  "version" : "1.1.0"
+  "version" : "1.1.1"
 }

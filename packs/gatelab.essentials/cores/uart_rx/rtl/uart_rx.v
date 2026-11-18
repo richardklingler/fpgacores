@@ -13,7 +13,10 @@ module uart_rx #(
     input  wire       rx,
     output reg  [7:0] data = 8'd0,
     output reg        valid = 1'b0,
-    output reg        frame_error = 1'b0
+    output reg        frame_error = 1'b0,
+    // Reset, active low, synchronous: back to waiting for a start bit. A chip needs it (its registers power up in no defined state); on an FPGA tie
+    // it to 1'b1 or the board's reset.
+    input  wire       rst_n
 );
     localparam CLKS_PER_BIT = (CLK_HZ + BAUD / 2) / BAUD;
     localparam COUNTER_BITS = CLKS_PER_BIT > 1 ? $clog2(CLKS_PER_BIT) : 1;
@@ -26,12 +29,14 @@ module uart_rx #(
     // The idle line is high.
     reg [1:0] sync = 2'b11;
     always @(posedge clk)
-        sync <= {sync[0], rx};
+        if (!rst_n) sync <= 2'b11;
+        else sync <= {sync[0], rx};
     wire rx_sync = sync[1];
 
     reg rx_last = 1'b1;
     always @(posedge clk)
-        rx_last <= rx_sync;
+        if (!rst_n) rx_last <= 1'b1;
+        else rx_last <= rx_sync;
     wire rx_fell = rx_last && !rx_sync;
 
     reg [1:0] state = IDLE;
@@ -41,7 +46,12 @@ module uart_rx #(
     always @(posedge clk) begin
         valid <= 1'b0;
         frame_error <= 1'b0;
-        case (state)
+        if (!rst_n) begin
+            state <= IDLE;
+            clocks <= 0;
+            bit_index <= 3'd0;
+            data <= 8'd0;
+        end else case (state)
             IDLE:
                 if (rx_fell) begin
                     clocks <= 0;

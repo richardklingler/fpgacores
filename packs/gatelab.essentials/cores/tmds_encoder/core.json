@@ -1,6 +1,13 @@
 {
   "description" : "One channel of DVI/HDMI's TMDS code: a byte becomes a DC-balanced 10-bit word while data is enabled, the control word for c1/c0 in blanking. Three clocks of latency (pipelined for 1080p60 on 7-series); the serialiser is family-specific.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 304
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 188,
@@ -116,9 +123,14 @@
       "dir" : "out",
       "name" : "q",
       "width" : 10
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "tmds_encoder",
-  "version" : "1.1.0"
+  "version" : "2.0.0"
 }

@@ -1,6 +1,13 @@
 {
   "description" : "Drives a multiplexed seven-segment display: hexadecimal digits, decimal points, either polarity.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 115
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 208,
@@ -128,9 +135,14 @@
       "dir" : "out",
       "name" : "digit_enable",
       "width" : 4
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "seg7",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

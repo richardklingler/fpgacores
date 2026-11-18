@@ -1,6 +1,13 @@
 {
   "description" : "MCLK, SCLK (64 Fs) and LRCK for I2S codecs that take their clocks from the FPGA (Cirrus CS4344/CS5343, Digilent Pmod I2S2), made from the system clock with counters only: Fs = clock / (MCLK_DIV · RATIO), e.g. 27 MHz / 1024 = 26.37 kHz, 100 MHz / 2048 = 48.83 kHz. Strobes tell i2s_transmitter when to change its bit and i2s_receiver when to take one.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 59
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 232.3,
@@ -139,9 +146,14 @@
       "description" : "bit_start for slot 0",
       "dir" : "out",
       "name" : "frame_start"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "i2s_clocks",
-  "version" : "1.0.1"
+  "version" : "2.0.0"
 }

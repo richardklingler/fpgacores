@@ -1,5 +1,6 @@
 {
   "description" : "AMD Kintex-7 GTX transceivers at 10.3125 Gb/s (the 10GBASE-R line rate) from a 156.25 MHz reference: the quad's QPLL and one to four channels with the GT wizard's 10GBASE-R settings, GateLab's reset sequence with retries, the GTX's own PRBS31 generator and checker with error counts, near-end loopback, and the 64B/66B gearbox's 64-bit interface for a PCS — a block a cycle at 161.13 MHz, the user clocks from an MMCM per direction. Kintex-7 only. A simulation stand-in takes the transceivers' place in Icarus.",
+  "families" : {},
   "id" : "gtx_10g",
   "keywords" : [
     "transceiver",

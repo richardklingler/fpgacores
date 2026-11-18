@@ -34,13 +34,17 @@ module hdmi_encoder #(
     output wire        audio_ready,
     output wire [9:0]  word_blue,
     output wire [9:0]  word_green,
-    output wire [9:0]  word_red
+    output wire [9:0]  word_red,
+    // Reset, active low, synchronous: control words, no island or packet open, audio and timing measured again. A chip
+    // needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset. The delay
+    // lines refill from the inputs.
+    input  wire        rst_n
 );
 generate if (HDMI == 0) begin : dvi
     assign audio_ready = 1'b0;
-    tmds_encoder u_blue  (.clk(clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(word_blue));
-    tmds_encoder u_green (.clk(clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(word_green));
-    tmds_encoder u_red   (.clk(clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(word_red));
+    tmds_encoder u_blue  (.clk(clk), .de(de), .d(blue),  .c0(hsync), .c1(vsync), .q(word_blue), .rst_n(rst_n));
+    tmds_encoder u_green (.clk(clk), .de(de), .d(green), .c0(1'b0),  .c1(1'b0),  .q(word_green), .rst_n(rst_n));
+    tmds_encoder u_red   (.clk(clk), .de(de), .d(red),   .c0(1'b0),  .c1(1'b0),  .q(word_red), .rst_n(rst_n));
 end else begin : hdmi
     localparam integer DELAY = 12;
     localparam integer CTS_HZ = PIXEL_HZ / 1000;       // N / (128 * 48 kHz) = 1 / 1000 with N = 6144
@@ -51,8 +55,9 @@ end else begin : hdmi
     reg [27*DELAY-1:0] pipe = 0;                       // the inputs, DELAY clocks deep (27 bits each)
     reg [DELAY:0] de_seen = 0;
     always @(posedge clk) begin
-        pipe <= {pipe[27*(DELAY-1)-1:0], red, green, blue, hsync, vsync, de};
-        de_seen <= {de_seen[DELAY-1:0], de};
+        // Cleared by the reset too: the state below reads it, and a short reset would end before it filled.
+        pipe <= rst_n ? {pipe[27*(DELAY-1)-1:0], red, green, blue, hsync, vsync, de} : 0;
+        de_seen <= rst_n ? {de_seen[DELAY-1:0], de} : 0;
     end
     wire [26:0] s = pipe[27*DELAY-1 -: 27];
     wire [7:0] s_red = s[26:19], s_green = s[18:11], s_blue = s[10:3];
@@ -66,15 +71,19 @@ end else begin : hdmi
     reg [12:0] pos = 0, line_len = 0, blank_len = 0, blank_count = 0;
     reg [1:0] falls = 0;
     always @(posedge clk) begin
-        s_de_was <= s_de;
-        if (s_de_was && !s_de) begin                      // blanking starts
-            if (falls != 2'd3) falls <= falls + 2'd1;
-            line_len <= pos + 13'd1;
-            pos <= 0;
-        end else if (falls == 2'd3 && pos == line_len - 13'd1) pos <= 0;   // vertical blanking: the same rhythm
-        else pos <= pos + 13'd1;
-        if (s_de) begin if (blank_count != 0) blank_len <= blank_count; blank_count <= 0; end
-        else blank_count <= blank_count + 13'd1;
+        if (!rst_n) begin
+            s_de_was <= 1'b0; pos <= 0; line_len <= 0; blank_len <= 0; blank_count <= 0; falls <= 0;
+        end else begin
+            s_de_was <= s_de;
+            if (s_de_was && !s_de) begin                      // blanking starts
+                if (falls != 2'd3) falls <= falls + 2'd1;
+                line_len <= pos + 13'd1;
+                pos <= 0;
+            end else if (falls == 2'd3 && pos == line_len - 13'd1) pos <= 0;   // vertical blanking: the same rhythm
+            else pos <= pos + 13'd1;
+            if (s_de) begin if (blank_count != 0) blank_len <= blank_count; blank_count <= 0; end
+            else blank_count <= blank_count + 13'd1;
+        end
     end
     // Room for packets: 4 control + 8 preamble + 2 guard + 32 n + 2 guard + 12 control (with the video preamble) + 2.
     wire [12:0] room = (blank_len > 13'd34) ? blank_len - 13'd34 : 13'd0;
@@ -85,10 +94,14 @@ end else begin : hdmi
     reg ready = 1'b0;
     assign audio_ready = ready;
     always @(posedge clk) begin
-        ready <= 1'b0;
-        if (slots == 2'd0) sample_acc <= 0;             // no requests before islands can carry them (power-up)
-        else if (sample_acc + 32'd48000 >= PIXEL_HZ) begin sample_acc <= sample_acc + 32'd48000 - PIXEL_HZ; ready <= 1'b1; end
-        else sample_acc <= sample_acc + 32'd48000;
+        if (!rst_n) begin
+            ready <= 1'b0; sample_acc <= 0;
+        end else begin
+            ready <= 1'b0;
+            if (slots == 2'd0) sample_acc <= 0;             // no requests before islands can carry them (power-up)
+            else if (sample_acc + 32'd48000 >= PIXEL_HZ) begin sample_acc <= sample_acc + 32'd48000 - PIXEL_HZ; ready <= 1'b1; end
+            else sample_acc <= sample_acc + 32'd48000;
+        end
     end
     reg [31:0] fifo [0:7];
     reg [3:0] wp = 0, rp = 0;
@@ -192,59 +205,65 @@ end else begin : hdmi
     reg [2:0] next0, next1;
 
     always @(posedge clk) begin
-        if (ready && fill != 4'd8) begin fifo[wp[2:0]] <= {audio_l, audio_r}; wp <= wp + 4'd1; end
-        if (acr_count + 20'd1 >= CTS_HZ) begin acr_count <= 0; acr_due <= 1'b1; end else acr_count <= acr_count + 20'd1;
-        s_vsync_was <= s_vsync;
-        if (s_vsync != s_vsync_was) begin avi_due <= 1'b1; aif_due <= 1'b1; end
+        if (!rst_n) begin
+            wp <= 0; rp <= 0; acr_count <= 0; acr_due <= 1'b0; avi_due <= 1'b0; aif_due <= 1'b0; s_vsync_was <= 1'b0;
+            in_island <= 1'b0; island_first <= 1'b0; n_packets <= 0; slot <= 0; k <= 0; kind0 <= 0; kind1 <= 0;
+            in_pre <= 1'b0; in_lead <= 1'b0; in_trail <= 1'b0; island_end <= 0; frame <= 0;
+        end else begin
+            if (ready && fill != 4'd8) begin fifo[wp[2:0]] <= {audio_l, audio_r}; wp <= wp + 4'd1; end
+            if (acr_count + 20'd1 >= CTS_HZ) begin acr_count <= 0; acr_due <= 1'b1; end else acr_count <= acr_count + 20'd1;
+            s_vsync_was <= s_vsync;
+            if (s_vsync != s_vsync_was) begin avi_due <= 1'b1; aif_due <= 1'b1; end
 
-        if (island_start) begin
-            // Up to two packets, most urgent first.
-            next0 = acr_due ? 3'd1 : avi_due ? 3'd3 : aif_due ? 3'd4 : 3'd2;
-            next1 = 3'd0;
-            if (slots == 2'd2) begin
-                if (next0 != 3'd2 && fill != 0) next1 = 3'd2;
-                else if (next0 == 3'd2 && fill > 4'd4) next1 = 3'd2;      // a backlog: two audio packets
-                else if (next0 == 3'd1 && avi_due) next1 = 3'd3;
-                else if (next0 != 3'd4 && aif_due && next0 != 3'd2) next1 = 3'd4;
+            if (island_start) begin
+                // Up to two packets, most urgent first.
+                next0 = acr_due ? 3'd1 : avi_due ? 3'd3 : aif_due ? 3'd4 : 3'd2;
+                next1 = 3'd0;
+                if (slots == 2'd2) begin
+                    if (next0 != 3'd2 && fill != 0) next1 = 3'd2;
+                    else if (next0 == 3'd2 && fill > 4'd4) next1 = 3'd2;      // a backlog: two audio packets
+                    else if (next0 == 3'd1 && avi_due) next1 = 3'd3;
+                    else if (next0 != 3'd4 && aif_due && next0 != 3'd2) next1 = 3'd4;
+                end
+                kind0 <= next0; kind1 <= next1;
+                n_packets <= (next1 != 3'd0) ? 2'd2 : 2'd1;
+                island_end <= ISLAND_AT + 13'd8 + 13'd2 + ((next1 != 3'd0) ? 13'd64 : 13'd32) + 13'd2;
+                in_pre <= 1'b1;
             end
-            kind0 <= next0; kind1 <= next1;
-            n_packets <= (next1 != 3'd0) ? 2'd2 : 2'd1;
-            island_end <= ISLAND_AT + 13'd8 + 13'd2 + ((next1 != 3'd0) ? 13'd64 : 13'd32) + 13'd2;
-            in_pre <= 1'b1;
-        end
-        // Preamble 4..11, guard 12..13, packets, guard.
-        if (pos == ISLAND_AT + 13'd8 && in_pre) begin in_pre <= 1'b0; in_lead <= 1'b1; end
-        if (pos == ISLAND_AT + 13'd10 && in_lead) begin
-            in_lead <= 1'b0; in_island <= 1'b1; island_first <= 1'b1; slot <= 0; k <= 0;
-            load(kind0);
-            header <= h; sub0 <= p0; sub1 <= p1; sub2 <= p2; sub3 <= p3;
-            ecc_h <= 0; ecc_0 <= 0; ecc_1 <= 0; ecc_2 <= 0; ecc_3 <= 0;
-            case (kind0) 3'd1: acr_due <= 1'b0; 3'd3: avi_due <= 1'b0; 3'd4: aif_due <= 1'b0;
-                default: begin rp <= rp + {1'b0, take}; frame <= (frame + take >= 8'd192) ? frame + take - 8'd192 : frame + take; end endcase
-        end else if (in_island) begin
-            island_first <= 1'b0;
-            if (k < 5'd24) ecc_h <= next_ecc(ecc_h, header[k]);
-            if (k < 5'd28) begin
-                ecc_0 <= next_ecc(next_ecc(ecc_0, sub0[2*k]), sub0[2*k+1]);
-                ecc_1 <= next_ecc(next_ecc(ecc_1, sub1[2*k]), sub1[2*k+1]);
-                ecc_2 <= next_ecc(next_ecc(ecc_2, sub2[2*k]), sub2[2*k+1]);
-                ecc_3 <= next_ecc(next_ecc(ecc_3, sub3[2*k]), sub3[2*k+1]);
-            end
-            k <= k + 5'd1;
-            if (k == 5'd31) begin
-                if (slot + 2'd1 < n_packets) begin
-                    slot <= slot + 2'd1; k <= 0;
-                    load(kind1);
-                    header <= h; sub0 <= p0; sub1 <= p1; sub2 <= p2; sub3 <= p3;
-                    ecc_h <= 0; ecc_0 <= 0; ecc_1 <= 0; ecc_2 <= 0; ecc_3 <= 0;
-                    case (kind1) 3'd1: acr_due <= 1'b0; 3'd3: avi_due <= 1'b0; 3'd4: aif_due <= 1'b0;
-                        default: begin rp <= rp + {1'b0, take}; frame <= (frame + take >= 8'd192) ? frame + take - 8'd192 : frame + take; end endcase
-                end else begin
-                    in_island <= 1'b0; in_trail <= 1'b1;
+            // Preamble 4..11, guard 12..13, packets, guard.
+            if (pos == ISLAND_AT + 13'd8 && in_pre) begin in_pre <= 1'b0; in_lead <= 1'b1; end
+            if (pos == ISLAND_AT + 13'd10 && in_lead) begin
+                in_lead <= 1'b0; in_island <= 1'b1; island_first <= 1'b1; slot <= 0; k <= 0;
+                load(kind0);
+                header <= h; sub0 <= p0; sub1 <= p1; sub2 <= p2; sub3 <= p3;
+                ecc_h <= 0; ecc_0 <= 0; ecc_1 <= 0; ecc_2 <= 0; ecc_3 <= 0;
+                case (kind0) 3'd1: acr_due <= 1'b0; 3'd3: avi_due <= 1'b0; 3'd4: aif_due <= 1'b0;
+                    default: begin rp <= rp + {1'b0, take}; frame <= (frame + take >= 8'd192) ? frame + take - 8'd192 : frame + take; end endcase
+            end else if (in_island) begin
+                island_first <= 1'b0;
+                if (k < 5'd24) ecc_h <= next_ecc(ecc_h, header[k]);
+                if (k < 5'd28) begin
+                    ecc_0 <= next_ecc(next_ecc(ecc_0, sub0[2*k]), sub0[2*k+1]);
+                    ecc_1 <= next_ecc(next_ecc(ecc_1, sub1[2*k]), sub1[2*k+1]);
+                    ecc_2 <= next_ecc(next_ecc(ecc_2, sub2[2*k]), sub2[2*k+1]);
+                    ecc_3 <= next_ecc(next_ecc(ecc_3, sub3[2*k]), sub3[2*k+1]);
+                end
+                k <= k + 5'd1;
+                if (k == 5'd31) begin
+                    if (slot + 2'd1 < n_packets) begin
+                        slot <= slot + 2'd1; k <= 0;
+                        load(kind1);
+                        header <= h; sub0 <= p0; sub1 <= p1; sub2 <= p2; sub3 <= p3;
+                        ecc_h <= 0; ecc_0 <= 0; ecc_1 <= 0; ecc_2 <= 0; ecc_3 <= 0;
+                        case (kind1) 3'd1: acr_due <= 1'b0; 3'd3: avi_due <= 1'b0; 3'd4: aif_due <= 1'b0;
+                            default: begin rp <= rp + {1'b0, take}; frame <= (frame + take >= 8'd192) ? frame + take - 8'd192 : frame + take; end endcase
+                    end else begin
+                        in_island <= 1'b0; in_trail <= 1'b1;
+                    end
                 end
             end
+            if (in_trail && pos == island_end) in_trail <= 1'b0;
         end
-        if (in_trail && pos == island_end) in_trail <= 1'b0;
     end
 
     // The bits of the current character (registered: they belong to the stream's position one clock later).
@@ -268,9 +287,9 @@ end else begin : hdmi
 
     // Words: the TMDS encoders take the stream (3 clocks), the other modes wait as long, one register stage at the end.
     wire [9:0] q_blue, q_green, q_red;
-    tmds_encoder u_blue  (.clk(clk), .de(s_de), .d(s_blue),  .c0(s_hsync), .c1(s_vsync), .q(q_blue));
-    tmds_encoder u_green (.clk(clk), .de(s_de), .d(s_green), .c0(ctl0),    .c1(ctl1),    .q(q_green));
-    tmds_encoder u_red   (.clk(clk), .de(s_de), .d(s_red),   .c0(ctl2),    .c1(ctl3),    .q(q_red));
+    tmds_encoder u_blue  (.clk(clk), .de(s_de), .d(s_blue),  .c0(s_hsync), .c1(s_vsync), .q(q_blue), .rst_n(rst_n));
+    tmds_encoder u_green (.clk(clk), .de(s_de), .d(s_green), .c0(ctl0),    .c1(ctl1),    .q(q_green), .rst_n(rst_n));
+    tmds_encoder u_red   (.clk(clk), .de(s_de), .d(s_red),   .c0(ctl2),    .c1(ctl3),    .q(q_red), .rst_n(rst_n));
     reg [13:0] side0 = 0, side1 = 0, side2 = 0;          // {mode, nib0, nib1, nib2}, three clocks behind
     always @(posedge clk) begin
         side0 <= {mode, nib0, nib1, nib2};

@@ -55,7 +55,10 @@ module eth_udp #(
     output reg  [7:0]  tx_data,
     output wire        tx_valid,
     output wire        tx_last,
-    input  wire        tx_ready
+    input  wire        tx_ready,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     localparam integer SIZE = 1 << ADDR_BITS;
 
@@ -186,6 +189,49 @@ module eth_udp #(
                 end
             end
         end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rx_dropped <= 1'b0;
+            rx_new <= 1'b0;
+            judge1 <= 1'b0;
+            judge2 <= 1'b0;
+            judge3 <= 1'b0;
+            holding <= 1'b0;
+            index <= 12'd0;
+            blocked <= 1'b0;
+            to_us <= 1'b1;
+            to_all <= 1'b1;
+            mac_left <= 48'd0;
+            src_mac <= 48'd0;
+            ok <= 1'b1;
+            total <= 16'd0;
+            segment_end <= 12'd0;
+            ip_left <= 32'd0;
+            sport <= 16'd0;
+            dport <= 16'd0;
+            udp_len <= 16'd0;
+            udp_check <= 16'd0;
+            src_ip <= 32'd0;
+            ip_ok <= 1'b1;
+            ip_all <= 1'b1;
+            high <= 8'd0;
+            header_sum <= 20'd0;
+            udp_sum <= 28'd0;
+            odd_left <= 1'b0;
+            odd_byte <= 8'd0;
+            cand <= 1'b0;
+            count <= 12'd0;
+            udp_end <= 28'd0;
+            udp_all <= 28'd0;
+            header_fold <= 17'd0;
+            lengths_ok <= 1'b0;
+            port_ok <= 1'b0;
+            udp_fold <= 17'd0;
+            rx_length <= 11'd0;
+            peer_mac <= 48'd0;
+            peer_ip <= 32'd0;
+            peer_port <= 16'd0;
+        end
     end
 
     // ---- Receive: handing the datagram over -----------------------------------------------------------------
@@ -228,6 +274,18 @@ module eth_udp #(
                 if (queued == 2'd0) begin q0 <= rd_data; l0 <= arrived_last; end
                 else begin q1 <= rd_data; l1 <= arrived_last; end
             end
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            rd_data <= 8'd0;
+            next <= 11'd0;
+            arriving <= 1'b0;
+            queued <= 2'd0;
+            reading <= 11'd0;
+            q0 <= 8'd0;
+            l0 <= 1'b0;
+            q1 <= 8'd0;
+            l1 <= 1'b0;
         end
     end
 
@@ -335,6 +393,24 @@ module eth_udp #(
             // mustn't reach the lookup). Its sources are settled by then: ip_check from term 10, read at o = 24.
             if (sent) header_byte <= ahead_byte;
             if (sent && ahead != 6'd63) ahead <= ahead + 6'd1;
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            sending <= 1'b0;
+            length <= 11'd0;
+            to_mac <= 48'd0;
+            to_ip <= 32'd0;
+            to_port <= 16'd0;
+            ip_total <= 16'd0;
+            udp_length <= 16'd0;
+            last_o <= 12'd0;
+            o <= 12'd0;
+            ahead <= 6'd1;
+            term <= 4'd0;
+            check_sum <= 20'd0;
+            header_byte <= 8'd0;
+            ip_check <= 16'd0;
+            ident <= 16'd0;
         end
     end
 endmodule

@@ -10,6 +10,13 @@
 
 module bar_graph_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
 
     localparam H_TOTAL = 40, H_ACTIVE = 32, V_TOTAL = 30, V_ACTIVE = 26;
@@ -37,8 +44,7 @@ module bar_graph_tb;
         .clk(clk), .x(x), .y(y), .de(de), .hsync(hsync), .vsync(vsync), .red(red), .green(green), .blue(blue),
         .write(write), .write_address(write_address), .write_value(write_value),
         .x_out(x_out), .y_out(y_out), .de_out(de_out), .hsync_out(hsync_out), .vsync_out(vsync_out),
-        .red_out(red_out), .green_out(green_out), .blue_out(blue_out), .covered(covered)
-    );
+        .red_out(red_out), .green_out(green_out), .blue_out(blue_out), .covered(covered), .rst_n(rst_n));
 
     // The picture below: every pixel differs.
     function [23:0] below(input integer px, input integer py);
@@ -105,7 +111,7 @@ module bar_graph_tb;
         y_d[0] <= y; y_d[1] <= y_d[0]; y_d[2] <= y_d[1];
         de_d <= {de_d[1:0], de}; hs_d <= {hs_d[1:0], hsync}; vs_d <= {vs_d[1:0], vsync};
         #1;
-        if (x_out !== x_d[2] || y_out !== y_d[2] || de_out !== de_d[2] || hsync_out !== hs_d[2] || vsync_out !== vs_d[2]) begin
+        if (rst_n && (x_out !== x_d[2] || y_out !== y_d[2] || de_out !== de_d[2] || hsync_out !== hs_d[2] || vsync_out !== vs_d[2])) begin
             if (errors < 10) $display("FAIL: timing not passed through at (%0d, %0d)", x_d[2], y_d[2]);
             errors = errors + 1;
         end

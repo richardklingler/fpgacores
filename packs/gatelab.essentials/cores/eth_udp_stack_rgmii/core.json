@@ -4,6 +4,7 @@
     "eth_udp_core"
   ],
   "description" : "A small IPv4 stack for a Gigabit Ethernet PHY on RGMII at 1000 Mbit/s (the Kintex-7 Eco R5's RTL8211E), in one core (eth_rgmii_phy and eth_udp_core): MAC, MDIO setup (1000 only) and link watch, ARP and ping answered on their own, and UDP on one port for the design, every part a byte a clock. The byte side on a 125 MHz system clock. AMD Xilinx 7-series only. The same design-side ports as eth_udp_stack.",
+  "families" : {},
   "id" : "eth_udp_stack_rgmii",
   "keywords" : [
     "ethernet",
@@ -253,6 +254,11 @@
       "description" : "The payload's byte is taken",
       "dir" : "out",
       "name" : "payload_ready"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "requiresFamilies" : [
@@ -260,5 +266,5 @@
   ],
   "schema" : 1,
   "top" : "eth_udp_stack_rgmii",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

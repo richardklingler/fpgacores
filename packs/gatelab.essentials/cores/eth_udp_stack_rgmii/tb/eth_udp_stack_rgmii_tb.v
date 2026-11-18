@@ -48,6 +48,13 @@ endmodule
 module eth_udp_stack_rgmii_tb;
     parameter RX_LATE = 1;
     reg clk = 1'b0, rx_clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #4 clk = ~clk;                  // the system clock, 125 MHz
     initial begin #2.7; forever #3.9998 rx_clk = ~rx_clk; end   // 125.01 MHz, another phase
     integer errors = 0;
@@ -92,7 +99,7 @@ module eth_udp_stack_rgmii_tb;
         .rx_dropped(), .send(send), .send_length(own ? 11'd10 : udp_length),
         .dst_mac(own ? 48'hFFFF_FFFF_FFFF : peer_mac), .dst_ip(own ? 32'h0A00_FFFF : peer_ip),
         .dst_port(own ? 16'd4321 : peer_port), .send_ready(send_ready), .payload_data(payload),
-        .payload_valid(payload_valid), .payload_ready(payload_ready));
+        .payload_valid(payload_valid), .payload_ready(payload_ready), .rst_n(rst_n));
 
     integer goods = 0, bads = 0;
     always @(posedge clk) begin

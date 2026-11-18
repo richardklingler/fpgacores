@@ -4,6 +4,13 @@
   ],
   "description" : "ARP responder (RFC 826, Ethernet/IPv4): watches eth_mac's received frames and answers a request for `ip` — broadcast or to `mac` — with a 42-byte reply on a valid/ready/last stream (eth_mac pads it). Checked as it arrives, queued when the frame is good; one reply waits at a time. `mac` and `ip` are inputs: constants, switches or a register.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 3086
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 158.7,
@@ -136,9 +143,14 @@
       "description" : "Pulses when a reply is queued",
       "dir" : "out",
       "name" : "replied"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_arp",
-  "version" : "1.1.0"
+  "version" : "2.0.0"
 }

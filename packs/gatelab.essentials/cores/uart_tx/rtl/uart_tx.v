@@ -12,7 +12,10 @@ module uart_tx #(
     input  wire [7:0] data,
     input  wire       valid,
     output wire       ready,
-    output wire       tx
+    output wire       tx,
+    // Reset, active low, synchronous: drops a byte on the line, `tx` idles high. A chip needs it (its registers power up in no defined state); on an FPGA tie
+    // it to 1'b1 or the board's reset.
+    input  wire       rst_n
 );
     localparam CLKS_PER_BIT = (CLK_HZ + BAUD / 2) / BAUD;
     localparam COUNTER_BITS = CLKS_PER_BIT > 1 ? $clog2(CLKS_PER_BIT) : 1;
@@ -26,7 +29,11 @@ module uart_tx #(
     assign tx = ready ? 1'b1 : shift[0];
 
     always @(posedge clk) begin
-        if (ready) begin
+        if (!rst_n) begin
+            shift <= 10'h3FF;
+            bits_left <= 4'd0;
+            clocks <= 0;
+        end else if (ready) begin
             if (valid) begin
                 shift <= {1'b1, data, 1'b0};
                 bits_left <= 4'd10;

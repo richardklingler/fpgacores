@@ -25,7 +25,10 @@ module eth_arp (
     output wire        tx_valid,
     output wire        tx_last,
     input  wire        tx_ready,
-    output reg         replied = 1'b0
+    output reg         replied = 1'b0,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     // ---- The request ----------------------------------------------------------------------------------------
     reg [5:0]  index = 6'd0;        // byte of the frame (stops at 63)
@@ -78,6 +81,23 @@ module eth_arp (
                 fixed_left <= 80'h0806_0001_0800_0604_0001;
             end
         end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            replied <= 1'b0;
+            pending <= 1'b0;
+            index <= 6'd0;
+            to_us <= 1'b1;
+            to_all <= 1'b1;
+            mac_left <= 48'd0;
+            fields_ok <= 1'b1;
+            fixed_left <= 80'h0806_0001_0800_0604_0001;
+            sender_mac <= 48'd0;
+            sender_ip <= 32'd0;
+            ip_left <= 32'd0;
+            for_us <= 1'b1;
+            reply_mac <= 48'd0;
+            reply_ip <= 32'd0;
+        end
     end
 
     // ---- The reply ------------------------------------------------------------------------------------------
@@ -98,6 +118,12 @@ module eth_arp (
             out <= out + 6'd1;
             reply <= {reply[327:0], 8'd0};
             if (tx_last) loaded <= 1'b0;
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            reply <= 336'd0;
+            out <= 6'd0;
+            loaded <= 1'b0;
         end
     end
 endmodule

@@ -8,6 +8,13 @@
 
 module tmds_encoder_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
 
     reg de = 1'b0;
@@ -15,7 +22,7 @@ module tmds_encoder_tb;
     reg c0 = 1'b0, c1 = 1'b0;
     wire [9:0] q;
 
-    tmds_encoder dut (.clk(clk), .de(de), .d(d), .c0(c0), .c1(c1), .q(q));
+    tmds_encoder dut (.clk(clk), .de(de), .d(d), .c0(c0), .c1(c1), .q(q), .rst_n(rst_n));
 
     // The reference: the specification's encoder.
     integer cnt = 0;
@@ -94,6 +101,7 @@ module tmds_encoder_tb;
     initial begin
         $dumpfile("tmds_encoder_tb.vcd");
         $dumpvars(0, tmds_encoder_tb);
+        wait (rst_n);
         for (cycle = 0; cycle < 4000; cycle = cycle + 1) begin
             // Inputs for this clock: bursts of active video, blanking with each control word.
             lfsr = {lfsr[14:0], lfsr[15] ^ lfsr[13] ^ lfsr[12] ^ lfsr[10]};

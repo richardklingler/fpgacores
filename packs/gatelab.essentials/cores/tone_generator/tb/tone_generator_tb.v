@@ -7,13 +7,20 @@
 
 module tone_generator_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     integer errors = 0;
 
     reg advance = 1'b0;
     reg [23:0] step = 24'd0;
     wire signed [15:0] sample;
-    tone_generator dut (.clk(clk), .advance(advance), .step(step), .sample(sample));
+    tone_generator dut (.clk(clk), .advance(advance), .step(step), .sample(sample), .rst_n(rst_n));
 
     real pi = 3.14159265358979;
     reg [23:0] phase = 24'd0;
@@ -25,6 +32,7 @@ module tone_generator_tb;
         steps[0] = 24'h080000;   // 1/32 of the rate
         steps[1] = 24'h01A7C3;   // an odd step
         steps[2] = 24'h7F1235;   // just under half the rate
+        wait (rst_n);
         for (k = 0; k < 3; k = k + 1) begin
             step = steps[k];
             crossings = 0;

@@ -1,6 +1,13 @@
 {
   "description" : "Draws a grid of characters from a font ROM (Add Font ROM) over a video picture: its own text RAM with a colour per cell (16-colour palette), written at any time or loaded from a hex file, scaling, an optional background. Layers chain; LATENCY = FONT_LATENCY + 2 clocks.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 956
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 148.5,
@@ -315,9 +322,14 @@
       "description" : "A character draws this output pixel",
       "dir" : "out",
       "name" : "ink"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "text_layer",
-  "version" : "1.0.1"
+  "version" : "2.0.0"
 }

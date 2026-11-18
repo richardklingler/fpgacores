@@ -4,6 +4,13 @@
   ],
   "description" : "The three 10-bit TMDS lane words per pixel clock for HDMI or DVI, which the hdmi_out cores serialise. HDMI = 0: DVI (three tmds_encoders). HDMI = 1: HDMI 1.4 with the video preamble and guard band, a data island in each line's blanking (TERC4, BCH error correction) with Audio Clock Regeneration, 48 kHz stereo 16-bit audio samples (audio_ready asks for each pair), and the AVI and Audio InfoFrames.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 5982
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 115.9,
@@ -177,9 +184,14 @@
       "dir" : "out",
       "name" : "word_red",
       "width" : 10
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "hdmi_encoder",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

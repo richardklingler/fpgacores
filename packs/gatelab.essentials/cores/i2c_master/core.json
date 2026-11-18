@@ -1,6 +1,13 @@
 {
   "description" : "I²C controller for sensors, EEPROMs, RTCs and displays: byte-level START, WRITE, READ and STOP commands, open-drain outputs, clock stretching.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 285
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 209.7,
@@ -156,9 +163,14 @@
       "description" : "SDA as it is on the bus",
       "dir" : "in",
       "name" : "sda_in"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "i2c_master",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

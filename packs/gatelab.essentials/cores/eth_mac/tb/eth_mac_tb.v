@@ -13,6 +13,13 @@
 
 module eth_mac_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;   // 50 MHz
     integer errors = 0;
 
@@ -29,11 +36,11 @@ module eth_mac_tb;
 
     eth_rmii_phy u_phy (.clk(clk), .rmii_rxd(rxd), .rmii_crs_dv(crs_dv), .rmii_rx_er(rx_er), .rmii_txd(txd),
         .rmii_tx_en(tx_en), .rx_data(p_rx_data), .rx_valid(p_rx_valid), .rx_end(p_rx_end), .rx_error(p_rx_error),
-        .tx_data(p_tx_data), .tx_valid(p_tx_valid), .tx_ready(p_tx_ready));
+        .tx_data(p_tx_data), .tx_valid(p_tx_valid), .tx_ready(p_tx_ready), .rst_n(rst_n));
     eth_mac dut (.clk(clk), .phy_rx_data(p_rx_data), .phy_rx_valid(p_rx_valid), .phy_rx_end(p_rx_end),
         .phy_rx_error(p_rx_error), .phy_tx_data(p_tx_data), .phy_tx_valid(p_tx_valid), .phy_tx_ready(p_tx_ready),
         .rx_data(rx_data), .rx_valid(rx_valid), .rx_last(rx_last), .rx_good(rx_good),
-        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready), .tx_underrun(tx_underrun));
+        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready), .tx_underrun(tx_underrun), .rst_n(rst_n));
 
     task fail(input [8*72-1:0] what);
         begin

@@ -3,6 +3,7 @@
     "async_fifo"
   ],
   "description" : "RGMII interface to a Gigabit Ethernet PHY at 1000 Mbit/s (Realtek RTL8211E on the Kintex-7 Eco R5 …) with the same byte interface as eth_rmii_phy and eth_mii_phy, a byte a clock on a 125 MHz system clock: IDDR on a BUFG from the RX clock pin for receiving, crossed to clk through async_fifo; ODDR for sending, TX_CLK forwarded from clk. AMD Xilinx 7-series only. The PHY adds both RGMII delays (RXDLY/TXDLY). RX_LATE picks which clock edge starts a received byte.",
+  "families" : {},
   "id" : "eth_rgmii_phy",
   "keywords" : [
     "ethernet",

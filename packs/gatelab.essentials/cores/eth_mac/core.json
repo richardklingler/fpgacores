@@ -4,6 +4,13 @@
   ],
   "description" : "Ethernet MAC for eth_rmii_phy (100 Mbit/s): receives frames with the FCS checked and removed (`rx_good` with the last byte: CRC-32 right, no RX_ER, 64 to 1522 bytes) and sends them with preamble, padding to 60 bytes, FCS and the 96-bit inter-frame gap added. Bytes move one every fourth clock; a sender that falls behind gets its frame sent with an inverted FCS (every receiver drops it) and `tx_underrun`.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 1096
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 155.6,
@@ -174,9 +181,14 @@
       "description" : "The frame being sent had an underrun (it goes out with a bad FCS)",
       "dir" : "out",
       "name" : "tx_underrun"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_mac",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

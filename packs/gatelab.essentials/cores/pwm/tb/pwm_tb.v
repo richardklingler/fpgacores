@@ -7,9 +7,10 @@
 module pwm_tb;
     reg clk = 1'b0;
     reg [3:0] duty = 4'd0;
+    reg rst_n = 1'b0;   // held low for the first clocks: a chip starts from its reset, not from initial values
     wire out;
 
-    pwm #(.WIDTH(4)) dut (.clk(clk), .duty(duty), .out(out));
+    pwm #(.WIDTH(4)) dut (.clk(clk), .duty(duty), .out(out), .rst_n(rst_n));
 
     always #5 clk = ~clk;
 
@@ -45,6 +46,8 @@ module pwm_tb;
     initial begin
         $dumpfile("pwm_tb.vcd");
         $dumpvars(0, pwm_tb);
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
         // Align to a period boundary (the counter is internal: wait for the wrap).
         wait (dut.counter == 4'd15);
         @(posedge clk);

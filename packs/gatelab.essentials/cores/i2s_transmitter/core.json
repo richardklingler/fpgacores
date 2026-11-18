@@ -4,6 +4,13 @@
   ],
   "description" : "Sends 24-bit stereo samples to an I2S DAC (CS4344, Pmod I2S2's line out) with i2s_clocks: MSB first, one SCLK after LRCK changes. Samples are taken at the start of each frame; `taken` pulses then (once per sample period).",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 303
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 158.8,
@@ -125,9 +132,14 @@
       "description" : "Serial data to the DAC",
       "dir" : "out",
       "name" : "sdin"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "i2s_transmitter",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

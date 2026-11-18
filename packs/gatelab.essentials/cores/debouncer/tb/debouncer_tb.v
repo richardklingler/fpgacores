@@ -5,10 +5,17 @@
 
 module debouncer_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     reg in = 1'b0;
     wire out;
 
-    debouncer #(.CLK_HZ(1000000), .MS(1)) dut (.clk(clk), .in(in), .out(out));
+    debouncer #(.CLK_HZ(1000000), .MS(1)) dut (.clk(clk), .in(in), .out(out), .rst_n(rst_n));
 
     always #500 clk = ~clk;            // 1 MHz
 
@@ -16,7 +23,7 @@ module debouncer_tb;
     integer changes = 0;
     reg last = 1'b0;
     always @(posedge clk) begin
-        if (out !== last) changes = changes + 1;
+        if (rst_n && out !== last) changes = changes + 1;   // a chip's x before its reset isn't a change
         last = out;
     end
 

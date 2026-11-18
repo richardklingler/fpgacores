@@ -1,6 +1,13 @@
 {
   "description" : "Draws a bar graph over a video picture: up to BARS bars with two values each (series A in front, inset; series B behind, e.g. today and yesterday), heights in pixels written at any time, optional baseline, grid lines and background. Layers chain like text_layer and sprite_layer; LATENCY = 3 clocks.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 642
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 166.6,
@@ -302,9 +309,14 @@
       "description" : "A bar draws this output pixel",
       "dir" : "out",
       "name" : "covered"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "bar_graph",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

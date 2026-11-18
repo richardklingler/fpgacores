@@ -12,6 +12,13 @@
 
 module eth_mii_phy_tb;
     reg clk = 1'b0, rx_clk = 1'b0, tx_clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (4) @(posedge rx_clk);   // the slowest clock: rst_n reaches the PHY's clock domains through two flip-flops
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     always #20 rx_clk = ~rx_clk;
     initial begin #13; forever #20.024 tx_clk = ~tx_clk; end
@@ -27,7 +34,7 @@ module eth_mii_phy_tb;
     reg        tx_valid = 1'b0;
     eth_mii_phy dut (.clk(clk), .mii_rx_clk(rx_clk), .mii_rxd(rxd), .mii_rx_dv(rx_dv), .mii_rx_er(rx_er),
         .mii_tx_clk(tx_clk), .mii_txd(txd), .mii_tx_en(tx_en), .rx_data(rx_data), .rx_valid(rx_valid),
-        .rx_end(rx_end), .rx_error(rx_error), .tx_data(tx_data), .tx_valid(tx_valid), .tx_ready(tx_ready));
+        .rx_end(rx_end), .rx_error(rx_error), .tx_data(tx_data), .tx_valid(tx_valid), .tx_ready(tx_ready), .rst_n(rst_n));
 
     // ---- Receive ----------------------------------------------------------------------------------------------
     reg [7:0] got [0:511];
@@ -137,6 +144,8 @@ module eth_mii_phy_tb;
     integer k, i;
     initial begin
         for (k = 0; k < 512; k = k + 1) frame[k] = (k * 8'h47) ^ 8'hC3 ^ (k >> 3);
+        wait (rst_n);
+        repeat (4) @(posedge rx_clk);
 
         send(64, 1'b0, -1);  check_received(64, 1'b0, "64 bytes");
         send(300, 1'b0, -1); check_received(300, 1'b0, "300 bytes");

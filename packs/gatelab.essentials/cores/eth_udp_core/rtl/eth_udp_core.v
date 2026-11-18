@@ -60,7 +60,10 @@ module eth_udp_core #(
     output wire        send_ready,
     input  wire [7:0]  payload_data,
     input  wire        payload_valid,
-    output wire        payload_ready
+    output wire        payload_ready,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     // ---- MAC and MDIO ---------------------------------------------------------------------------------------------
     wire [7:0] frame_data, tx_data;
@@ -69,13 +72,13 @@ module eth_udp_core #(
         .clk(clk), .phy_rx_data(phy_rx_data), .phy_rx_valid(phy_rx_valid), .phy_rx_end(phy_rx_end),
         .phy_rx_error(phy_rx_error), .phy_tx_data(phy_tx_data), .phy_tx_valid(phy_tx_valid), .phy_tx_ready(phy_tx_ready),
         .rx_data(frame_data), .rx_valid(frame_valid), .rx_last(frame_last), .rx_good(frame_ok),
-        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready), .tx_underrun());
+        .tx_data(tx_data), .tx_valid(tx_valid), .tx_last(tx_last), .tx_ready(tx_ready), .tx_underrun(), .rst_n(rst_n));
     assign frame_good = frame_valid && frame_last && frame_ok;
     assign frame_bad = frame_valid && frame_last && !frame_ok;
 
     eth_mdio #(.CLK_HZ(CLK_HZ), .PHY_ADDR(PHY_ADDR), .ADVERTISE(ADVERTISE), .SETTLE_MS(SETTLE_MS)) u_mdio (
         .clk(clk), .mdc(mdc), .mdio_out(mdio_out), .mdio_oe(mdio_oe), .mdio_in(mdio_in), .link_up(link_up),
-        .setup_done(), .go(1'b0), .write(1'b0), .reg_addr(5'd0), .wdata(16'd0), .ready(), .done(), .rdata());
+        .setup_done(), .go(1'b0), .write(1'b0), .reg_addr(5'd0), .wdata(16'd0), .ready(), .done(), .rdata(), .rst_n(rst_n));
 
     // ---- The three senders --------------------------------------------------------------------------------------
     wire [7:0] arp_data, ping_data, udp_data;
@@ -86,13 +89,13 @@ module eth_udp_core #(
         .clk(clk), .mac(mac), .ip(ip),
         .rx_data(frame_data), .rx_valid(frame_valid), .rx_last(frame_last), .rx_good(frame_ok),
         .tx_data(arp_data), .tx_valid(arp_valid), .tx_last(arp_last), .tx_ready(tx_ready && sel == 2'd1),
-        .replied(arp_replied));
+        .replied(arp_replied), .rst_n(rst_n));
 
     eth_icmp_echo u_ping (
         .clk(clk), .mac(mac), .ip(ip),
         .rx_data(frame_data), .rx_valid(frame_valid), .rx_last(frame_last), .rx_good(frame_ok),
         .tx_data(ping_data), .tx_valid(ping_valid), .tx_last(ping_last), .tx_ready(tx_ready && sel == 2'd2),
-        .replied(ping_replied));
+        .replied(ping_replied), .rst_n(rst_n));
 
     eth_udp #(.PORT(PORT)) u_udp (
         .clk(clk), .mac(mac), .ip(ip),
@@ -101,7 +104,7 @@ module eth_udp_core #(
         .peer_mac(peer_mac), .peer_ip(peer_ip), .peer_port(peer_port), .rx_new(rx_new), .rx_dropped(rx_dropped),
         .send(send), .send_length(send_length), .dst_mac(dst_mac), .dst_ip(dst_ip), .dst_port(dst_port),
         .send_ready(send_ready), .payload_data(payload_data), .payload_valid(payload_valid), .payload_ready(payload_ready),
-        .tx_data(udp_data), .tx_valid(udp_valid), .tx_last(udp_last), .tx_ready(tx_ready && sel == 2'd3));
+        .tx_data(udp_data), .tx_valid(udp_valid), .tx_last(udp_last), .tx_ready(tx_ready && sel == 2'd3), .rst_n(rst_n));
 
     // ---- The multiplexer: a sender keeps the MAC until its frame's last byte is taken ----------------------------
     assign tx_data  = sel == 2'd1 ? arp_data  : sel == 2'd2 ? ping_data  : udp_data;
@@ -114,5 +117,9 @@ module eth_udp_core #(
             else if (ping_valid) sel <= 2'd2;
             else if (udp_valid) sel <= 2'd3;
         end else if (tx_valid && tx_ready && tx_last) sel <= 2'd0;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            sel <= 2'd0;
+        end
     end
 endmodule

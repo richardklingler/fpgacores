@@ -1,6 +1,13 @@
 {
   "description" : "A clock-enable tick and a 50 % square wave at a lower rate, from the system clock.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 61
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 218.2,
@@ -95,9 +102,14 @@
       "description" : "50 % square wave at HZ",
       "dir" : "out",
       "name" : "square"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "clock_divider",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

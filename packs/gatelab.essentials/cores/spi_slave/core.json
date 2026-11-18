@@ -1,6 +1,13 @@
 {
   "description" : "SPI device side, mode 0: receives bytes from a microcontroller or other master and answers with your bytes. Oversampled in the system clock.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 125
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 295.6,
@@ -123,5 +130,5 @@
   ],
   "schema" : 1,
   "top" : "spi_slave",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

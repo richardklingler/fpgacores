@@ -34,7 +34,10 @@ module eth_mdio #(
     input  wire [15:0] wdata,
     output wire        ready,
     output reg         done = 1'b0,
-    output reg  [15:0] rdata = 16'd0
+    output reg  [15:0] rdata = 16'd0,
+    // Reset, active low, synchronous: every register back to its start, the settle time and setup run again. A chip
+    // needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     localparam integer HALF = (CLK_HZ + 2 * MDC_HZ - 1) / (2 * MDC_HZ);   // clocks per MDC half period, rounded up
     localparam integer SETTLE = CLK_HZ / 1000 * SETTLE_MS;
@@ -85,6 +88,20 @@ module eth_mdio #(
                     frame_done <= 1'b1;
                 end
             end
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            in_sync <= 2'b11;
+            frame_done <= 1'b0;
+            mdc <= 1'b0;
+            mdio_oe <= 1'b0;
+            busy <= 1'b0;
+            bit_n <= 6'd0;
+            phase <= 16'd0;
+            reading <= 1'b0;
+            frame <= 64'd0;
+            mdio_out <= 1'b1;
+            shift_in <= 16'd0;
         end
     end
 
@@ -149,6 +166,20 @@ module eth_mdio #(
                     end
                 default: ;
             endcase
+        end
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            start <= 1'b0;
+            done <= 1'b0;
+            timer <= 32'd0;
+            waiting <= 1'b0;
+            step <= S_SETTLE;
+            link_up <= 1'b0;
+            setup_done <= 1'b0;
+            rdata <= 16'd0;
+            start_write <= 1'b0;
+            start_reg <= 5'd0;
+            start_data <= 16'd0;
         end
     end
 endmodule

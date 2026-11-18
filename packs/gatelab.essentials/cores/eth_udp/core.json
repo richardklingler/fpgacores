@@ -4,6 +4,13 @@
   ],
   "description" : "UDP over IPv4 and Ethernet on one port: datagrams to PORT are checked (unicast or broadcast, not a fragment, header and UDP checksums, lengths), kept in a block RAM and handed to the design with the sender's MAC, IP and port once the frame is good; datagrams of up to 1472 bytes are sent to any MAC, IP and port with the headers and IP checksum built in. The receive side can feed the send side directly (an echo).",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 84630
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 125.3,
@@ -259,9 +266,14 @@
       "description" : "From eth_mac's tx_ready",
       "dir" : "in",
       "name" : "tx_ready"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "eth_udp",
-  "version" : "1.1.0"
+  "version" : "2.0.0"
 }

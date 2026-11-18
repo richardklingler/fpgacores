@@ -8,18 +8,25 @@ module debouncer #(
 ) (
     input  wire clk,
     input  wire in,
-    output reg  out = 1'b0
+    output reg  out = 1'b0,
+    // Reset, active low, synchronous: `out` low, the count cleared. A chip needs it (its registers power up in no defined
+    // state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire rst_n
 );
     localparam STABLE_CLKS  = (CLK_HZ / 1000) * MS;
     localparam COUNTER_BITS = STABLE_CLKS > 1 ? $clog2(STABLE_CLKS) : 1;
 
     reg [1:0] sync = 2'b00;
     always @(posedge clk)
-        sync <= {sync[0], in};
+        if (!rst_n) sync <= 2'b00;
+        else sync <= {sync[0], in};
 
     reg [COUNTER_BITS-1:0] clocks = 0;
     always @(posedge clk) begin
-        if (sync[1] == out) begin
+        if (!rst_n) begin
+            clocks <= 0;
+            out <= 1'b0;
+        end else if (sync[1] == out) begin
             clocks <= 0;
         end else if (clocks == STABLE_CLKS - 1) begin
             clocks <= 0;

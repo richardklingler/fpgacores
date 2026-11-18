@@ -54,7 +54,9 @@ module eth_udp_stack_rgmii #(
     output wire        send_ready,
     input  wire [7:0]  payload_data,
     input  wire        payload_valid,
-    output wire        payload_ready
+    output wire        payload_ready,
+    // Reset, active low, synchronous: every register back to its start (the same ports as eth_udp_stack).
+    input  wire        rst_n
 );
 
     // ---- The PHY ------------------------------------------------------------------------------------------------
@@ -99,5 +101,5 @@ module eth_udp_stack_rgmii #(
         .send_ready(send_ready),
         .payload_data(payload_data),
         .payload_valid(payload_valid),
-        .payload_ready(payload_ready));
+        .payload_ready(payload_ready), .rst_n(rst_n));
 endmodule

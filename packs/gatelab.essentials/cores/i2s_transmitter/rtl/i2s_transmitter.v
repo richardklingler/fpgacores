@@ -11,7 +11,10 @@ module i2s_transmitter (
     input  wire [23:0] left,
     input  wire [23:0] right,
     output reg         taken = 1'b0,
-    output reg         sdin = 1'b0
+    output reg         sdin = 1'b0,
+    // Reset, active low, synchronous: the stored words cleared, `sdin` low. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
     reg [23:0] word_left = 24'd0, word_right = 24'd0;
     // Slot 0 starts a frame: it sends a zero, the words are taken with it.
@@ -22,7 +25,11 @@ module i2s_transmitter (
 
     always @(posedge clk) begin
         taken <= 1'b0;
-        if (bit_start) begin
+        if (!rst_n) begin
+            word_left <= 24'd0;
+            word_right <= 24'd0;
+            sdin <= 1'b0;
+        end else if (bit_start) begin
             if (slot_next == 6'd0) begin
                 word_left <= left;
                 word_right <= right;

@@ -58,7 +58,11 @@ module bar_graph #(
     output reg  [7:0] red_out = 8'd0,
     output reg  [7:0] green_out = 8'd0,
     output reg  [7:0] blue_out = 8'd0,
-    output reg  covered = 1'b0
+    output reg  covered = 1'b0,
+    // Reset, active low, synchronous: the pipeline cleared. The values are a RAM and have no reset: on a chip they start
+    // undefined, so write every bar after the reset (INIT_A / INIT_B apply on an FPGA only). On an FPGA tie it to 1'b1
+    // or the board's reset.
+    input  wire rst_n
 );
     localparam IB = $clog2(BARS);
     localparam PITCH = BAR_WIDTH + GAP;
@@ -110,6 +114,21 @@ module bar_graph #(
         base_row <= BASELINE != 0 && y == BOTTOM + 1;
         x1 <= x; y1 <= y; de1 <= de; hs1 <= hsync; vs1 <= vsync;
         below1 <= {red, green, blue};
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            slot <= 0;
+            offset <= 0;
+            in_x <= 1'b0;
+            in_y <= 1'b0;
+            level <= 0;
+            base_row <= 1'b0;
+            x1 <= 0;
+            y1 <= 0;
+            de1 <= 1'b0;
+            hs1 <= 1'b0;
+            vs1 <= 1'b0;
+            below1 <= 24'd0;
+        end
     end
 
     // ---- Stage 2: the bar's values ------------------------------------------------------------
@@ -128,6 +147,22 @@ module bar_graph #(
         in_x2 <= in_x; in_y2 <= in_y; base2 <= base_row; level2 <= level;
         x2 <= x1; y2 <= y1; de2 <= de1; hs2 <= hs1; vs2 <= vs1;
         below2 <= below1;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            value_a <= 0;
+            value_b <= 0;
+            offset2 <= 0;
+            in_x2 <= 1'b0;
+            in_y2 <= 1'b0;
+            base2 <= 1'b0;
+            level2 <= 0;
+            x2 <= 0;
+            y2 <= 0;
+            de2 <= 1'b0;
+            hs2 <= 1'b0;
+            vs2 <= 1'b0;
+            below2 <= 24'd0;
+        end
     end
 
     // ---- Stage 3: the colour ------------------------------------------------------------------
@@ -147,5 +182,14 @@ module bar_graph #(
         else if (grid) {red_out, green_out, blue_out} <= GRID_COLOUR;
         else if (BACKGROUND != 0 && in_rect) {red_out, green_out, blue_out} <= BACKGROUND_COLOUR;
         else {red_out, green_out, blue_out} <= below2;
+        // The reset: every register back to its initial value (a chip's registers start undefined).
+        if (!rst_n) begin
+            x_out <= 0;
+            y_out <= 0;
+            de_out <= 1'b0;
+            hsync_out <= 1'b0;
+            vsync_out <= 1'b0;
+            covered <= 1'b0;
+        end
     end
 endmodule

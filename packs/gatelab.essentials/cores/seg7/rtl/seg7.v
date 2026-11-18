@@ -17,7 +17,10 @@ module seg7 #(
     input  wire [DIGITS-1:0]     dots,
     output reg  [6:0]            segments = 7'd0,
     output reg                   dp = 1'b0,
-    output reg  [DIGITS-1:0]     digit_enable = 0
+    output reg  [DIGITS-1:0]     digit_enable = 0,
+    // Reset, active low, synchronous: starts again at digit 0. A chip needs it (its registers power up in no defined state); on an FPGA tie
+    // it to 1'b1 or the board's reset.
+    input  wire                  rst_n
 );
     localparam SLOT = CLK_HZ / (REFRESH_HZ * DIGITS) > 0 ? CLK_HZ / (REFRESH_HZ * DIGITS) : 1;
     localparam COUNTER_BITS = SLOT > 1 ? $clog2(SLOT) : 1;
@@ -48,7 +51,10 @@ module seg7 #(
     reg [INDEX_BITS-1:0] index = 0;
 
     always @(posedge clk) begin
-        if (clocks == SLOT - 1) begin
+        if (!rst_n) begin
+            clocks <= 0;
+            index <= 0;
+        end else if (clocks == SLOT - 1) begin
             clocks <= 0;
             index <= (index == DIGITS - 1) ? 0 : index + 1'b1;
         end else begin

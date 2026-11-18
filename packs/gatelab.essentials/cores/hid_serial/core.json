@@ -4,6 +4,13 @@
   ],
   "description" : "Keyboard and mouse from GateLab's HDMI Input panel (or Claude's hid_input) over the board's UART: USB HID key codes with press and release, relative and absolute mouse, wheel and an all-up event. Resynchronises on the next packet after a lost byte.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 654
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 158.3,
@@ -177,9 +184,14 @@
       "description" : "One-cycle pulse: every key and button was released (capture ended)",
       "dir" : "out",
       "name" : "all_up"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "hid_serial",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

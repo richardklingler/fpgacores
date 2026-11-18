@@ -8,13 +8,20 @@
 
 module i2s_receiver_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     integer errors = 0;
 
     wire mclk, sclk, lrck, bit_start, bit_sample, frame_start;
     wire [5:0] slot_next, slot;
     i2s_clocks #(.MCLK_DIV(2), .RATIO(256)) u_clocks (.clk(clk), .mclk(mclk), .sclk(sclk), .lrck(lrck),
-        .bit_start(bit_start), .slot_next(slot_next), .bit_sample(bit_sample), .slot(slot), .frame_start(frame_start));
+        .bit_start(bit_start), .slot_next(slot_next), .bit_sample(bit_sample), .slot(slot), .frame_start(frame_start), .rst_n(rst_n));
 
     reg sdout = 1'b0;
     wire [23:0] left, right;

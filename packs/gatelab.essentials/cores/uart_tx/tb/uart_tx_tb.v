@@ -10,12 +10,19 @@ module uart_tx_tb;
     localparam BYTES = 4;
 
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     reg [7:0] data = 8'h00;
     reg valid = 1'b0;
     wire ready;
     wire tx;
 
-    uart_tx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) dut (.clk(clk), .data(data), .valid(valid), .ready(ready), .tx(tx));
+    uart_tx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) dut (.clk(clk), .data(data), .valid(valid), .ready(ready), .tx(tx), .rst_n(rst_n));
 
     always #5 clk = ~clk;
 

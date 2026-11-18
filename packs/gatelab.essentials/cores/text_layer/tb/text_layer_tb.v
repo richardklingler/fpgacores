@@ -12,6 +12,13 @@
 
 module text_layer_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
 
     localparam H_TOTAL = 36, H_ACTIVE = 32, V_TOTAL = 18, V_ACTIVE = 16, FRAMES = 4;
@@ -76,13 +83,13 @@ module text_layer_tb;
         .clk(clk), .x(x), .y(y), .de(de), .hsync(hsync), .vsync(vsync), .red(red), .green(green), .blue(blue),
         .write(w1), .write_address(a1), .write_code(code_1), .write_colour(colour_1),
         .font_code(code1), .font_row(row1), .font_column(column1), .font_pixel(pixel1),
-        .x_out(x1), .y_out(y1), .de_out(de1), .hsync_out(hs1), .vsync_out(vs1), .red_out(r1), .green_out(g1), .blue_out(b1), .ink(ink1));
+        .x_out(x1), .y_out(y1), .de_out(de1), .hsync_out(hs1), .vsync_out(vs1), .red_out(r1), .green_out(g1), .blue_out(b1), .ink(ink1), .rst_n(rst_n));
     text_layer #(.X_BITS(6), .Y_BITS(5), .COLUMNS(2), .ROWS(3), .CELL_WIDTH(8), .CELL_HEIGHT(4), .SCALE_SHIFT(1),
                  .TEXT_X(13), .TEXT_Y(3), .CODE_BITS(4), .FONT_LATENCY(2), .BACKGROUND(1), .BACKGROUND_COLOUR(BOX)) dut2 (
         .clk(clk), .x(x1), .y(y1), .de(de1), .hsync(hs1), .vsync(vs1), .red(r1), .green(g1), .blue(b1),
         .write(w2), .write_address(a2), .write_code(code_2), .write_colour(colour_2),
         .font_code(code2), .font_row(row2), .font_column(column2), .font_pixel(pixel2),
-        .x_out(x2), .y_out(y2), .de_out(de2), .hsync_out(hs2), .vsync_out(vs2), .red_out(r2), .green_out(g2), .blue_out(b2), .ink(ink2));
+        .x_out(x2), .y_out(y2), .de_out(de2), .hsync_out(hs2), .vsync_out(vs2), .red_out(r2), .green_out(g2), .blue_out(b2), .ink(ink2), .rst_n(rst_n));
 
     // ---- Reference --------------------------------------------------------------------------
     localparam LAT1 = 3, LAT2 = 4;
@@ -173,6 +180,14 @@ module text_layer_tb;
         $dumpvars(0, text_layer_tb);
         for (i = 0; i < 10; i = i + 1) shadow1[i] = {4'hF, 8'h20};
         for (i = 0; i < 6; i = i + 1) shadow2[i] = {4'hF, 8'h20};
+        wait (rst_n);
+        @(posedge clk);
+        #1;
+`ifdef GATELAB_GATE_LEVEL
+        // A chip's cells start undefined (a RAM has no reset): write them all as an FPGA starts them.
+        for (i = 0; i < 10; i = i + 1) write1(i, 8'h20, 4'hF);
+        for (i = 0; i < 6; i = i + 1) write2(i, 8'h20, 4'hF);
+`endif
         // Before the first frame: "GATE" in four colours, and two cells of layer 2.
         write1(0, "G", 4'd14); write1(1, "A", 4'd12); write1(2, "T", 4'd10); write1(3, "E", 4'd9);
         write1(7, "!", 4'd3);

@@ -55,7 +55,10 @@ module eth_udp_stack #(
     output wire        send_ready,
     input  wire [7:0]  payload_data,
     input  wire        payload_valid,
-    output wire        payload_ready
+    output wire        payload_ready,
+    // Reset, active low, synchronous: every register back to its start. A chip needs it (its registers power up in no
+    // defined state); on an FPGA tie it to 1'b1 or the board's reset.
+    input  wire        rst_n
 );
 
     // ---- The PHY ------------------------------------------------------------------------------------------------
@@ -65,7 +68,7 @@ module eth_udp_stack #(
         .clk(clk), .rmii_rxd(rmii_rxd), .rmii_crs_dv(rmii_crs_dv), .rmii_rx_er(rmii_rx_er),
         .rmii_txd(rmii_txd), .rmii_tx_en(rmii_tx_en),
         .rx_data(phy_rx_data), .rx_valid(phy_rx_valid), .rx_end(phy_rx_end), .rx_error(phy_rx_error),
-        .tx_data(phy_tx_data), .tx_valid(phy_tx_valid), .tx_ready(phy_tx_ready));
+        .tx_data(phy_tx_data), .tx_valid(phy_tx_valid), .tx_ready(phy_tx_ready), .rst_n(rst_n));
 
     // ---- MAC, MDIO, ARP, ping, UDP ------------------------------------------------------------------------------
     eth_udp_core #(.PORT(PORT), .CLK_HZ(CLK_HZ), .PHY_ADDR(PHY_ADDR), .SETTLE_MS(SETTLE_MS)) u_core (
@@ -99,5 +102,5 @@ module eth_udp_stack #(
         .send_ready(send_ready),
         .payload_data(payload_data),
         .payload_valid(payload_valid),
-        .payload_ready(payload_ready));
+        .payload_ready(payload_ready), .rst_n(rst_n));
 endmodule

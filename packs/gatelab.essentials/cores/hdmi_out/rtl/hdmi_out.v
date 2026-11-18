@@ -69,7 +69,8 @@ module hdmi_out_audio #(
     hdmi_encoder #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_encoder (
         .clk(pixel_clk), .red(red), .green(green), .blue(blue), .de(de), .hsync(hsync), .vsync(vsync),
         .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready),
-        .word_blue(word_blue), .word_green(word_green), .word_red(word_red));
+        .word_blue(word_blue), .word_green(word_green), .word_red(word_red),
+        .rst_n(1'b1));   // an FPGA's registers start from their initial values
 
     hdmi_out_lane u_lane_blue  (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_blue),  .out_p(tmds_d_p[0]), .out_n(tmds_d_n[0]));
     hdmi_out_lane u_lane_green (.pixel_clk(pixel_clk), .serial_clk(serial_clk), .reset(reset), .word(word_green), .out_p(tmds_d_p[1]), .out_n(tmds_d_n[1]));
@@ -165,7 +166,8 @@ module hdmi_out_bufr_audio #(
     hdmi_encoder #(.HDMI(HDMI), .PIXEL_HZ(PIXEL_HZ), .VIC(VIC), .ASPECT(ASPECT)) u_encoder (
         .clk(pixel_clk), .red(shown[23:16]), .green(shown[15:8]), .blue(shown[7:0]), .de(de_q), .hsync(hsync_q), .vsync(vsync_q),
         .audio_l(audio_l), .audio_r(audio_r), .audio_ready(audio_ready),
-        .word_blue(word_blue), .word_green(word_green), .word_red(word_red));
+        .word_blue(word_blue), .word_green(word_green), .word_red(word_red),
+        .rst_n(1'b1));   // an FPGA's registers start from their initial values
 
     // The reset reaches lane_clk through two flip-flops, so the read pointer starts a little after
     // the write pointer. Starting the write pointer at 3 puts the entry being read half the ring

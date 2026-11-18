@@ -18,7 +18,10 @@ module tmds_encoder (
     input  wire [7:0] d,
     input  wire       c0,
     input  wire       c1,
-    output reg  [9:0] q = 10'd0
+    output reg  [9:0] q = 10'd0,
+    // Reset, active low, synchronous: control words, the running disparity cleared. A chip needs it (its registers power up in no defined state); on an FPGA
+    // tie it to 1'b1 or the board's reset. The other stages refill from the inputs.
+    input  wire       rst_n
 );
     function [2:0] nibble_ones;
         input [3:0] v;
@@ -43,7 +46,7 @@ module tmds_encoder (
     always @(posedge clk) begin
         d1 <= d;
         ones1 <= byte_ones(d);
-        de1 <= de; c01 <= c0; c11 <= c1;
+        de1 <= de && rst_n; c01 <= c0; c11 <= c1;
     end
 
     // Stage 2: transition-minimized code, XOR or XNOR chain (qm[8] says which: 1 = XOR), and
@@ -65,7 +68,7 @@ module tmds_encoder (
     always @(posedge clk) begin
         qm2 <= qm;
         diff <= $signed({2'b0, qm_ones, 1'b0}) - 6'sd8;
-        de2 <= de1; c02 <= c01; c12 <= c11;
+        de2 <= de1 && rst_n; c02 <= c01; c12 <= c11;
     end
 
     // Stage 3: DC balance against the running disparity.
@@ -74,7 +77,7 @@ module tmds_encoder (
     reg signed [5:0] disparity = 6'sd0;
 
     always @(posedge clk) begin
-        if (!de2) begin
+        if (!de2 || !rst_n) begin
             disparity <= 6'sd0;
             case ({c12, c02})
                 2'b00: q <= 10'b1101010100;

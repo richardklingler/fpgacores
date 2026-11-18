@@ -1,6 +1,13 @@
 {
   "description" : "Draws an analogue clock over a video picture: outer ring, hour and minute ticks, hour, minute and second hands of even width and a centre cap, from hour, minute and second inputs. Each pixel's angle and radius come from a pipelined CORDIC (adders only); three small multiplies test the hands. Layers chain like sprite_layer, text_layer and bar_graph; LATENCY = 20 clocks.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 11080
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 126.5,
@@ -346,9 +353,14 @@
       "description" : "The clock draws this output pixel",
       "dir" : "out",
       "name" : "covered"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "analog_clock",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }

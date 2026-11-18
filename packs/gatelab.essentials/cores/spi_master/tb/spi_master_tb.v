@@ -20,11 +20,15 @@ module spi_device_model #(parameter CPOL = 0, parameter CPHA = 0) (
     // The clock just left its idle level. Computed in the block from sclk itself: a continuous
     // assignment could still hold the old value when the block runs.
     reg leading;
+    // A chip's sclk is x until its reset: x settling to the idle level is no clock edge.
+    reg last_sclk = 1'bx;
+    initial #1 last_sclk = sclk;
 
     // Load the reply before the first edge of a byte (bits == 0).
     always @(next_reply) if (bits == 0) reply = next_reply;
 
-    always @(sclk) begin
+    always @(sclk) if (last_sclk === 1'bx) last_sclk = sclk; else begin
+        last_sclk = sclk;
         leading = (sclk != CPOL);
         if ((leading && CPHA == 0) || (!leading && CPHA == 1)) begin
             shift_in = {shift_in[6:0], mosi};
@@ -42,6 +46,13 @@ endmodule
 
 module spi_master_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #5 clk = ~clk;
     integer errors = 0;
 
@@ -65,8 +76,7 @@ module spi_master_tb;
 
             spi_master #(.CLK_HZ(800), .SPI_HZ(100), .CPOL(mode / 2), .CPHA(mode % 2)) dut (
                 .clk(clk), .tx_data(data), .start(start), .ready(ready), .rx_data(rx_data), .done(done),
-                .sclk(sclk), .mosi(mosi), .miso(miso)
-            );
+                .sclk(sclk), .mosi(mosi), .miso(miso), .rst_n(rst_n));
             spi_device_model #(.CPOL(mode / 2), .CPHA(mode % 2)) device (
                 .sclk(sclk), .mosi(mosi), .miso(miso), .next_reply(next_reply),
                 .received(device_received), .bits(device_bits)
@@ -74,12 +84,17 @@ module spi_master_tb;
 
             // Clock rate: a half period of 4 system clocks (40 ns).
             realtime last_edge = 0;
+            reg prev_sclk = 1'bx;           // x until a chip's reset: settling isn't an edge
+            initial #1 prev_sclk = sclk;
             always @(sclk) begin
-                if (last_edge != 0 && $realtime - last_edge != 40.0 && $realtime - last_edge < 100.0) begin
-                    $display("FAIL: mode %0d: SCLK half period %0.0f ns, expected 40", mode, $realtime - last_edge);
-                    errors = errors + 1;
+                if (prev_sclk !== 1'bx) begin
+                    if (last_edge != 0 && $realtime - last_edge != 40.0 && $realtime - last_edge < 100.0) begin
+                        $display("FAIL: mode %0d: SCLK half period %0.0f ns, expected 40", mode, $realtime - last_edge);
+                        errors = errors + 1;
+                    end
+                    last_edge = $realtime;
                 end
-                last_edge = $realtime;
+                prev_sclk = sclk;
             end
 
             integer n;

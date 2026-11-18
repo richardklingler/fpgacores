@@ -66,6 +66,13 @@ endmodule
 
 module eth_mdio_tb;
     reg clk = 1'b0;
+    // Held low for the first clocks: a chip starts from its reset, not from initial values.
+    reg rst_n = 1'b0;
+    initial begin
+        repeat (3) @(posedge clk);
+        #1 rst_n = 1'b1;
+    end
+
     always #10 clk = ~clk;   // 50 MHz
     integer errors = 0;
     task fail(input [8*72-1:0] what);
@@ -85,7 +92,7 @@ module eth_mdio_tb;
     eth_mdio #(.CLK_HZ(50_000_000), .MDC_HZ(2_000_000), .SETTLE_MS(1), .POLL_HZ(2000)) dut (
         .clk(clk), .mdc(mdc_a), .mdio_out(out_a), .mdio_oe(oe_a), .mdio_in(mdio_a), .link_up(link_a),
         .setup_done(setup_a), .go(go), .write(write), .reg_addr(reg_addr), .wdata(wdata), .ready(ready_a),
-        .done(done_a), .rdata(rdata_a));
+        .done(done_a), .rdata(rdata_a), .rst_n(rst_n));
     phy_mdio_model #(.ADDR(5'd1), .DELAY(10.0)) phy_a (.mdc(mdc_a), .mdio(mdio_a), .master_oe(oe_a));
 
     wire mdc_b, mdio_b, out_b, oe_b, link_b, setup_b;
@@ -93,7 +100,7 @@ module eth_mdio_tb;
     assign mdio_b = oe_b ? out_b : 1'bz;
     eth_mdio #(.CLK_HZ(50_000_000), .MDC_HZ(2_000_000), .ADVERTISE(16'h0000), .SETTLE_MS(1), .POLL_HZ(2000)) dut_b (
         .clk(clk), .mdc(mdc_b), .mdio_out(out_b), .mdio_oe(oe_b), .mdio_in(mdio_b), .link_up(link_b),
-        .setup_done(setup_b), .go(1'b0), .write(1'b0), .reg_addr(5'd0), .wdata(16'd0), .ready(), .done(), .rdata());
+        .setup_done(setup_b), .go(1'b0), .write(1'b0), .reg_addr(5'd0), .wdata(16'd0), .ready(), .done(), .rdata(), .rst_n(rst_n));
     phy_mdio_model #(.ADDR(5'd1), .DELAY(290.0)) phy_b (.mdc(mdc_b), .mdio(mdio_b), .master_oe(oe_b));
 
     // MDC's shortest period, and the first MDC edge's time.

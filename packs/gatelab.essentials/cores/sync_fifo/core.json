@@ -1,6 +1,13 @@
 {
   "description" : "First-in first-out buffer in one clock domain, with full, empty and fill count. Registered read for block RAM.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 178
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 219.7,
@@ -135,5 +142,5 @@
   ],
   "schema" : 1,
   "top" : "sync_fifo",
-  "version" : "1.0.0"
+  "version" : "1.0.1"
 }

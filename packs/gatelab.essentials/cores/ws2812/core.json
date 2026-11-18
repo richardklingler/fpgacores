@@ -1,6 +1,13 @@
 {
   "description" : "Drives chains of WS2812/WS2812B (NeoPixel) RGB LEDs over one wire: pixel-by-pixel handshake, automatic latch after the last pixel.",
   "families" : {
+    "asic" : {
+      "device" : "ihp-sg13g2",
+      "resources" : {
+        "cells" : 290
+      },
+      "tested" : true
+    },
     "ecp5" : {
       "device" : "45k",
       "fmaxMHz" : 157.2,
@@ -115,9 +122,14 @@
       "description" : "The line has been low for RESET_US: the LEDs show the frame",
       "dir" : "out",
       "name" : "idle"
+    },
+    {
+      "description" : "Reset, active low, synchronous: a chip needs it (its registers power up in no defined state); on an FPGA tie it to 1'b1 or the board's reset",
+      "dir" : "in",
+      "name" : "rst_n"
     }
   ],
   "schema" : 1,
   "top" : "ws2812",
-  "version" : "1.0.0"
+  "version" : "2.0.0"
 }
